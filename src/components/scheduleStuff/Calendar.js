@@ -4,6 +4,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import ScheduleModal from './ScheduleModal'
 import { formatMoment } from '../../helpers/momentHelper'
+import { findByCUID } from '../../helpers/generalHelpers'
 
 
 BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
@@ -25,24 +26,24 @@ class Calendar extends Component{
   }
 
   getScheduleProps = (ev) => {
-    return{style: {backgroundColor: ev.color}}
+    const color = findByCUID(this.props.employees, ev.employeeCUID).scheduleColor
+    return{style: {backgroundColor: color}, title: "Hello!"}
   }
 
   render(){
-    console.log(this.props.events);
     return(
       <div>
         <ScheduleModal start={this.state.selectedStart} end={this.state.selectedEnd} onModalClose={this.onModalClose} modalOpen={this.state.modalOpen}/>
         <BigCalendar
           selectable
           {...this.props}
-          events={this.props.events}
+          events={this.props.schedules}
           eventPropGetter={this.getScheduleProps}
           timeslots={6}
           step={15}
           defaultView='week'
           defaultDate={new Date()}
-          onSelectEvent={schedule=>{console.log(schedule.title)}}
+          onSelectEvent={schedule=>{console.log(schedule.title, schedule.description)}}
 
           onSelectSlot={(slotInfo) => {
             this.handleSelect(slotInfo)

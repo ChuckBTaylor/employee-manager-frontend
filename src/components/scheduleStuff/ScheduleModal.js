@@ -8,7 +8,7 @@ class ScheduleModal extends Component{
 
   render(){
     return(
-      <Modal trigger={<button hidden></button>} open={this.props.modalOpen} onClose={this.props.onModalClose} >
+      <Modal open={this.props.modalOpen} onClose={this.props.onModalClose} >
         <Modal.Content>
           <NewScheduleForm start={this.props.start} end={this.props.end} onAddSchedule={this.props.onModalClose} isModal={true} />
         </Modal.Content>
