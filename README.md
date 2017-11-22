@@ -1,34 +1,34 @@
 File Structure:
 * public
-  * index.html
-  * manifest.json
+  * -index.html
+  * -manifest.json
 * src
   * actions
-    * employee.js
-    * schedule.js
+    * -employee.js
+    * -schedule.js
   * components
     * employeeStuff
-      * EmployeeList.js
+      * -EmployeeList.js
     * scheduleStuff
-      * Calendar.js
-      * NewScheduleForm.js
-      * ScheduleModal.js
-    * NavBar.js
+      * -Calendar.js
+      * -NewScheduleForm.js
+      * -ScheduleModal.js
+    * -NavBar.js
   * containers
-    * EmployeeContainer.js
-    * ScheduleContainer.js          
+    * -EmployeeContainer.js
+    * -ScheduleContainer.js          
   * helpers
-    * apiRequests.js
-    * generalHelpers.js
-    * momentHelper.js          
+    * -apiRequests.js
+    * -generalHelpers.js
+    * -momentHelper.js          
   * reducers
-    * employeeReducers.js
-    * scheduleReducer.js
- * App.css
- * App.js
- * index.css
- * index.js
- * registerServiceWorker.js
-* package.json
-* README.md
-* yarn.lock
+    * -employeeReducers.js
+    * -scheduleReducer.js
+ * -App.css
+ * -App.js
+ * -index.css
+ * -index.js
+ * -registerServiceWorker.js
+* -package.json
+* -README.md
+* -yarn.lock
