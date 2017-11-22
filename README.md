@@ -40,6 +40,13 @@ All reducers will take in objects produced by the files in actions. In /actions 
 
 In /helpers any function that doesn't really fit anywhere else.  Try to keep them organized by what they do.
 
+Big shoutout to [Big Calendar](http://intljusticemission.github.io/react-big-calendar/examples/index.html). They made my life so much easier.
 
+Some [Semantic](https://react.semantic-ui.com/introduction) use as well.
+
+I'm open to all styling suggestions
+
+
+No external API connections.
 
 [Backend Repo](https://github.com/ChuckBTaylor/employee-manager-backend)
