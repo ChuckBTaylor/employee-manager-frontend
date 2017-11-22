@@ -4,26 +4,26 @@ File Structure:
   * manifest.json
 * src
   * actions
-   * employee.js
-   * schedule.js
+    * employee.js
+    * schedule.js
   * components
-   * employeeStuff
-    * EmployeeList.js
-   * scheduleStuff
-    * Calendar.js
-    * NewScheduleForm.js
-    * ScheduleModal.js
-  * NavBar.js
+    * employeeStuff
+      * EmployeeList.js
+    * scheduleStuff
+      * Calendar.js
+      * NewScheduleForm.js
+      * ScheduleModal.js
+    * NavBar.js
   * containers
-   * EmployeeContainer.js
-   * ScheduleContainer.js          
+    * EmployeeContainer.js
+    * ScheduleContainer.js          
   * helpers
-   * apiRequests.js
-   * generalHelpers.js
-   * momentHelper.js          
+    * apiRequests.js
+    * generalHelpers.js
+    * momentHelper.js          
   * reducers
-   * employeeReducers.js
-   * scheduleReducer.js
+    * employeeReducers.js
+    * scheduleReducer.js
  * App.css
  * App.js
  * index.css
