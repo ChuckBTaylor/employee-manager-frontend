@@ -1,8 +1,7 @@
 File Structure:
-|
-public-|
-       -index.html
-       -manifest.json
+*public
+..*index.html
+..*manifest.json
 |
 src-|
     actions-----|
@@ -42,3 +41,7 @@ src-|
 -package.json
 -README.md
 -yarn.lock
+
+
+(View this in raw format to see awesome formatting)
+
