@@ -1,7 +1,7 @@
 File Structure:
 *public
-..*index.html
-..*manifest.json
+  *index.html
+  *manifest.json
 |
 src-|
     actions-----|
