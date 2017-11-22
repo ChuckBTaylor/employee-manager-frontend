@@ -3,11 +3,10 @@ File Structure:
   * index.html
   * manifest.json
 * src
-    actions-----|
-                -employee.js
-                -schedule.js
-    |
-    components--|
+  * actions
+    * employee.js
+    * schedule.js
+  * components--|
                 employeeStuff-|
                               -EmployeeList.js
                 |
