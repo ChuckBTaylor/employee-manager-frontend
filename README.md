@@ -1,9 +1,8 @@
 File Structure:
-*public
-  *index.html
-  *manifest.json
-|
-src-|
+* public
+  * index.html
+  * manifest.json
+* src
     actions-----|
                 -employee.js
                 -schedule.js
