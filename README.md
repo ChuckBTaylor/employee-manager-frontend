@@ -40,4 +40,4 @@ All reducers will take in objects produced by the files in actions. In /actions 
 
 In /helpers any function that doesn't really fit anywhere else.  Try to keep them organized by what they do.
 
-[Backend Repo][https://github.com/ChuckBTaylor/employee-manager-backend]
+[Backend Repo](https://github.com/ChuckBTaylor/employee-manager-backend)
