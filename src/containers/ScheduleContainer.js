@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import Calendar from '../components/Calendar';
-import NewScheduleForm from '../components/NewScheduleForm';
+import Calendar from '../components/scheduleStuff/Calendar';
+import NewScheduleForm from '../components/scheduleStuff/NewScheduleForm';
 import { bindActionCreators } from 'redux';
-import { addSchedule } from '../actions/schedule'
+import { fetchEmployees } from '../actions/employee'
+// import { addSchedule } from '../actions/schedule'
 
 
 class ScheduleContainer extends Component{
 
-  onAddSchedule = (newSchedule) => {
-    this.props.addSchedule(newSchedule)
-  }
-
   render(){
     return(
       <div>
-        <NewScheduleForm onAddSchedule={this.onAddSchedule} />
+        <NewScheduleForm />
         <br /><br /><br />
         <Calendar onAddSchedule={this.onAddSchedule} events={this.props.schedules}/>
       </div>
     )
+  }
+
+  componentDidMount = () => {
+    this.props.fetchEmployees()
   }
 }
 
@@ -29,4 +30,8 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(ScheduleContainer);
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ fetchEmployees }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ScheduleContainer);

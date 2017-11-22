@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addSchedule } from '../actions/schedule'
-import { formatMoment, addToMoment } from '../helpers/momentHelper'
+import { addSchedule } from '../../actions/schedule'
+import { formatMoment, addToMoment } from '../../helpers/momentHelper'
+// import { findByCUID } from '../../helpers/generalHelpers'
 
 
 class NewScheduleForm extends Component{
 
   formatInitialDateValue = () => {
-    return new Date().toISOString().slice(0,10)
+    return formatMoment(new Date()).slice(0,10)
   }
 
   state = {
@@ -16,16 +17,9 @@ class NewScheduleForm extends Component{
     endDate: this.props.isModal ? this.props.end.slice(0,10) : this.formatInitialDateValue(),
     startTime: this.props.isModal ? this.props.start.slice(11,19) : "09:00",
     endTime: this.props.isModal ? this.props.end.slice(11,19) : "17:00",
+    selectedUser: "",
+    selectedUserColor: "green",
     allDay: false
-  }
-
-  handleSubmit = (ev) => {
-    ev.preventDefault()
-    console.log(this, "from the submit");
-    this.props.addSchedule({start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)), end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)), title:"test"})
-    if(this.props.isModal){
-      this.props.onAddSchedule()
-    }
   }
 
   addSomeDate = (amount, type) => {
@@ -58,6 +52,14 @@ class NewScheduleForm extends Component{
     this.addSomeDate(-1, 'w')
   }
 
+  handleSelectedUserChange = (ev) => {
+    const newColor = Array.from(ev.target.children).find(child => child.value === ev.target.value).dataset.color
+    this.setState({
+      selectedUser: ev.target.value,
+      selectedUserColor: newColor
+    })
+  }
+
   handleStartDateChange = (ev) => {
     console.log(this.state);
     this.setState({startDate: ev.target.value})
@@ -75,8 +77,25 @@ class NewScheduleForm extends Component{
     this.setState({endDate: ev.target.value})
   }
 
+  handleSubmit = (ev) => {
+    ev.preventDefault()
+    this.props.addSchedule({start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)), end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)), title:"test", color: this.state.selectedUserColor, style:{color:this.state.selectedUserColor}})
+    if(this.props.isModal){
+      this.props.onAddSchedule()
+    }
+  }
+
+  componentWillReceiveProps = nextProps => {
+    if(this.state.selectedUser === "" && nextProps.employees.length > 0){
+      this.setState({
+        selectedUser: nextProps.employees[0].cuid,
+        selectedUserColor: nextProps.employees[0].scheduleColor
+      })
+    }
+  }
+
   render(){
-    console.log(this.props, "Form Props");
+    const employeeOptions = this.props.employees.map(employee => (<option data-color={employee.scheduleColor} key={employee.cuid} value={employee.cuid} >{employee.name}</option>))
     return(
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -86,9 +105,17 @@ class NewScheduleForm extends Component{
           <label htmlFor="">End Date and Time</label>
           <input type='date' value={this.state.endDate} min={this.state.startDate} onChange={this.handleEndDateChange} />
           <input type="time" value={this.state.endTime} onChange={this.handleEndTimeChange} />
+          <br />
+          <select className="ui search dropdown" value={this.state.selectedUser} onChange={this.handleSelectedUserChange} >
+            {employeeOptions}
+          </select>
+          Employee Color: <i style={{color: this.state.selectedUserColor}} className="circle icon"></i>
+          <br />
           <input type='submit' value='submit' />
         </form>
+
         <br />
+
         <button onClick={this.loseAWeek}>Last Week</button>
         <button onClick={this.loseADay}>Previous Day</button>
         <button onClick={this.toToday}>Today</button>
@@ -105,8 +132,14 @@ NewScheduleForm.defaultProps = {
   end: ""
 }
 
+const mapStateToProps = state => {
+  return{
+    employees: state.employees.list
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({ addSchedule }, dispatch)
 }
 
-export default connect(null, mapDispatchToProps)(NewScheduleForm)
+export default connect(mapStateToProps, mapDispatchToProps)(NewScheduleForm)

@@ -3,7 +3,7 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import ScheduleModal from './ScheduleModal'
-import { formatMoment } from '../helpers/momentHelper'
+import { formatMoment } from '../../helpers/momentHelper'
 
 
 BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
@@ -24,7 +24,12 @@ class Calendar extends Component{
     this.setState({modalOpen: false, selectedStart: "", selectedEnd: ""})
   }
 
+  getScheduleProps = (ev) => {
+    return{style: {backgroundColor: ev.color}}
+  }
+
   render(){
+    console.log(this.props.events);
     return(
       <div>
         <ScheduleModal start={this.state.selectedStart} end={this.state.selectedEnd} onModalClose={this.onModalClose} modalOpen={this.state.modalOpen}/>
@@ -32,6 +37,7 @@ class Calendar extends Component{
           selectable
           {...this.props}
           events={this.props.events}
+          eventPropGetter={this.getScheduleProps}
           timeslots={6}
           step={15}
           defaultView='week'
@@ -40,11 +46,6 @@ class Calendar extends Component{
 
           onSelectSlot={(slotInfo) => {
             this.handleSelect(slotInfo)
-            // console.log(
-            //   `selected slot: \n\nstart ${slotInfo.start.toLocaleString()} ` +
-            //   `\nend: ${slotInfo.end.toLocaleString()}` +
-            //   `\naction: ${slotInfo.action}`
-            // )
           }}
         />
       </div>

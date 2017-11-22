@@ -6,6 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import scheduleReducer from './reducers/scheduleReducer';
+import employeeReducer from './reducers/employeeReducer';
 import { Provider } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
@@ -13,7 +14,7 @@ import 'semantic-ui-css/semantic.min.css';
 
 
 
-const rootReducer = combineReducers({schedules: scheduleReducer})
+const rootReducer = combineReducers({schedules: scheduleReducer, employees: employeeReducer})
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
 
 

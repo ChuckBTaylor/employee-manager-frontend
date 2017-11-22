@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import ScheduleContainer from './containers/ScheduleContainer'
-import { connect } from 'react-redux';
+import EmployeeContainer from './containers/EmployeeContainer'
+import NavBar from './components/NavBar'
+// import { connect } from 'react-redux';
+import { Route } from 'react-router'
 
 class App extends Component {
 
@@ -11,14 +14,14 @@ class App extends Component {
   render() {
     return (
       <div>
-        <ScheduleContainer />
+        <Route path='/' component={NavBar} />
+        <Route path='/schedules' component={ScheduleContainer} />
+        <Route path='/employees' component={EmployeeContainer} />
       </div>
     );
   }
 }
 
-const mapStateToProps = () => {
-
-}
+// const mapStateToProps = () => {}
 
 export default App;
