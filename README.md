@@ -11,7 +11,7 @@ File Structure:
     * EmployeeList.js
    * scheduleStuff
     * Calendar.js
-    * NewScheduleForm.js
+    * NewScheduleForm.js
     * ScheduleModal.js
   * NavBar.js
   * containers
