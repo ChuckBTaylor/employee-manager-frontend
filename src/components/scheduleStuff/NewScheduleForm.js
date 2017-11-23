@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createSchedule } from '../../actions/schedule'
+import { createSchedule, patchSchedule } from '../../actions/schedule'
 import { formatMoment, addToMoment } from '../../helpers/momentHelper'
 import { findByCUID } from '../../helpers/generalHelpers';
 
@@ -17,7 +17,6 @@ class NewScheduleForm extends Component{
     endDate: this.props.isModal ? this.props.end.slice(0,10) : this.formatInitialDateValue(),
     startTime: this.props.isModal ? this.props.start.slice(11,19) : "09:00",
     endTime: this.props.isModal ? this.props.end.slice(11,19) : "17:00",
-    selectedEmployee: "",
     allDay: false,
     description: ""
   }
@@ -52,33 +51,55 @@ class NewScheduleForm extends Component{
     this.addSomeDate(-1, 'w')
   }
 
-  handleSelectedUserChange = (ev) => {
+  handleSelectedUserChange = ev => {
     this.setState({
       selectedEmployee: ev.target.value
     })
   }
 
-  handleStartDateChange = (ev) => {
-    console.log(this.state);
+  handleStartDateChange = ev => {
     this.setState({startDate: ev.target.value})
   }
 
-  handleStartTimeChange = (ev) => {
+  handleStartTimeChange = ev => {
     this.setState({startTime: ev.target.value})
   }
 
-  handleEndTimeChange = (ev) => {
+  handleEndTimeChange = ev => {
     this.setState({endTime: ev.target.value})
   }
 
-  handleEndDateChange = (ev) => {
+  handleEndDateChange = ev => {
     this.setState({endDate: ev.target.value})
   }
 
-  handleSubmit = (ev) => {
+  handleDelete = ev => {
+
+  }
+
+  handleSubmit = ev => {
     ev.preventDefault()
-    const employee = findByCUID(this.props.employees, this.state.selectedEmployee)
-    this.props.createSchedule({start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)), end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)), title:"test", employeeID: employee.id, employeeCUID: this.state.selectedEmployee, description: this.state.description})
+    const employee = findByCUID(this.props.employees, this.props.selectedEmployee)
+    if(this.props.isEdit){
+      this.props.patchSchedule({
+        start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)),
+        end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)),
+        title: "test",
+        employeeID: employee.id,
+        employeeCUID: employee.cuid,
+        description: this.state.description,
+        cuid: this.props.cuid
+      })
+    } else {
+      this.props.createSchedule({
+        start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)),
+        end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)),
+        title: "test",
+        employeeID: employee.id,
+        employeeCUID: employee.cuid,
+        description: this.state.description
+      })
+    }
     if(this.props.isModal){
       this.props.onAddSchedule()
     }
@@ -102,8 +123,8 @@ class NewScheduleForm extends Component{
 
   render(){
     const employeeOptions = this.props.employees.map(employee => (<option data-color={employee.scheduleColor} key={employee.cuid} value={employee.cuid} >{employee.name}</option>))
-    const employee = findByCUID(this.props.employees, this.state.selectedEmployee)
-    console.log("Schedule Form", this.state);
+    const employee = findByCUID(this.props.employees, this.props.selectedEmployee)
+    console.log("Form props", this.props);
     return(
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -114,7 +135,7 @@ class NewScheduleForm extends Component{
           <input type='date' value={this.state.endDate} min={this.state.startDate} onChange={this.handleEndDateChange} />
           <input type="time" value={this.state.endTime} onChange={this.handleEndTimeChange} />
           <br />
-          <select className="ui search dropdown" value={this.state.selectedEmployee} onChange={this.handleSelectedUserChange} >
+          <select className="ui search dropdown" value={this.props.selectedEmployee} onChange={this.props.onSelectEmployee} >
             {employeeOptions}
           </select>
           Employee Color: <i style={{color: employee ? employee.scheduleColor : "#000000"}} className="circle icon"></i>
@@ -129,6 +150,8 @@ class NewScheduleForm extends Component{
         <button onClick={this.toToday}>Today</button>
         <button onClick={this.addADay}>Next Day</button>
         <button onClick={this.addAWeek}>Next Week</button>
+        <br />
+        {this.props.isEdit ? <button onClick={this.handleDelete}>Delete</button> : null}
       </div>
     )
   }
@@ -137,7 +160,10 @@ class NewScheduleForm extends Component{
 NewScheduleForm.defaultProps = {
   isModal: false,
   start: "",
-  end: ""
+  end: "",
+  selectedEmployee: "",
+  isEdit: false,
+  cuid: ""
 }
 
 const mapStateToProps = state => {
@@ -147,7 +173,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createSchedule }, dispatch)
+  return bindActionCreators({ createSchedule, patchSchedule }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewScheduleForm)

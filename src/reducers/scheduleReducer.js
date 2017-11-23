@@ -1,4 +1,5 @@
 import cuid from 'cuid'
+import { findByCUID } from '../helpers/generalHelpers'
 
 export default function scheduleReducer(state = {
   list: [],
@@ -20,6 +21,10 @@ export default function scheduleReducer(state = {
       }
       const withCUID = action.payload.map(schedule => ({...schedule, cuid: cuid()}))
       return {...state, fetchingSchedules: false, list: withCUID, didFetch: true};
+
+    case "PATCH_SCHEDULE":
+      const filteredSchedules = state.list.filter(sched => sched.cuid !== action.payload.cuid)
+      return {...state, list: [...filteredSchedules, action.payload]};
 
     case "ADD_ID_TO_NEW_SCHEDULE":
       if(!state.list[state.list.length - 1].id){

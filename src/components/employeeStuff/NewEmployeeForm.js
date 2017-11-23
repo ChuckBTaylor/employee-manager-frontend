@@ -9,7 +9,7 @@ class NewEmployeeForm extends Component{
     isAdmin: false
   }
 
-  handleNameChange = (ev) => {
+  handleNameChange = ev => {
     this.setState({name: ev.target.value})
   }
 
@@ -21,7 +21,7 @@ class NewEmployeeForm extends Component{
     this.setState({isAdmin: !this.state.isAdmin})
   }
 
-  handleSubmit = (ev) => {
+  handleSubmit = ev => {
     ev.preventDefault()
     this.props.onCreateEmployee(this.state)
     this.props.history.push(`/employees`)

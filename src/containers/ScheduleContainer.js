@@ -10,16 +10,38 @@ import { fetchSchedules } from '../actions/schedule'
 
 class ScheduleContainer extends Component{
 
-  onSelectEmployee = (ev) => {
-    this.setState({selectedEmployee: ev.target.value})
+  state = {
+    selectedEmployee: ""
+  }
+
+  onSelectEmployee = ev => {
+    if(ev.target.value !== ""){
+      this.setState({selectedEmployee: ev.target.value})
+    }
+  }
+
+  componentDidMount = () => {
+    if(this.props.employees.length > 0){
+      this.setState({
+        selectedEmployee: this.props.employees[0].cuid
+      })
+    }
+  }
+
+  componentWillReceiveProps = nextProps => {
+    if(nextProps.employees.length > 0 && this.state.selectedEmployee === ""){
+      this.setState({
+        selectedEmployee: nextProps.employees[0].cuid
+      })
+    }
   }
 
   render(){
     return(
       <div>
-        <NewScheduleForm />
+        <NewScheduleForm selectedEmployee={this.state.selectedEmployee} onSelectEmployee={this.onSelectEmployee} />
         <br /><br /><br />
-        <Calendar onAddSchedule={this.onAddSchedule} employees={this.props.employees} schedules={this.props.schedules}/>
+        <Calendar onAddSchedule={this.onAddSchedule} selectedEmployee={this.state.selectedEmployee} employees={this.props.employees} onSelectEmployee={this.onSelectEmployee} schedules={this.props.schedules}/>
       </div>
     )
   }

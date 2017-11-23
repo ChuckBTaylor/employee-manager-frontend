@@ -36,6 +36,16 @@ export function createSchedule(schedule){
   }
 }
 
+export function patchSchedule(schedule){
+  return function (dispatch){
+    console.log(schedule);
+    dispatch({
+      type: "PATCH_SCHEDULE",
+      payload: schedule
+    })
+  }
+}
+
 export function someActionCreator(json){
   return {
     type: "SOME_ACTION",
