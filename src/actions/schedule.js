@@ -1,5 +1,5 @@
 import api from '../helpers/apiRequests'
-import { findByID } from '../helpers/generalHelpers';
+import { findByID, findByCUID } from '../helpers/generalHelpers';
 import { formatMoment } from '../helpers/momentHelper';
 
 
@@ -14,7 +14,8 @@ export function fetchSchedules(employeeList){
             employeeCUID: employee.cuid,
             start: new Date(formatMoment(sched.scheduled_start)),
             end: new Date(formatMoment(sched.scheduled_end)),
-            description: sched.description
+            description: sched.description,
+            id: sched.id
           }
         })
         dispatch({type: "FETCHED_SCHEDULES", payload: withCUID})
@@ -30,19 +31,25 @@ export function createSchedule(schedule){
     })
     api().schedule.postNew(schedule)
       .then(json => {
-        console.log(json);
         dispatch({type: "ADD_ID_TO_NEW_SCHEDULE", payload: json.id})
       })
   }
 }
 
 export function patchSchedule(schedule){
-  return function (dispatch){
-    console.log(schedule);
+  return function(dispatch){
+    api().schedule.patch(schedule)
     dispatch({
       type: "PATCH_SCHEDULE",
       payload: schedule
     })
+  }
+}
+
+export function destroySchedule(schedule){
+  return function(dispatch){
+    api().schedule.destroy(schedule)
+    dispatch({type: "DESTROY_SCHEDULE", payload: schedule.cuid})
   }
 }
 

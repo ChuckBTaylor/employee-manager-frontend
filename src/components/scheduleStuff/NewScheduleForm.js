@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createSchedule, patchSchedule } from '../../actions/schedule'
+import { createSchedule, patchSchedule, destroySchedule } from '../../actions/schedule'
 import { formatMoment, addToMoment } from '../../helpers/momentHelper'
 import { findByCUID } from '../../helpers/generalHelpers';
 
@@ -18,7 +18,7 @@ class NewScheduleForm extends Component{
     startTime: this.props.isModal ? this.props.start.slice(11,19) : "09:00",
     endTime: this.props.isModal ? this.props.end.slice(11,19) : "17:00",
     allDay: false,
-    description: ""
+    description: this.props.isModal ? this.props.description : ""
   }
 
   addSomeDate = (amount, type) => {
@@ -73,8 +73,14 @@ class NewScheduleForm extends Component{
     this.setState({endDate: ev.target.value})
   }
 
-  handleDelete = ev => {
+  handleDescriptionChange = ev => {
+    this.setState({description: ev.target.value})
+  }
 
+  handleDelete = ev => {
+    const employeeID = findByCUID(this.props.employees, this.props.selectedEmployee).id
+    this.props.destroySchedule({cuid: this.props.cuid, id: this.props.id, employeeID: employeeID})
+    this.props.onAddSchedule()
   }
 
   handleSubmit = ev => {
@@ -84,17 +90,18 @@ class NewScheduleForm extends Component{
       this.props.patchSchedule({
         start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)),
         end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)),
-        title: "test",
+        title: this.state.description,
         employeeID: employee.id,
         employeeCUID: employee.cuid,
         description: this.state.description,
-        cuid: this.props.cuid
+        cuid: this.props.cuid,
+        id: this.props.id
       })
     } else {
       this.props.createSchedule({
         start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)),
         end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)),
-        title: "test",
+        title: this.state.description,
         employeeID: employee.id,
         employeeCUID: employee.cuid,
         description: this.state.description
@@ -103,6 +110,7 @@ class NewScheduleForm extends Component{
     if(this.props.isModal){
       this.props.onAddSchedule()
     }
+    this.setState({description: ""})
   }
 
   componentDidMount = () => {
@@ -124,7 +132,6 @@ class NewScheduleForm extends Component{
   render(){
     const employeeOptions = this.props.employees.map(employee => (<option data-color={employee.scheduleColor} key={employee.cuid} value={employee.cuid} >{employee.name}</option>))
     const employee = findByCUID(this.props.employees, this.props.selectedEmployee)
-    console.log("Form props", this.props);
     return(
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -134,6 +141,9 @@ class NewScheduleForm extends Component{
           <label htmlFor="">End Date and Time</label>
           <input type='date' value={this.state.endDate} min={this.state.startDate} onChange={this.handleEndDateChange} />
           <input type="time" value={this.state.endTime} onChange={this.handleEndTimeChange} />
+          <br />
+          <label htmlFor="">Description: </label>
+          <input type="text" value={this.state.description} onChange={this.handleDescriptionChange} />
           <br />
           <select className="ui search dropdown" value={this.props.selectedEmployee} onChange={this.props.onSelectEmployee} >
             {employeeOptions}
@@ -163,7 +173,8 @@ NewScheduleForm.defaultProps = {
   end: "",
   selectedEmployee: "",
   isEdit: false,
-  cuid: ""
+  cuid: "",
+  id: 0
 }
 
 const mapStateToProps = state => {
@@ -173,7 +184,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createSchedule, patchSchedule }, dispatch)
+  return bindActionCreators({ createSchedule, patchSchedule, destroySchedule }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewScheduleForm)

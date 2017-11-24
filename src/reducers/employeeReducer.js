@@ -2,6 +2,7 @@ import cuid from 'cuid';
 
 export default function employeeReducer(state = {
   list: [],
+  selectedEmployee: {},
   fetchingEmployees: false,
   didFetch: false
 }, action){
@@ -28,6 +29,8 @@ export default function employeeReducer(state = {
       }
       return state
 
+    case "SELECT_EMPLOYEE":
+      return {...state, selectedEmployee: action.payload}
     default:
       return state
   }

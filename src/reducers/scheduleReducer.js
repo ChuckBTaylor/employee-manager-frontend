@@ -30,9 +30,14 @@ export default function scheduleReducer(state = {
       if(!state.list[state.list.length - 1].id){
         const createdWithID = state.list[state.list.length - 1]
         createdWithID.id = action.payload
-        return {...state, list: [...state.list.slice(0, -1), createdWithID]}
+        return {...state, list: [...state.list.slice(0, -1), createdWithID]};
       }
-      return state
+      return state;
+
+    case "DESTROY_SCHEDULE":
+      const schedulesWithout = state.list.filter(sched => sched.cuid !== action.payload)
+      return {...state, list: [...schedulesWithout]};
+
     default:
       return state
   }

@@ -10,8 +10,6 @@ export function fetchEmployees(){
   }
 }
 
-
-
 export function createEmployee(employee){
   return function(dispatch){
     dispatch({
@@ -24,6 +22,13 @@ export function createEmployee(employee){
         dispatch({type: "ADD_ID_TO_NEW_EMPLOYEE", payload: json.id})
       })
 
+  }
+}
+
+export function selectEmployee(employee){
+  return{
+    type: "SELECT_EMPLOYEE",
+    payload: employee
   }
 }
 

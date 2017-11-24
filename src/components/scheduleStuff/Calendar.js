@@ -17,7 +17,9 @@ class Calendar extends Component{
     selectedEnd: "",
     filteredEmployee: "",
     isEdit: false,
-    selectedCUID: ""
+    selectedCUID: "",
+    selectedID: 0,
+    selectedDescription: ""
   }
 
   handleFilterChange = ev => {
@@ -30,25 +32,30 @@ class Calendar extends Component{
   }
 
   onModalClose = () => {
-    this.setState({modalOpen: false, selectedStart: "", selectedEnd: "", isEdit: false, selectedCUID: ""})
+    this.setState({modalOpen: false, selectedStart: "", selectedEnd: "", isEdit: false, selectedCUID: "", selectedID: 0, selectedDescription: ""})
   }
 
   getScheduleProps = ev => {
     const color = findByCUID(this.props.employees, ev.employeeCUID).scheduleColor
-    return{style: {backgroundColor: color}, description: "Hello!"}
+    return{style: {backgroundColor: color}, title: ev.description}
   }
 
   handleSelectSchedule = (schedule) => {
     this.props.onSelectEmployee({target: {value: schedule.employeeCUID}})
-    this.setState({modalOpen: true, selectedStart: formatMoment(schedule.start), selectedEnd: formatMoment(schedule.end), selectedEmployee: schedule.selectedEmployee, isEdit: true, selectedCUID: schedule.cuid})
+
+    this.setState({modalOpen: true, selectedStart: formatMoment(schedule.start), selectedEnd: formatMoment(schedule.end), selectedEmployee: schedule.selectedEmployee, isEdit: true, selectedCUID: schedule.cuid, selectedID: schedule.id, selectedDescription: schedule.description})
   }
 
   render(){
+
     const selectOptions = this.props.employees.map(employee => (<option value={employee.cuid} key={employee.cuid + "filter"}>{employee.name}</option>))
+
     const filteredSchedules = this.state.filteredEmployee === "" ? this.props.schedules : this.props.schedules.filter(sched => sched.employeeCUID === this.state.filteredEmployee)
+    const withTitle = filteredSchedules.map(sched => ({...sched, title: sched.description}))
+
     return(
       <div>
-        <NewScheduleModal start={this.state.selectedStart} end={this.state.selectedEnd} onModalClose={this.onModalClose} modalOpen={this.state.modalOpen} selectedEmployee={this.props.selectedEmployee} onSelectEmployee={this.props.onSelectEmployee} isEdit={this.state.isEdit} cuid={this.state.selectedCUID} />
+        <NewScheduleModal start={this.state.selectedStart} end={this.state.selectedEnd} onModalClose={this.onModalClose} modalOpen={this.state.modalOpen} selectedEmployee={this.props.selectedEmployee} onSelectEmployee={this.props.onSelectEmployee} isEdit={this.state.isEdit} cuid={this.state.selectedCUID} id={this.state.selectedID} description={this.state.selectedDescription}/>
         <div>
           <select name="employees" multiple="" className="ui fluid dropdown" onChange={this.handleFilterChange}>
             <option value="">Filter By Employee</option>
@@ -59,7 +66,7 @@ class Calendar extends Component{
         <BigCalendar
           selectable
           {...this.props}
-          events={filteredSchedules}
+          events={withTitle}
           eventPropGetter={this.getScheduleProps}
           timeslots={6}
           step={15}
