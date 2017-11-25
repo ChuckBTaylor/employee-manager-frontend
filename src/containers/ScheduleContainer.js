@@ -25,11 +25,24 @@ class ScheduleContainer extends Component{
     //Abandoned for later(?) Button too close to want a move
   }
 
+  render(){
+    return(
+      <div>
+        <NewScheduleForm selectedEmployee={this.state.selectedEmployee} onSelectEmployee={this.onSelectEmployee} />
+        <br /><br /><br />
+        <Calendar onEmployeeClick={this.onEmployeeClick} selectedEmployee={this.state.selectedEmployee} employees={this.props.employees} onSelectEmployee={this.onSelectEmployee} schedules={this.props.schedules}/>
+      </div>
+    )
+  }
+
   componentDidMount = () => {
-    this.props.fetchEmployees()
-      .then(() => {
-        this.props.fetchSchedules(this.props.employees)
-      })
+    if(!this.props.didFetchEmployees){
+      this.props.fetchEmployees()
+        .then(() => this.props.fetchSchedules(this.props.employees))
+    } else {
+      this.props.didFetchSchedules ? null : this.props.fetchSchedules(this.props.employees)
+    }
+    
     if(this.props.employees.length > 0){
       this.setState({
         selectedEmployee: this.props.employees[0].cuid
@@ -45,22 +58,14 @@ class ScheduleContainer extends Component{
     }
   }
 
-  render(){
-    return(
-      <div>
-        <NewScheduleForm selectedEmployee={this.state.selectedEmployee} onSelectEmployee={this.onSelectEmployee} />
-        <br /><br /><br />
-        <Calendar onEmployeeClick={this.onEmployeeClick} selectedEmployee={this.state.selectedEmployee} employees={this.props.employees} onSelectEmployee={this.onSelectEmployee} schedules={this.props.schedules}/>
-      </div>
-    )
-  }
-
 }
 
 const mapStateToProps = state => {
   return{
     schedules: state.schedules.list,
-    employees: state.employees.list
+    employees: state.employees.list,
+    didFetchEmployees: state.employees.didFetch,
+    didFetchSchedules: state.schedules.didFetch
   }
 }
 

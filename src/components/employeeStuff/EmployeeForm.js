@@ -23,36 +23,52 @@ class EmployeeForm extends Component{
     this.setState({isAdmin: !this.state.isAdmin})
   }
 
+  formOkay = () => {
+    if(this.state.name === "") return false
+    return true
+  }
+
   handleSubmit = ev => {
     ev.preventDefault()
-    if(this.props.isModal){
-      this.props.patchEmployee({...this.state, id: this.props.employee.id, cuid: this.props.employee.cuid})
-      this.props.onModalClose()
+    if(this.formOkay()){
+      if(this.props.isModal){
+        this.props.patchEmployee({...this.state, id: this.props.employee.id, cuid: this.props.employee.cuid})
+        this.props.onModalClose()
+      } else {
+        this.props.createEmployee(this.state)
+        this.props.history.push(`/employees`)
+      }
     } else {
-      this.props.createEmployee(this.state)
-      this.props.history.push(`/employees`)
+      alert("Something is wrong!")
     }
   }
 
   render(){
     console.log(this.props, "props from form");
     return(
-      <form onSubmit={this.handleSubmit}>
-        <label htmlFor="new-employee-name">Employee Name: </label>
-        <input id="new-employee-name" type='text' onChange={this.handleNameChange} value={this.state.name}/>
-        <br />
-        <label htmlFor="new-employee-color">Employee Calendar Color: </label>
-        <input id='new-employee-color' type="color" value={this.state.scheduleColor} onChange={this.handleColorChange} />
-        <br />
-        <p onClick={this.handleAdminChange}>{this.state.isAdmin ? "Is an Admin" : "Not an Admin"}</p>
-        <input type='submit' />
-      </form>
+      <div className='sixteen wide column'>
+        <form onSubmit={this.handleSubmit}>
+          <label htmlFor="new-employee-name">Employee Name: </label>
+          <input id="new-employee-name" type='text' onChange={this.handleNameChange} value={this.state.name}/>
+          <br />
+          <label htmlFor="new-employee-color">Employee Calendar Color: </label>
+          <input id='new-employee-color' type="color" value={this.state.scheduleColor} onChange={this.handleColorChange} />
+          <br />
+          <p onClick={this.handleAdminChange}>{this.state.isAdmin ? "Is an Admin" : "Not an Admin"}</p>
+          <input type='submit' />
+        </form>
+      </div>
     )
   }
 }
 
 EmployeeForm.defaultProps = {
-  isModal: false
+  isModal: false,
+  employee: {
+    name: "",
+    scheduleColor: "#000000",
+    isAdmin: false
+  }
 }
 
 const mapDispatchToProps = dispatch => {

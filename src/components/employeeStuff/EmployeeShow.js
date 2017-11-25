@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 
-const EmployeeShow = (props) => {
+const EmployeeShow = props => {
 
   const handleEditClick = () => {
     props.onEditClick()

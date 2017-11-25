@@ -89,6 +89,42 @@ export default function() {
         })
           .then(res => res.json())
       }
+    },
+
+    product: {
+      fetch: () => {
+        return fetch(`${API_ROOT}/companies/1/products`)
+          .then(res => res.json())
+      },
+
+      post: newProduct => {
+        const body = (({name}) => ({name}))(newProduct)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/products`, {
+          ...railsPost,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      patch: product => {
+        const body = (({name}) => ({name}))(product)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/products/${product.id}`, {
+          ...railsPatch,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      destroy: product => {
+        const json = JSON.stringify({id: product.id})
+        return fetch(`${API_ROOT}/companies/1/products/${product.id}`, {
+          ...railsDestroy,
+          body: json
+        })
+          .then(res => res.json())
+      }
     }
   }
 }

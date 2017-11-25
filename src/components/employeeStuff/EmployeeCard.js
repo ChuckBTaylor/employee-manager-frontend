@@ -8,7 +8,7 @@ const EmployeeCard = (props) => {
 
   return (
   <li onClick={handleClick}>
-    {props.employee.name}
+    {props.employee.name}<i className='circle icon' style={{color: props.employee.scheduleColor}} />
   </li>
   )
 }

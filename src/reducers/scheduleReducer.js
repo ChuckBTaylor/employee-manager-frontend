@@ -23,8 +23,8 @@ export default function scheduleReducer(state = {
       return {...state, fetchingSchedules: false, list: withCUID, didFetch: true};
 
     case "PATCH_SCHEDULE":
-      const filteredSchedules = state.list.filter(sched => sched.cuid !== action.payload.cuid)
-      return {...state, list: [...filteredSchedules, action.payload]};
+      const patchedSchedules = state.list.filter(sched => sched.cuid !== action.payload.cuid)
+      return {...state, list: [...patchedSchedules, action.payload]};
 
     case "DESTROY_SCHEDULE":
       const schedulesWithout = state.list.filter(sched => sched.cuid !== action.payload)

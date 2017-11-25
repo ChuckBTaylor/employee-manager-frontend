@@ -2,6 +2,7 @@ import api from '../services/apiRequests'
 
 export function fetchEmployees(){
   return function(dispatch){
+    console.log("fetching employees");
     dispatch({type: "FETCHING_EMPLOYEES"})
     return api().employee.fetch()
       .then(json => {
@@ -37,7 +38,6 @@ export function patchEmployee(employee){
 export function destroyEmployee(employee){
   return function(dispatch){
     api().employee.destroy(employee)
-      .then(json => console.log(json))
     dispatch({
       type: "DESTROY_EMPLOYEE",
       payload: employee.cuid

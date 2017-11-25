@@ -1,23 +1,23 @@
 import React from 'react';
 import { Modal } from 'semantic-ui-react';
-import EmployeeForm from './EmployeeForm'
+import ProductForm from './ProductForm'
 
 
-const EmployeeModal = props => {
+const ProductModal = props => {
 
 
   return(
     <Modal open={props.modalOpen} onClose={props.onModalClose} className="Modal">
       <Modal.Content>
-        <EmployeeForm isModal={true} onModalClose={props.onModalClose} employee={props.employee} />
+        <ProductForm isModal={true} onModalClose={props.onModalClose} product={props.product} />
       </Modal.Content>
     </Modal>
   )
 }
 
-EmployeeModal.defaultProps = {
+ProductModal.defaultProps = {
 
 }
 
 
-export default EmployeeModal;
+export default ProductModal;
