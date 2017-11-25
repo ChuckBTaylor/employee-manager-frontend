@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createProduct, patchProduct } from '../../actions/product';
+import { createService, patchService } from '../../actions/service';
 
-class ProductForm extends Component{
+class ServiceForm extends Component{
 
   state = {
-    name: this.props.isModal ? this.props.product.name : ""
+    name: this.props.isModal ? this.props.service.name : ""
   }
 
   handleNameChange = ev => {
@@ -16,10 +16,11 @@ class ProductForm extends Component{
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchProduct({...this.state, cuid: this.props.cuid, id: this.props.id})
+      this.props.patchService({...this.state, cuid: this.props.service.cuid, id: this.props.service.id})
+      this.props.onModalClose()
     } else {
-      this.props.createProduct(this.state)
-      this.props.history.push('/products')
+      this.props.createService(this.state)
+      this.props.history.push('/services')
     }
   }
 
@@ -37,15 +38,15 @@ class ProductForm extends Component{
   }
 }
 
-ProductForm.defaultProps = {
+ServiceForm.defaultProps = {
   isModal: false,
-  product: {
+  service: {
     name: ""
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createProduct, patchProduct }, dispatch)
+  return bindActionCreators({ createService, patchService }, dispatch)
 }
 
-export default connect(null, mapDispatchToProps)(ProductForm);
+export default connect(null, mapDispatchToProps)(ServiceForm);

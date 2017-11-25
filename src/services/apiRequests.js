@@ -91,35 +91,71 @@ export default function() {
       }
     },
 
-    product: {
+    service: {
       fetch: () => {
-        return fetch(`${API_ROOT}/companies/1/products`)
+        return fetch(`${API_ROOT}/companies/1/services`)
           .then(res => res.json())
       },
 
-      post: newProduct => {
-        const body = (({name}) => ({name}))(newProduct)
+      post: newService => {
+        const body = (({name}) => ({name}))(newService)
         const json = JSON.stringify({...body})
-        return fetch(`${API_ROOT}/companies/1/products`, {
+        return fetch(`${API_ROOT}/companies/1/services`, {
           ...railsPost,
           body: json
         })
           .then(res => res.json())
       },
 
-      patch: product => {
-        const body = (({name}) => ({name}))(product)
+      patch: service => {
+        const body = (({name}) => ({name}))(service)
         const json = JSON.stringify({...body})
-        return fetch(`${API_ROOT}/companies/1/products/${product.id}`, {
+        return fetch(`${API_ROOT}/companies/1/services/${service.id}`, {
           ...railsPatch,
           body: json
         })
           .then(res => res.json())
       },
 
-      destroy: product => {
-        const json = JSON.stringify({id: product.id})
-        return fetch(`${API_ROOT}/companies/1/products/${product.id}`, {
+      destroy: service => {
+        const json = JSON.stringify({id: service.id})
+        return fetch(`${API_ROOT}/companies/1/services/${service.id}`, {
+          ...railsDestroy,
+          body: json
+        })
+          .then(res => res.json())
+      }
+    },
+
+    client: {
+      fetch: () => {
+        return fetch(`${API_ROOT}/companies/1/clients`)
+          .then(res => res.json())
+      },
+
+      post: newService => {
+        const body = (({name}) => ({name}))(newService)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/clients`, {
+          ...railsPost,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      patch: client => {
+        const body = (({name}) => ({name}))(client)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/clients/${client.id}`, {
+          ...railsPatch,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      destroy: client => {
+        const json = JSON.stringify({id: client.id})
+        return fetch(`${API_ROOT}/companies/1/clients/${client.id}`, {
           ...railsDestroy,
           body: json
         })

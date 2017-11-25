@@ -8,7 +8,8 @@ import { Route } from 'react-router';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import scheduleReducer from './reducers/scheduleReducer';
 import employeeReducer from './reducers/employeeReducer';
-import productReducer from './reducers/productReducer';
+import serviceReducer from './reducers/serviceReducer';
+import clientReducer from './reducers/clientReducer';
 import { Provider } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
@@ -16,7 +17,7 @@ import 'semantic-ui-css/semantic.min.css';
 
 
 
-const rootReducer = combineReducers({schedules: scheduleReducer, employees: employeeReducer, products: productReducer})
+const rootReducer = combineReducers({schedules: scheduleReducer, employees: employeeReducer, services: serviceReducer, clients: clientReducer})
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
 
 

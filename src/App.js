@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import ScheduleContainer from './containers/ScheduleContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
-import ProductContainer from './containers/ProductContainer';
+import ServiceContainer from './containers/ServiceContainer';
+import ClientContainer from './containers/ClientContainer';
 import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
 
@@ -22,8 +23,12 @@ class App extends Component {
     this.props.history.push('/employees')
   }
 
-  handleProductClick = () => {
-    this.props.history.push('/products')
+  handleServiceClick = () => {
+    this.props.history.push('/services')
+  }
+
+  handleClientClick = () => {
+    this.props.history.push('/clients')
   }
 
   render() {
@@ -40,9 +45,13 @@ class App extends Component {
               <Icon name='users' />
               Employees
             </Menu.Item>
-            <Menu.Item name="Products" onClick={this.handleProductClick}>
+            <Menu.Item name="Services" onClick={this.handleServiceClick}>
               <Icon name='archive' />
-              Products
+              Services
+            </Menu.Item>
+            <Menu.Item name='Clients' onClick={this.handleClientClick}>
+              <Icon name='address card' />
+              Clients
             </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher>
@@ -51,7 +60,8 @@ class App extends Component {
               Will have to import Header from semantic UI react*/}
               <Route path='/schedules' component={ScheduleContainer} />
               <Route path='/employees' component={EmployeeContainer} />
-              <Route path='/products' component={ProductContainer} />
+              <Route path='/services' component={ServiceContainer} />
+              <Route path='/clients' component={ClientContainer} />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
