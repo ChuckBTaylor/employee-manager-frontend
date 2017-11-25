@@ -24,7 +24,7 @@ class Calendar extends Component{
 
   handleFilterChange = ev => {
     this.setState({filteredEmployee: ev.target.value})
-    this.props.onSelectEmployeeev
+    this.props.onSelectEmployee(ev)
   }
 
   handleSelect = (selectedInfo) => {
@@ -46,12 +46,18 @@ class Calendar extends Component{
     this.setState({modalOpen: true, selectedStart: formatMoment(schedule.start), selectedEnd: formatMoment(schedule.end), selectedEmployee: schedule.selectedEmployee, isEdit: true, selectedCUID: schedule.cuid, selectedID: schedule.id, selectedDescription: schedule.description})
   }
 
+  handleEmployeeClick = ev => {
+    this.props.onEmployeeClick(ev.target.dataset.cuid)
+  }
+
   render(){
 
     const selectOptions = this.props.employees.map(employee => (<option value={employee.cuid} key={employee.cuid + "filter"}>{employee.name}</option>))
 
     const filteredSchedules = this.state.filteredEmployee === "" ? this.props.schedules : this.props.schedules.filter(sched => sched.employeeCUID === this.state.filteredEmployee)
     const withTitle = filteredSchedules.map(sched => ({...sched, title: sched.description}))
+
+    const employeeColors = this.props.employees.map(emp => {return <div key={emp.id} className="four wide column" onClick={this.handleEmployeeClick} data-cuid={emp.cuid}><i className="circle icon" style={{color: emp.scheduleColor}}></i>{emp.name}</div>})
 
     return(
       <div>
@@ -61,6 +67,9 @@ class Calendar extends Component{
             <option value="">Filter By Employee</option>
             {selectOptions}
           </select>
+        </div>
+        <div className="ui grid">
+        {employeeColors}
         </div>
         <br />
         <BigCalendar

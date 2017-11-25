@@ -1,4 +1,4 @@
-import api from '../helpers/apiRequests'
+import api from '../services/apiRequests'
 
 export function fetchEmployees(){
   return function(dispatch){
@@ -16,12 +16,32 @@ export function createEmployee(employee){
       type: "CREATE_EMPLOYEE",
       payload: employee
     })
-    api().employee.postNew(employee)
+    api().employee.post(employee)
       .then(json => {
-        console.log(json)
         dispatch({type: "ADD_ID_TO_NEW_EMPLOYEE", payload: json.id})
       })
 
+  }
+}
+
+export function patchEmployee(employee){
+  return function(dispatch){
+    api().employee.patch(employee)
+    dispatch({
+      type: "PATCH_EMPLOYEE",
+      payload: employee
+    })
+  }
+}
+
+export function destroyEmployee(employee){
+  return function(dispatch){
+    api().employee.destroy(employee)
+      .then(json => console.log(json))
+    dispatch({
+      type: "DESTROY_EMPLOYEE",
+      payload: employee.cuid
+    })
   }
 }
 

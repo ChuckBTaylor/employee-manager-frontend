@@ -1,5 +1,5 @@
 import cuid from 'cuid'
-import { findByCUID } from '../helpers/generalHelpers'
+// import { findByCUID } from '../helpers/generalHelpers'
 
 export default function scheduleReducer(state = {
   list: [],
@@ -26,6 +26,10 @@ export default function scheduleReducer(state = {
       const filteredSchedules = state.list.filter(sched => sched.cuid !== action.payload.cuid)
       return {...state, list: [...filteredSchedules, action.payload]};
 
+    case "DESTROY_SCHEDULE":
+      const schedulesWithout = state.list.filter(sched => sched.cuid !== action.payload)
+      return {...state, list: [...schedulesWithout]};
+
     case "ADD_ID_TO_NEW_SCHEDULE":
       if(!state.list[state.list.length - 1].id){
         const createdWithID = state.list[state.list.length - 1]
@@ -34,9 +38,11 @@ export default function scheduleReducer(state = {
       }
       return state;
 
-    case "DESTROY_SCHEDULE":
-      const schedulesWithout = state.list.filter(sched => sched.cuid !== action.payload)
-      return {...state, list: [...schedulesWithout]};
+    case "DESTROY_EMPLOYEE":
+      console.log('got here from employee action', state.list, action.payload);
+      const sanitizedSchedules = state.list.filter(sched => sched.employeeCUID !== action.payload)
+      console.log("sanitizedSchedules", sanitizedSchedules);
+      return {...state, list: sanitizedSchedules}
 
     default:
       return state

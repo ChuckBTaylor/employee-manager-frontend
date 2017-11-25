@@ -17,9 +17,25 @@ export default function employeeReducer(state = {
 
     case "FETCHED_EMPLOYEES":
       if(state.didFetch){
-        return state}
-      const withCUID = action.payload.map(employee => ({name: employee.name, scheduleColor: employee.schedule_color, id: employee.id, cuid: cuid()}))
+        return state
+      }
+      const withCUID = action.payload.map(employee => ({name: employee.name, scheduleColor: employee.schedule_color, id: employee.id, cuid: cuid(), isAdmin: employee.is_admin}))
       return {...state, fetchingEmployees: false, list: withCUID, didFetch: true};
+
+    case "PATCH_EMPLOYEE":
+      let index = -1
+      const patchedEmployees = state.list.map((emp, idx) => {
+        if(emp.cuid === action.payload.cuid){
+          index = idx
+          return action.payload
+        }
+        return emp;
+      })
+      return {...state, list: patchedEmployees, selectedEmployee: patchedEmployees[index]};
+
+    case "DESTROY_EMPLOYEE":
+      const filteredEmployees = state.list.filter(emp => emp.cuid !== action.payload)
+      return {...state, list: filteredEmployees, selectedEmployee: filteredEmployees[0] || {}}
 
     case "ADD_ID_TO_NEW_EMPLOYEE":
       if(!state.list[state.list.length - 1].id){
@@ -31,6 +47,7 @@ export default function employeeReducer(state = {
 
     case "SELECT_EMPLOYEE":
       return {...state, selectedEmployee: action.payload}
+
     default:
       return state
   }

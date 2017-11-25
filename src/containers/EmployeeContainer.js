@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import EmployeeList from '../components/employeeStuff/EmployeeList';
-import NewEmployeeForm from '../components/employeeStuff/NewEmployeeForm';
+import EmployeeModal from '../components/employeeStuff/EmployeeModal';
+import EmployeeForm from '../components/employeeStuff/EmployeeForm';
 import EmployeeShow from '../components/employeeStuff/EmployeeShow';
-import { fetchEmployees, createEmployee, selectEmployee } from '../actions/employee';
+import { fetchEmployees, selectEmployee, destroyEmployee } from '../actions/employee';
 import { bindActionCreators } from 'redux';
 import { Route } from 'react-router'
 
@@ -11,17 +12,42 @@ import { Route } from 'react-router'
 
 class EmployeeContainer extends Component{
 
-  handleNewEmployeeClick = ev => {
+  state = {
+    modalOpen: false
+  }
+
+  onEditClick = () => {
+    this.setState({modalOpen: true})
+  }
+
+  onDeleteClick = () => {
+    this.props.destroyEmployee(this.props.selectedEmployee)
+  }
+
+  onModalClose = () => {
+    this.setState({modalOpen: false})
+  }
+
+  handleNewEmployeeClick = () => {
     this.props.history.push(`${this.props.match.path}/new`)
+  }
+
+  hasSelectedEmployee = () => {
+    return !!(Object.keys(this.props.selectedEmployee).length > 0)
   }
 
   render(){
     return(
       <div>
         <Route exact path='/employees' render={() => (<button onClick={this.handleNewEmployeeClick} > Create New Employee</button>)} />
-        <Route path='/employees/new' render={(props) => (<NewEmployeeForm {...props} onCreateEmployee={this.props.createEmployee}/>) } />
-        <Route exact path='/employees' render={props => (<EmployeeShow />)} />
-        <Route exact path='/employees' render={props => (<EmployeeList employees={this.props.employees} />)} />
+        <Route path='/employees/new' render={(props) => (<EmployeeForm {...props} />) } />
+        <div className='ui grid'>
+          <Route exact path='/employees' render={() => (<EmployeeList employees={this.props.employees} onSelectEmployee={this.props.selectEmployee} />)} />
+
+          {this.hasSelectedEmployee() ? (<Route exact path='/employees' render={() => (<EmployeeShow employee={this.props.selectedEmployee} onDeleteClick={this.onDeleteClick} onEditClick={this.onEditClick} />)} />) : null}
+
+          <EmployeeModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} employee={this.props.selectedEmployee} />
+        </div>
       </div>
     )
   }
@@ -39,7 +65,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchEmployees, createEmployee, selectEmployee }, dispatch)
+  return bindActionCreators({ fetchEmployees, selectEmployee, destroyEmployee }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmployeeContainer);

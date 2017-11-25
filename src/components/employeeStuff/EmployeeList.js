@@ -1,11 +1,14 @@
 import React from 'react';
+import EmployeeCard from './EmployeeCard';
 
 const EmployeeList = (props) => {
-  const employeeList = props.employees.map(employee => (<li key={employee.cuid}>{employee.name}</li>))
+  const employeeList = props.employees.map(employee => <EmployeeCard employee={employee} onSelectEmployee={props.onSelectEmployee} key={employee.cuid} />)
   return (
-  <ul>
-    {employeeList}
-  </ul>
+  <div className='four wide column'>
+    <ul>
+      {employeeList}
+    </ul>
+  </div>
   )
 }
 

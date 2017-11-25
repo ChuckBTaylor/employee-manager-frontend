@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Calendar from '../components/scheduleStuff/Calendar';
 import NewScheduleForm from '../components/scheduleStuff/NewScheduleForm';
 import { bindActionCreators } from 'redux';
-import { fetchEmployees } from '../actions/employee'
+import { fetchEmployees, selectEmployee } from '../actions/employee'
 import { fetchSchedules } from '../actions/schedule'
 
 
@@ -20,7 +20,16 @@ class ScheduleContainer extends Component{
     }
   }
 
+  onEmployeeClick = (employeeCUID) => {
+    // console.log(employeeCUID, 'from Container');
+    //Abandoned for later(?) Button too close to want a move
+  }
+
   componentDidMount = () => {
+    this.props.fetchEmployees()
+      .then(() => {
+        this.props.fetchSchedules(this.props.employees)
+      })
     if(this.props.employees.length > 0){
       this.setState({
         selectedEmployee: this.props.employees[0].cuid
@@ -41,17 +50,11 @@ class ScheduleContainer extends Component{
       <div>
         <NewScheduleForm selectedEmployee={this.state.selectedEmployee} onSelectEmployee={this.onSelectEmployee} />
         <br /><br /><br />
-        <Calendar onAddSchedule={this.onAddSchedule} selectedEmployee={this.state.selectedEmployee} employees={this.props.employees} onSelectEmployee={this.onSelectEmployee} schedules={this.props.schedules}/>
+        <Calendar onEmployeeClick={this.onEmployeeClick} selectedEmployee={this.state.selectedEmployee} employees={this.props.employees} onSelectEmployee={this.onSelectEmployee} schedules={this.props.schedules}/>
       </div>
     )
   }
 
-  componentDidMount = () => {
-    this.props.fetchEmployees()
-      .then(() => {
-        this.props.fetchSchedules(this.props.employees)
-      })
-  }
 }
 
 const mapStateToProps = state => {
@@ -62,7 +65,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchEmployees, fetchSchedules }, dispatch)
+  return bindActionCreators({ fetchEmployees, fetchSchedules, selectEmployee }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScheduleContainer);

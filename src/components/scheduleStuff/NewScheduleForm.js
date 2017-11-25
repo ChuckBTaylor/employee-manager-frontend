@@ -133,7 +133,7 @@ class NewScheduleForm extends Component{
     const employeeOptions = this.props.employees.map(employee => (<option data-color={employee.scheduleColor} key={employee.cuid} value={employee.cuid} >{employee.name}</option>))
     const employee = findByCUID(this.props.employees, this.props.selectedEmployee)
     return(
-      <div>
+      <div className="new-schedule form">
         <form onSubmit={this.handleSubmit}>
           <label htmlFor="">Start Date and Time</label>
           <input type="date" value={this.state.startDate} onChange={this.handleStartDateChange} />
@@ -148,7 +148,7 @@ class NewScheduleForm extends Component{
           <select className="ui search dropdown" value={this.props.selectedEmployee} onChange={this.props.onSelectEmployee} >
             {employeeOptions}
           </select>
-          Employee Color: <i style={{color: employee ? employee.scheduleColor : "#000000"}} className="circle icon"></i>
+          Schedule Color: <i style={{color: employee ? employee.scheduleColor : "#000000"}} className="circle icon"></i>
           <br />
           <input type='submit' value='submit' />
         </form>

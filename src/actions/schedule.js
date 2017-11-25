@@ -1,5 +1,5 @@
-import api from '../helpers/apiRequests'
-import { findByID, findByCUID } from '../helpers/generalHelpers';
+import api from '../services/apiRequests'
+import { findByID } from '../helpers/generalHelpers';
 import { formatMoment } from '../helpers/momentHelper';
 
 
@@ -29,7 +29,7 @@ export function createSchedule(schedule){
       type: "CREATE_SCHEDULE",
       payload: schedule
     })
-    api().schedule.postNew(schedule)
+    api().schedule.post(schedule)
       .then(json => {
         dispatch({type: "ADD_ID_TO_NEW_SCHEDULE", payload: json.id})
       })
@@ -49,7 +49,10 @@ export function patchSchedule(schedule){
 export function destroySchedule(schedule){
   return function(dispatch){
     api().schedule.destroy(schedule)
-    dispatch({type: "DESTROY_SCHEDULE", payload: schedule.cuid})
+    dispatch({
+      type: "DESTROY_SCHEDULE",
+      payload: schedule.cuid
+    })
   }
 }
 
