@@ -8,10 +8,6 @@ export default function clientReducer(state = {
 }, action){
   switch(action.type){
 
-    case "CREATE_CLIENT":
-      const createWithCUID = {...action.payload, cuid: cuid()}
-      return {...state, list: [...state.list, createWithCUID]};
-
     case "FETCHING_CLIENTS":
       return state.didFetch ? state : {...state, fetchingClients: true};
 
@@ -19,8 +15,12 @@ export default function clientReducer(state = {
       if(state.didFetch){
         return state;
       }
-      const withCUID = action.payload.map(client => ({name: client.name, scheduleColor: client.schedule_color, id: client.id, cuid: cuid(), isAdmin: client.is_admin}))
+      const withCUID = action.payload.map(client => ({name: client.name, id: client.id, cuid: cuid()}))
       return {...state, fetchingClients: false, list: withCUID, didFetch: true};
+
+    case "CREATE_CLIENT":
+      const createWithCUID = {...action.payload, cuid: cuid()}
+      return {...state, list: [...state.list, createWithCUID]};
 
     case "PATCH_CLIENT":
       let index = -1

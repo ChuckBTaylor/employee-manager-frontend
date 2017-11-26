@@ -10,6 +10,7 @@ import scheduleReducer from './reducers/scheduleReducer';
 import employeeReducer from './reducers/employeeReducer';
 import serviceReducer from './reducers/serviceReducer';
 import clientReducer from './reducers/clientReducer';
+import projectReducer from './reducers/projectReducer';
 import { Provider } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
@@ -17,7 +18,7 @@ import 'semantic-ui-css/semantic.min.css';
 
 
 
-const rootReducer = combineReducers({schedules: scheduleReducer, employees: employeeReducer, services: serviceReducer, clients: clientReducer})
+const rootReducer = combineReducers({schedules: scheduleReducer, employees: employeeReducer, services: serviceReducer, clients: clientReducer, projects: projectReducer})
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
 
 

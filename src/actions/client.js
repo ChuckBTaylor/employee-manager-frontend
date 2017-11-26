@@ -3,7 +3,7 @@ import api from '../services/apiRequests'
 export function fetchClients(){
   return function(dispatch){
     dispatch({type: "FETCHING_CLIENTS"})
-    api().client.fetch()
+    return api().client.fetch()
       .then(json => dispatch({type: "FETCHED_CLIENTS", payload: json}))
   }
 }

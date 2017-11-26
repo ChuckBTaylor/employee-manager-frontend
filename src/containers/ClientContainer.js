@@ -6,6 +6,7 @@ import ClientShow from '../components/clientStuff/ClientShow';
 import ClientModal from '../components/clientStuff/ClientModal';
 import ClientForm from '../components/clientStuff/ClientForm';
 import { fetchClients, selectClient, destroyClient } from '../actions/client';
+import { fetchProjects, selectProject } from '../actions/project';
 import { Route } from 'react-router';
 
 class ClientContainer extends Component{
@@ -16,6 +17,15 @@ class ClientContainer extends Component{
 
   handleNewClientClick = () => {
     this.props.history.push(`${this.props.match.path}/new`)
+  }
+
+  onSelectProject = project => {
+    this.props.selectProject(project)
+  }
+
+  onNewProjectClick = client => {
+    console.log(this.props, "from Client Container");
+    this.props.history.push('/projects/new')
   }
 
   onEditClick = () => {
@@ -43,7 +53,7 @@ class ClientContainer extends Component{
 
           <ClientList onSelectClient={this.props.selectClient} clients={this.props.clients} />
 
-          {this.hasSelectedClient() > 0 ? (<Route exact path='/clients' render={() => <ClientShow client={this.props.selectedClient} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} />} />) : null}
+          {this.hasSelectedClient() > 0 ? (<Route exact path='/clients' render={() => <ClientShow client={this.props.selectedClient} projects={this.props.clientProjects} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectProject={this.onSelectProject} onNewProjectClick={this.onNewProjectClick} />} />) : null}
         </div>
 
         <ClientModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} client={this.props.selectedClient} />
@@ -52,20 +62,26 @@ class ClientContainer extends Component{
   }
 
   componentDidMount = () => {
-    this.props.didFetchClients ? null : this.props.fetchClients()
+    if(this.props.didFetchClients){
+      this.props.didFetchProjects ? null : this.props.fetchProjects(this.props.clients)
+    } else {
+      this.props.fetchClients()
+        .then(() => this.props.fetchProjects(this.props.clients))
+    }
   }
 }
 
 const mapStateToProps = state => {
   return {
     clients: state.clients.list,
+    clientProjects: state.projects.clientProjects,
     didFetchClients: state.clients.didFetch,
     selectedClient: state.clients.selectedClient
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchClients, selectClient, destroyClient }, dispatch)
+  return bindActionCreators({ fetchClients, selectClient, destroyClient, fetchProjects, selectProject }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClientContainer);

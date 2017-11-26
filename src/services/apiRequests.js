@@ -133,8 +133,8 @@ export default function() {
           .then(res => res.json())
       },
 
-      post: newService => {
-        const body = (({name}) => ({name}))(newService)
+      post: newClient => {
+        const body = (({name}) => ({name}))(newClient)
         const json = JSON.stringify({...body})
         return fetch(`${API_ROOT}/companies/1/clients`, {
           ...railsPost,
@@ -156,6 +156,42 @@ export default function() {
       destroy: client => {
         const json = JSON.stringify({id: client.id})
         return fetch(`${API_ROOT}/companies/1/clients/${client.id}`, {
+          ...railsDestroy,
+          body: json
+        })
+          .then(res => res.json())
+      }
+    },
+
+    project: {
+      fetch: () => {
+        return fetch(`${API_ROOT}/companies/1/all_projects`)
+          .then(res => res.json())
+      },
+
+      post: newProject => {
+        const body = (({name}) => ({name}))(newProject)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/clients/${newProject.clientID}/projects`, {
+          ...railsPost,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      patch: project => {
+        const body = (({name}) => ({name}))(project)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/clients/${project.clientID}/projects/${project.id}`, {
+          ...railsPatch,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      destroy: project => {
+        const json = JSON.stringify({id: project.id})
+        return fetch(`${API_ROOT}/companies/1/clients/${project.clientID}`, {
           ...railsDestroy,
           body: json
         })

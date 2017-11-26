@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
+import ProjectList from '../projectStuff/ProjectList';
 
 const ClientShow = props => {
 
@@ -11,9 +12,16 @@ const ClientShow = props => {
     props.onDeleteClick()
   }
 
+  const handleNewProjectClick = () => {
+    props.onNewProjectClick(props.client)
+  }
+
   return (
   <div className='six wide column'>
     {props.client.name}<br />
+    Current Projects:
+    {props.projects.length > 0 ? <ProjectList onSelectProject={props.onSelectProject}  projects={props.projects} /> : "No Current Projects"}
+    <Button onClick={handleNewProjectClick}>New Project </Button>
     <Button onClick={handleEditClick}>Edit {props.name}</Button>
     <Button onClick={handleDeleteClick}>Delete {props.name}</Button>
   </div>
@@ -21,7 +29,10 @@ const ClientShow = props => {
 }
 
 ClientShow.defaultProps = {
-
+  client: {
+    name: "",
+    projects: []
+  }
 }
 
 export default ClientShow

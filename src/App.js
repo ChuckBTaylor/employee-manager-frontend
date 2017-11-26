@@ -4,6 +4,7 @@ import ScheduleContainer from './containers/ScheduleContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
 import ServiceContainer from './containers/ServiceContainer';
 import ClientContainer from './containers/ClientContainer';
+import ProjectContainer from './containers/ProjectContainer';
 import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
 
@@ -31,6 +32,10 @@ class App extends Component {
     this.props.history.push('/clients')
   }
 
+  handleProjectClick = () => {
+    this.props.history.push('/projects')
+  }
+
   render() {
     return (
       <div>
@@ -53,6 +58,10 @@ class App extends Component {
               <Icon name='address card' />
               Clients
             </Menu.Item>
+            <Menu.Item name='Projects' onClick={this.handleProjectClick}>
+              <Icon name='tasks' />
+              Projects
+            </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher>
             <Segment basic>
@@ -62,6 +71,7 @@ class App extends Component {
               <Route path='/employees' component={EmployeeContainer} />
               <Route path='/services' component={ServiceContainer} />
               <Route path='/clients' component={ClientContainer} />
+              <Route path='/projects' component={ProjectContainer} />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
