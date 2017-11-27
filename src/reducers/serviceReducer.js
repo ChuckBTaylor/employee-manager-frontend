@@ -8,18 +8,18 @@ export default function serviceReducer(state = {
 }, action){
   switch(action.type){
 
-    case "FETCHING_PRODUCTS":
+    case "FETCHING_SERVICES":
       return state.didFetch ? state : {...state, fetchingServices: true};
 
-    case "FETCHED_PRODUCTS":
+    case "FETCHED_SERVICES":
       const withCUID = action.payload.map(service => ({name: service.name, id: service.id, cuid: cuid()}))
       return {...state, list: withCUID, fetchingServices: false, didFetch: true};
 
-    case "CREATE_PRODUCT":
+    case "CREATE_SERVICE":
       const createWithCUID = {...action.payload, cuid: cuid()}
       return {...state, list: [...state.list, createWithCUID]};
 
-    case "ADD_ID_TO_NEW_PRODUCT":
+    case "ADD_ID_TO_NEW_SERVICE":
       if(!state.list[state.list.length - 1].id){
         const createdWithID = state.list[state.list.length - 1]
         createdWithID.id = action.payload
@@ -27,7 +27,7 @@ export default function serviceReducer(state = {
       }
       return state;
 
-    case "PATCH_PRODUCT":
+    case "PATCH_SERVICE":
       let index = -1
       const patchedServices = state.list.map((service, idx) => {
         if(action.payload.cuid === service.cuid){
@@ -38,11 +38,11 @@ export default function serviceReducer(state = {
       })
       return {...state, list: patchedServices, selectedService: patchedServices[index]};
 
-    case "DESTROY_PRODUCT":
+    case "DESTROY_SERVICE":
       const filteredServices = state.list.filter(service => service.cuid !== action.payload)
       return {...state, list: filteredServices, selectedService: {}};
 
-    case "SELECT_PRODUCT":
+    case "SELECT_SERVICE":
       return {...state, selectedService: action.payload};
 
     default:

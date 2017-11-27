@@ -5,7 +5,7 @@ import { findByID } from '../helpers/generalHelpers';
 export function fetchProjects(clientList){
   return function(dispatch){
     dispatch({type: "FETCHING_PROJECTS"})
-    api().project.fetch()
+    return api().project.fetch()
       .then(json => {
         const withClientCUID = json.map(project => {
           const client = findByID(clientList, project.client_id)

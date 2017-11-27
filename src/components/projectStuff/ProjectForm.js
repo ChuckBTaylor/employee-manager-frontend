@@ -31,6 +31,7 @@ class ProjectForm extends Component{
   }
 
   render(){
+    console.log(this.props);
     const clientOptions = this.props.clients.map((client, idx) => (<option key={idx} value={client.cuid} >{client.name}</option>))
     return(
       <div className="sixteen wide column">
@@ -39,8 +40,8 @@ class ProjectForm extends Component{
           <input type='text' onChange={this.handleNameChange} value={this.state.name}/>
           <br />
           <label htmlFor="select-client">Select a client</label>
-          <select required id='select-client' onChange={this.handleClientChange}>
-            <option value='' disabled selected >--Choose a Client--</option>
+          <select required id='select-client' value={this.state.clientCUID} onChange={this.handleClientChange}>
+            <option value='' disabled >--Choose a Client--</option>
             {clientOptions}
           </select>
           <input type='submit' />
@@ -56,7 +57,8 @@ ProjectForm.defaultProps = {
   project: {
     name: ""
   },
-  isFromClient: false
+  isFromClient: false,
+  clients: []
 }
 
 const mapDispatchToProps = dispatch => {

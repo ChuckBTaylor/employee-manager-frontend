@@ -5,6 +5,7 @@ import EmployeeContainer from './containers/EmployeeContainer';
 import ServiceContainer from './containers/ServiceContainer';
 import ClientContainer from './containers/ClientContainer';
 import ProjectContainer from './containers/ProjectContainer';
+import PieceContainer from './containers/PieceContainer';
 import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
 
@@ -36,6 +37,14 @@ class App extends Component {
     this.props.history.push('/projects')
   }
 
+  handlePieceClick = () => {
+    this.props.history.push('/pieces')
+  }
+
+  handleSummaryClick = () => {
+    this.props.history.push('/summary')
+  }
+
   render() {
     return (
       <div>
@@ -62,6 +71,14 @@ class App extends Component {
               <Icon name='tasks' />
               Projects
             </Menu.Item>
+            <Menu.Item name='Pieces' onClick={this.handlePieceClick}>
+              <Icon name='database' />
+              Pieces
+            </Menu.Item>
+            <Menu.Item name='Summary' onClick={this.handleSummaryClick}>
+              <Icon name='group object' />
+              Summary
+            </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher>
             <Segment basic>
@@ -72,6 +89,7 @@ class App extends Component {
               <Route path='/services' component={ServiceContainer} />
               <Route path='/clients' component={ClientContainer} />
               <Route path='/projects' component={ProjectContainer} />
+              <Route path='/pieces' component={PieceContainer} />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>

@@ -5,11 +5,11 @@ import ProjectForm from './ProjectForm'
 
 const ProjectModal = props => {
 
-
+  console.log(props, 'from project Modal');
   return(
     <Modal open={props.modalOpen} onClose={props.onModalClose} className="Modal">
       <Modal.Content>
-        <ProjectForm isModal={true} onModalClose={props.onModalClose} Project={props.Project} />
+        <ProjectForm isModal={true} onModalClose={props.onModalClose} project={props.project} clients={props.clients} clientCUID={props.clientCUID}/>
       </Modal.Content>
     </Modal>
   )

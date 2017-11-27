@@ -1,4 +1,5 @@
 import cuid from 'cuid';
+import { findByCUID } from '../helpers/generalHelpers'
 
 export default function clientReducer(state = {
   list: [],
@@ -47,6 +48,9 @@ export default function clientReducer(state = {
 
     case "SELECT_CLIENT":
       return {...state, selectedClient: action.payload}
+
+    case "SELECT_PROJECT":
+      return {...state, selectedClient: findByCUID(state.list, action.payload.clientCUID)};
 
     default:
       return state;

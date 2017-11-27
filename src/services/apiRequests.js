@@ -197,6 +197,42 @@ export default function() {
         })
           .then(res => res.json())
       }
+    },
+
+    piece: {
+      fetch: () => {
+        return fetch(`${API_ROOT}/companies/1/all_pieces`)
+          .then(res => res.json())
+      },
+
+      post: newPiece => {
+        const body = (({name}) => ({name}))(newPiece)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/clients/${newPiece.clientID}/projects/${newPiece.projectID}/pieces`, {
+          ...railsPost,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      patch: piece => {
+        const body = (({name}) => ({name}))(piece)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/clients/${piece.clientID}/projects/${piece.projectID}/pieces/${piece.id}`, {
+          ...railsPatch,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      destroy: piece => {
+        const json = JSON.stringify({id: piece.id})
+        return fetch(`${API_ROOT}/companies/1/clients/${piece.clientID}/projects/${piece.projectID}/pieces/${piece.id}`, {
+          ...railsDestroy,
+          body: json
+        })
+          .then(res => res.json())
+      }
     }
   }
 }

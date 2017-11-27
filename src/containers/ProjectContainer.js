@@ -5,6 +5,7 @@ import ProjectList from '../components/projectStuff/ProjectList';
 import ProjectShow from '../components/projectStuff/ProjectShow';
 import ProjectModal from '../components/projectStuff/ProjectModal';
 import ProjectForm from '../components/projectStuff/ProjectForm';
+import { fetchPieces, selectPiece } from '../actions/piece'
 import { fetchProjects, selectProject, destroyProject } from '../actions/project';
 import { fetchClients } from '../actions/client';
 import { Route } from 'react-router';
@@ -14,6 +15,10 @@ class ProjectContainer extends Component{
   state = {
     modalOpen: false,
     filteredClient: ""
+  }
+
+  onSelectPiece = piece => {
+    this.props.selectPiece(piece)
   }
 
   handleFilterChange = ev => {
@@ -45,6 +50,8 @@ class ProjectContainer extends Component{
   }
 
   render(){
+
+    console.log(this.props.selectedProject);
     const clientOptions = this.props.clients.map((client, idx) => (<option value={client.cuid} key={idx*10}>{client.name}</option>))
 
     const filteredProjects = (this.state.filteredClient === "") ? (this.props.projects) : (this.props.projects.filter(project => project.clientCUID === this.state.filteredClient))
@@ -57,25 +64,32 @@ class ProjectContainer extends Component{
 
           <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
 
-          {this.hasSelectedProject() > 0 ? (<Route exact path='/projects' render={() => <ProjectShow project={this.props.selectedProject} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} />} />) : null}
+          {this.hasSelectedProject() > 0 ? (<Route exact path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} />} />) : null}
         </div>
+        <br />
         <label htmlFor="client-project-filter">Filter Projects By Client: </label>
-        <select id='client-project-filter' onChange={this.handleFilterChange}>
-          <option value="" selected>All</option>
+        <select id='client-project-filter' onChange={this.handleFilterChange} value={this.state.filteredClient} >
+          <option value="">All</option>
           {clientOptions}
         </select>
-
-        <ProjectModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} project={this.props.selectedProject} />
+        <br />
+        <ProjectModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} project={this.props.selectedProject} clients={this.props.clients} />
       </div>
     )
   }
 
   componentDidMount = () => {
     if(this.props.didFetchClients){
-      this.props.didFetchProjects ? null : this.props.fetchProjects()
+      if(this.props.didFetchProjects){
+        this.props.didFetchPieces ? null : this.props.fetchPieces(this.props.projects)
+      } else {
+        this.props.fetchProjects()
+          .then(() => this.props.fetchPieces(this.props.projects))
+      }
     } else {
       this.props.fetchClients()
         .then(() => this.props.fetchProjects(this.props.clients))
+          .then(() => this.props.fetchPieces(this.props.projects))
     }
   }
 }
@@ -84,6 +98,7 @@ const mapStateToProps = state => {
   return {
     projects: state.projects.list,
     clients: state.clients.list,
+    projectPieces: state.pieces.projectPieces,
     selectedProject: state.projects.selectedProject,
     selectedClient: state.clients.selectedClient,
     didFetchClients: state.clients.didFetch,
@@ -92,7 +107,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchClients, fetchProjects, selectProject, destroyProject }, dispatch)
+  return bindActionCreators({ fetchClients, fetchProjects, selectProject, destroyProject, fetchPieces, selectPiece }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectContainer);
