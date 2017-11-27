@@ -1,5 +1,3 @@
-import cuid from 'cuid';
-
 export default function pieceReducer(state = {
   list: [],
   projectPieces: [],
@@ -13,12 +11,12 @@ export default function pieceReducer(state = {
       return state.didFetch ? state : {...state, fetchingPieces: true};
 
     case "FETCHED_PIECES":
-      const withCUID = action.payload.map(piece => ({...piece, cuid: cuid()}))
-      return {...state, list: withCUID, fetchingPieces: false, didFetch: true};
+      const withID = action.payload.map(piece => ({...piece}))
+      return {...state, list: withID, fetchingPieces: false, didFetch: true};
 
     case "CREATE_PIECE":
-      const createWithCUID = {...action.payload, cuid: cuid()}
-      return {...state, list: [...state.list, createWithCUID]};
+      const createWithID = {...action.payload}
+      return {...state, list: [...state.list, createWithID]};
 
     case "ADD_ID_TO_NEW_PIECE":
       if(!state.list[state.list.length - 1].id){
@@ -31,7 +29,7 @@ export default function pieceReducer(state = {
     case "PATCH_PIECE":
       let index = -1
       const patchedPieces = state.list.map((piece, idx) => {
-        if(action.payload.cuid === piece.cuid){
+        if(action.payload.id === piece.id){
           index = idx
           return action.payload
         }
@@ -40,15 +38,21 @@ export default function pieceReducer(state = {
       return {...state, list: patchedPieces, selectedPiece: patchedPieces[index]};
 
     case "DESTROY_PIECE":
-      const filteredPieces = state.list.filter(piece => piece.cuid !== action.payload)
+      const filteredPieces = state.list.filter(piece => piece.id !== action.payload)
       return {...state, list: filteredPieces, selectedPiece: {}};
 
-    case "SELECT_PROJECT": //Yes, SELECT_PROJECT. When a new project is selected, the right pieces are loaded
-      const projectPieces = state.list.filter(piece => piece.projectCUID === action.payload.cuid)
-      return {...state, projectPieces: projectPieces};
+    case(!!action.type.match("SELECT") ? action.type : null):
+      const projectPieces = state.list.filter(piece => piece.projectID === action.payload.projectID)
+      switch(action.type){
+        case "SELECT_PROJECT": //Yes, SELECT_PROJECT. A new project is selected, the right pieces are loaded
+        return {...state, projectPieces: projectPieces};
 
-    case "SELECT_PIECE":
-      return {...state, selectedPiece: action.payload};
+        case "SELECT_PIECE":
+        return {...state, selectedPiece: action.payload, projectPieces};
+
+        default:
+          return state;
+      }
 
     default:
       return state;

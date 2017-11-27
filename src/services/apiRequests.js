@@ -1,5 +1,3 @@
-// import { findByCUID } from './generalHelpers'
-
 export default function() {
 
   const { API_ROOT } = require('./api-config')

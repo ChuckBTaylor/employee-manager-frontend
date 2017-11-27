@@ -9,7 +9,7 @@ const ProjectModal = props => {
   return(
     <Modal open={props.modalOpen} onClose={props.onModalClose} className="Modal">
       <Modal.Content>
-        <ProjectForm isModal={true} onModalClose={props.onModalClose} project={props.project} clients={props.clients} clientCUID={props.clientCUID}/>
+        <ProjectForm isModal={true} onModalClose={props.onModalClose} project={props.project} clients={props.clients} clientID={props.clientID}/>
       </Modal.Content>
     </Modal>
   )

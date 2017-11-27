@@ -11,17 +11,17 @@ import { fetchSchedules } from '../actions/schedule'
 class ScheduleContainer extends Component{
 
   state = {
-    selectedEmployee: ""
+    selectedEmployee: -1
   }
 
   onSelectEmployee = ev => {
     if(ev.target.value !== ""){
-      this.setState({selectedEmployee: ev.target.value})
+      this.setState({selectedEmployee: +ev.target.value})
     }
   }
 
-  onEmployeeClick = (employeeCUID) => {
-    // console.log(employeeCUID, 'from Container');
+  onEmployeeClick = employeeID => {
+    // console.log(employeeID, 'from Container');
     //Abandoned for later(?) Button too close to want a move
   }
 
@@ -42,18 +42,18 @@ class ScheduleContainer extends Component{
     } else {
       this.props.didFetchSchedules ? null : this.props.fetchSchedules(this.props.employees)
     }
-    
+
     if(this.props.employees.length > 0){
       this.setState({
-        selectedEmployee: this.props.employees[0].cuid
+        selectedEmployee: this.props.employees[0].id
       })
     }
   }
 
   componentWillReceiveProps = nextProps => {
-    if(nextProps.employees.length > 0 && this.state.selectedEmployee === ""){
+    if(nextProps.employees.length > 0 && this.state.selectedEmployee === -1){
       this.setState({
-        selectedEmployee: nextProps.employees[0].cuid
+        selectedEmployee: nextProps.employees[0].id
       })
     }
   }

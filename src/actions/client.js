@@ -26,13 +26,13 @@ export function patchClient(client){
 export function destroyClient(client){
   return function(dispatch){
     api().client.destroy(client)
-    dispatch({type: "DESTROY_CLIENT", payload: client.cuid})
+    dispatch({type: "DESTROY_CLIENT", payload: client.id})
   }
 }
 
 export function selectClient(client){
   return {
     type: "SELECT_CLIENT",
-    payload: client
+    payload: {...client, clientID: client.id} //The extra clientID for the other reducers
   }
 }

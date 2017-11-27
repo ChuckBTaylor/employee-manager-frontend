@@ -16,7 +16,7 @@ class ServiceForm extends Component{
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchService({...this.state, cuid: this.props.service.cuid, id: this.props.service.id})
+      this.props.patchService({...this.state, id: this.props.service.id})
       this.props.onModalClose()
     } else {
       this.props.createService(this.state)

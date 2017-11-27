@@ -16,7 +16,7 @@ class ClientForm extends Component{
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchClient({...this.state, cuid: this.props.client.cuid, id: this.props.client.id})
+      this.props.patchClient({...this.state, id: this.props.client.id})
       this.props.onModalClose()
     } else {
       this.props.createClient(this.state)

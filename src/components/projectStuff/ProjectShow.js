@@ -13,9 +13,10 @@ const ProjectShow = props => {
   }
 
 
-  const pieces = props.pieces.map(piece => (<li key={piece.cuid}>{piece.name}</li>))
+  const pieces = props.pieces.map(piece => (<li key={piece.id}>{piece.name}</li>))
   return (
   <div className='six wide column'>
+    <h2>{props.client.name}</h2>
     {props.project.name}
     <br />
     {props.pieces.length > 0 ? <PieceList pieces={props.pieces} onSelectPiece={props.onSelectPiece}/> : null}

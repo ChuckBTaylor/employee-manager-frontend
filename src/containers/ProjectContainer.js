@@ -14,7 +14,7 @@ class ProjectContainer extends Component{
 
   state = {
     modalOpen: false,
-    filteredClient: ""
+    filteredClient: -1
   }
 
   onSelectPiece = piece => {
@@ -22,7 +22,7 @@ class ProjectContainer extends Component{
   }
 
   handleFilterChange = ev => {
-    this.setState({filteredClient: ev.target.value})
+    this.setState({filteredClient: +ev.target.value})
   }
 
   handleNewProjectClick = () => {
@@ -51,10 +51,10 @@ class ProjectContainer extends Component{
 
   render(){
 
-    console.log(this.props.selectedProject);
-    const clientOptions = this.props.clients.map((client, idx) => (<option value={client.cuid} key={idx*10}>{client.name}</option>))
+    console.log(this.props);
+    const clientOptions = this.props.clients.map((client, idx) => (<option value={client.id} key={idx*10}>{client.name}</option>))
 
-    const filteredProjects = (this.state.filteredClient === "") ? (this.props.projects) : (this.props.projects.filter(project => project.clientCUID === this.state.filteredClient))
+    const filteredProjects = (this.state.filteredClient === -1) ? (this.props.projects) : (this.props.projects.filter(project => project.clientID === this.state.filteredClient))
 
     return(
       <div>
@@ -64,12 +64,12 @@ class ProjectContainer extends Component{
 
           <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
 
-          {this.hasSelectedProject() > 0 ? (<Route exact path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} />} />) : null}
+          {this.hasSelectedProject() > 0 ? (<Route exact path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} client={this.props.selectedClient} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} />} />) : null}
         </div>
         <br />
         <label htmlFor="client-project-filter">Filter Projects By Client: </label>
         <select id='client-project-filter' onChange={this.handleFilterChange} value={this.state.filteredClient} >
-          <option value="">All</option>
+          <option value={-1} >All</option>
           {clientOptions}
         </select>
         <br />

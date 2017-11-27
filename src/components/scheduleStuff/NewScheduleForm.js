@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createSchedule, patchSchedule, destroySchedule } from '../../actions/schedule'
 import { formatMoment, addToMoment } from '../../helpers/momentHelper'
-import { findByCUID } from '../../helpers/generalHelpers';
+import { findByID } from '../../helpers/generalHelpers';
 
 
 class NewScheduleForm extends Component{
@@ -78,23 +78,21 @@ class NewScheduleForm extends Component{
   }
 
   handleDelete = ev => {
-    const employeeID = findByCUID(this.props.employees, this.props.selectedEmployee).id
-    this.props.destroySchedule({cuid: this.props.cuid, id: this.props.id, employeeID: employeeID})
+    const employeeID = findByID(this.props.employees, this.props.selectedEmployee).id
+    this.props.destroySchedule({id: this.props.id, employeeID: employeeID})
     this.props.onAddSchedule()
   }
 
   handleSubmit = ev => {
     ev.preventDefault()
-    const employee = findByCUID(this.props.employees, this.props.selectedEmployee)
+    const employee = findByID(this.props.employees, this.props.selectedEmployee)
     if(this.props.isEdit){
       this.props.patchSchedule({
         start: new Date(formatMoment(this.state.startDate + ' ' + this.state.startTime)),
         end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)),
         title: this.state.description,
         employeeID: employee.id,
-        employeeCUID: employee.cuid,
         description: this.state.description,
-        cuid: this.props.cuid,
         id: this.props.id
       })
     } else {
@@ -103,7 +101,6 @@ class NewScheduleForm extends Component{
         end: new Date(formatMoment(this.state.endDate + ' ' + this.state.endTime)),
         title: this.state.description,
         employeeID: employee.id,
-        employeeCUID: employee.cuid,
         description: this.state.description
       })
     }
@@ -116,7 +113,7 @@ class NewScheduleForm extends Component{
   componentDidMount = () => {
     if(this.props.employees.length > 0){
       this.setState({
-        selectedEmployee: this.props.employees[0].cuid
+        selectedEmployee: this.props.employees[0].id
       })
     }
   }
@@ -124,14 +121,16 @@ class NewScheduleForm extends Component{
   componentWillReceiveProps = nextProps => {
     if(nextProps.employees.length > 0 && this.state.selectedEmployee === ""){
       this.setState({
-        selectedEmployee: nextProps.employees[0].cuid
+        selectedEmployee: nextProps.employees[0].id
       })
     }
   }
 
   render(){
-    const employeeOptions = this.props.employees.map(employee => (<option data-color={employee.scheduleColor} key={employee.cuid} value={employee.cuid} >{employee.name}</option>))
-    const employee = findByCUID(this.props.employees, this.props.selectedEmployee)
+
+    console.log(this.props);
+    const employeeOptions = this.props.employees.map(employee => (<option data-color={employee.scheduleColor} key={employee.id} value={employee.id} >{employee.name}</option>))
+    const employee = findByID(this.props.employees, this.props.selectedEmployee)
     return(
       <div className="new-schedule form">
         <form onSubmit={this.handleSubmit}>
@@ -171,9 +170,8 @@ NewScheduleForm.defaultProps = {
   isModal: false,
   start: "",
   end: "",
-  selectedEmployee: "",
+  selectedEmployee: -1,
   isEdit: false,
-  cuid: "",
   id: 0
 }
 

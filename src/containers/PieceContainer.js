@@ -14,11 +14,11 @@ class PieceContainer extends Component{
 
   state = {
     modalOpen: false,
-    filteredProject: ""
+    filteredProject: -1
   }
 
   handleFilterChange = ev => {
-    this.setState({filteredProject: ev.target.value})
+    this.setState({filteredProject: +ev.target.value})
   }
 
   handleNewPieceClick = () => {
@@ -46,9 +46,9 @@ class PieceContainer extends Component{
   }
 
   render(){
-    const projectOptions = this.props.projects.map((project, idx) => (<option value={project.cuid} key={idx*10}>{project.name}</option>))
+    const projectOptions = this.props.projects.map((project, idx) => (<option value={project.id} key={idx*10}>{project.name}</option>))
 
-    const filteredPieces = (this.state.filteredProject === "") ? (this.props.pieces) : (this.props.pieces.filter(piece => piece.projectCUID === this.state.filteredProject))
+    const filteredPieces = (this.state.filteredProject === -1) ? (this.props.pieces) : (this.props.pieces.filter(piece => piece.projectID === this.state.filteredProject))
 
     return(
       <div>
@@ -58,12 +58,12 @@ class PieceContainer extends Component{
 
           <PieceList onSelectPiece={this.onSelectPiece} pieces={filteredPieces} />
 
-          {this.hasSelectedPiece() > 0 ? (<Route exact path='/pieces' render={() => <PieceShow piece={this.props.selectedPiece} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} />} />) : null}
+          {this.hasSelectedPiece() > 0 ? (<Route exact path='/pieces' render={() => <PieceShow piece={this.props.selectedPiece} onEditClick={this.onEditClick} project={this.props.selectedProject} onDeleteClick={this.onDeleteClick} />} />) : null}
         </div>
         <br />
         <label htmlFor="project-piece-filter">Filter Pieces By Project: </label>
         <select id='project-piece-filter' value={this.state.filteredProject} onChange={this.handleFilterChange}>
-          <option value="">All</option>
+          <option value={-1}>All</option>
           {projectOptions}
         </select>
         <br />

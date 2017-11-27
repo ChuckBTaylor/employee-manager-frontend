@@ -3,7 +3,7 @@ import ServiceCard from './ServiceCard';
 
 const ServiceList = (props) => {
 
-  const services = props.services.map(service => <ServiceCard onSelectService={props.onSelectService} key={service.cuid} service={service} /> )
+  const services = props.services.map(service => <ServiceCard onSelectService={props.onSelectService} key={service.id} service={service} /> )
 
   return (
   <div className='four wide column'>

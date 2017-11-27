@@ -1,5 +1,3 @@
-import cuid from 'cuid';
-
 export default function employeeReducer(state = {
   list: [],
   selectedEmployee: {},
@@ -15,12 +13,12 @@ export default function employeeReducer(state = {
       if(state.didFetch){
         return state;
       }
-      const withCUID = action.payload.map(employee => ({name: employee.name, scheduleColor: employee.schedule_color, id: employee.id, cuid: cuid(), isAdmin: employee.is_admin}))
-      return {...state, fetchingEmployees: false, list: withCUID, didFetch: true};
+      const withID = action.payload.map(employee => ({name: employee.name, scheduleColor: employee.schedule_color, id: employee.id, isAdmin: employee.is_admin}))
+      return {...state, fetchingEmployees: false, list: withID, didFetch: true};
 
     case "CREATE_EMPLOYEE":
-      const createWithCUID = {...action.payload, cuid: cuid()}
-      return {...state, list: [...state.list, createWithCUID]};
+      const createWithID = {...action.payload}
+      return {...state, list: [...state.list, createWithID]};
 
     case "ADD_ID_TO_NEW_EMPLOYEE":
       if(!state.list[state.list.length - 1].id){
@@ -33,7 +31,7 @@ export default function employeeReducer(state = {
     case "PATCH_EMPLOYEE":
       let index = -1
       const patchedEmployees = state.list.map((employee, idx) => {
-        if(employee.cuid === action.payload.cuid){
+        if(employee.id === action.payload.id){
           index = idx
           return action.payload;
         }
@@ -42,7 +40,7 @@ export default function employeeReducer(state = {
       return {...state, list: patchedEmployees, selectedEmployee: patchedEmployees[index]};
 
     case "DESTROY_EMPLOYEE":
-      const filteredEmployees = state.list.filter(employee => employee.cuid !== action.payload)
+      const filteredEmployees = state.list.filter(employee => employee.id !== action.payload)
       return {...state, list: filteredEmployees, selectedEmployee: {}};
 
     case "SELECT_EMPLOYEE":

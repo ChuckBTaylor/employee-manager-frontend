@@ -7,7 +7,7 @@ class ProjectForm extends Component{
 
   state = {
     name: this.props.isModal ? this.props.project.name : "",
-    clientCUID: this.props.isModal ? this.props.project.clientCUID : ""
+    clientID: this.props.isModal ? this.props.project.clientID : -1
   }
 
   handleNameChange = ev => {
@@ -16,13 +16,13 @@ class ProjectForm extends Component{
   }
 
   handleClientChange = ev => {
-    this.setState({clientCUID: ev.target.value})
+    this.setState({clientID: +ev.target.value})
   }
 
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchProject({...this.state, cuid: this.props.project.cuid, id: this.props.project.id})
+      this.props.patchProject({...this.state, id: this.props.project.id})
       this.props.onModalClose()
     } else {
       this.props.createProject(this.state)
@@ -32,7 +32,7 @@ class ProjectForm extends Component{
 
   render(){
     console.log(this.props);
-    const clientOptions = this.props.clients.map((client, idx) => (<option key={idx} value={client.cuid} >{client.name}</option>))
+    const clientOptions = this.props.clients.map((client, idx) => (<option key={idx} value={client.id} >{client.name}</option>))
     return(
       <div className="sixteen wide column">
         <form onSubmit={this.handleSubmit}>
@@ -40,7 +40,7 @@ class ProjectForm extends Component{
           <input type='text' onChange={this.handleNameChange} value={this.state.name}/>
           <br />
           <label htmlFor="select-client">Select a client</label>
-          <select required id='select-client' value={this.state.clientCUID} onChange={this.handleClientChange}>
+          <select required id='select-client' value={this.state.clientID} onChange={this.handleClientChange}>
             <option value='' disabled >--Choose a Client--</option>
             {clientOptions}
           </select>
@@ -53,7 +53,7 @@ class ProjectForm extends Component{
 
 ProjectForm.defaultProps = {
   isModal: false,
-  clientCUID: "",
+  clientID: -1,
   project: {
     name: ""
   },

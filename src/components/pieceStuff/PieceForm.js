@@ -7,7 +7,7 @@ class PieceForm extends Component{
 
   state = {
     name: this.props.isModal ? this.props.piece.name : "",
-    projectCUID: this.props.isModal ? this.props.piece.projectCUID : ""
+    projectID: this.props.isModal ? this.props.piece.projectID : ""
   }
 
   handleNameChange = ev => {
@@ -16,13 +16,13 @@ class PieceForm extends Component{
   }
 
   handleProjectChange = ev => {
-    this.setState({projectCUID: ev.target.value})
+    this.setState({projectID: ev.target.value})
   }
 
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchPiece({...this.state, cuid: this.props.piece.cuid, id: this.props.piece.id})
+      this.props.patchPiece({...this.state, id: this.props.piece.id})
       this.props.onModalClose()
     } else {
       this.props.createPiece(this.state)
@@ -31,7 +31,7 @@ class PieceForm extends Component{
   }
 
   render(){
-    const projectOptions = this.props.projects.map((project, idx) => (<option key={idx} value={project.cuid} >{project.name}</option>))
+    const projectOptions = this.props.projects.map((project, idx) => (<option key={idx} value={project.id} >{project.name}</option>))
     return(
       <div className="sixteen wide column">
         <form onSubmit={this.handleSubmit}>
@@ -39,7 +39,7 @@ class PieceForm extends Component{
           <input type='text' onChange={this.handleNameChange} value={this.state.name}/>
           <br />
           <label htmlFor="select-project">Select a project</label>
-          <select required id='select-project' onChange={this.handleProjectChange} value={this.state.projectCUID}>
+          <select required id='select-project' onChange={this.handleProjectChange} value={this.state.projectID}>
             <option value="" disabled >--Choose a Project--</option>
             {projectOptions}
           </select>
@@ -52,7 +52,7 @@ class PieceForm extends Component{
 
 PieceForm.defaultProps = {
   isModal: false,
-  projectCUID: "",
+  projectID: -1,
   piece: {
     name: ""
   },

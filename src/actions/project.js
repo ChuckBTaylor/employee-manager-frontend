@@ -7,17 +7,16 @@ export function fetchProjects(clientList){
     dispatch({type: "FETCHING_PROJECTS"})
     return api().project.fetch()
       .then(json => {
-        const withClientCUID = json.map(project => {
+        const formatted = json.map(project => {
           const client = findByID(clientList, project.client_id)
           return {
             name: project.name,
             id: project.id,
             subtype: project.subtype,
-            clientID: client.id,
-            clientCUID: client.cuid
+            clientID: client.id
           }
         })
-        dispatch({type: "FETCHED_PROJECTS", payload: withClientCUID})
+        dispatch({type: "FETCHED_PROJECTS", payload: formatted})
       })
   }
 }
@@ -41,5 +40,7 @@ export function destroyProject(project){
 }
 
 export function selectProject(project){
-  return({type: "SELECT_PROJECT", payload: project})
+  return function(dispatch){
+    dispatch({type: "SELECT_PROJECT", payload: project, projectID: project.id}) //the extra ID is for the other reducers
+  }
 }

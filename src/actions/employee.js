@@ -40,15 +40,14 @@ export function destroyEmployee(employee){
     api().employee.destroy(employee)
     dispatch({
       type: "DESTROY_EMPLOYEE",
-      payload: employee.cuid
+      payload: employee.id
     })
   }
 }
 
 export function selectEmployee(employee){
-  return{
-    type: "SELECT_EMPLOYEE",
-    payload: employee
+  return function(dispatch){
+    dispatch({type: "SELECT_EMPLOYEE", payload: employee})
   }
 }
 

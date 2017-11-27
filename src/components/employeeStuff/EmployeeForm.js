@@ -32,7 +32,7 @@ class EmployeeForm extends Component{
     ev.preventDefault()
     if(this.formOkay()){
       if(this.props.isModal){
-        this.props.patchEmployee({...this.state, id: this.props.employee.id, cuid: this.props.employee.cuid})
+        this.props.patchEmployee({...this.state, id: this.props.employee.id})
         this.props.onModalClose()
       } else {
         this.props.createEmployee(this.state)

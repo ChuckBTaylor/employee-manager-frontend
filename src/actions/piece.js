@@ -7,17 +7,16 @@ export function fetchPieces(projectList){
     dispatch({type: "FETCHING_PIECES"})
     return api().piece.fetch()
       .then(json => {
-        const withProjectCUID = json.map(piece => {
+        const formatted = json.map(piece => {
           const project = findByID(projectList, piece.project_id)
           return {
             name: piece.name,
             id: piece.id,
-            projectID: project.id,
-            projectCUID: project.cuid
+            projectID: project.id
           }
         })
-        console.log(withProjectCUID);
-        dispatch({type: "FETCHED_PIECES", payload: withProjectCUID})
+        console.log(formatted);
+        dispatch({type: "FETCHED_PIECES", payload: formatted})
       })
   }
 }
@@ -41,5 +40,8 @@ export function destroyPiece(piece){
 }
 
 export function selectPiece(piece){
-  return({type: "SELECT_PIECE", payload: piece})
+  return function(dispatch, getState){
+    const clientID = findByID(getState().projects.list, piece.projectID).clientID
+    dispatch({type: "SELECT_PIECE", payload: {...piece, clientID }})
+  }
 }

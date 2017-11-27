@@ -26,7 +26,7 @@ export function patchService(service){
 export function destroyService(service){
   return function(dispatch){
     return api().service.destroy(service)
-    dispatch({type: "DESTROY_SERVICE", payload: service.cuid})
+    dispatch({type: "DESTROY_SERVICE", payload: service.id})
   }
 }
 

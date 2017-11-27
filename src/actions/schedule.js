@@ -8,17 +8,16 @@ export function fetchSchedules(employeeList){
     dispatch({type: "FETCHING_SCHEDULES"})
     return api().schedule.fetch()
       .then(json => {
-        const withCUID = json.map(sched => {
-          const employee = findByID(employeeList, sched.employee_id)
+        const formatted = json.map(sched => {
           return{
-            employeeCUID: employee.cuid,
+            employeeID: sched.employee_id,
             start: new Date(formatMoment(sched.scheduled_start)),
             end: new Date(formatMoment(sched.scheduled_end)),
             description: sched.description,
             id: sched.id
           }
         })
-        dispatch({type: "FETCHED_SCHEDULES", payload: withCUID})
+        dispatch({type: "FETCHED_SCHEDULES", payload: formatted})
       })
   }
 }
@@ -51,7 +50,7 @@ export function destroySchedule(schedule){
     api().schedule.destroy(schedule)
     dispatch({
       type: "DESTROY_SCHEDULE",
-      payload: schedule.cuid
+      payload: schedule.id
     })
   }
 }
