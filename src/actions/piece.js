@@ -15,27 +15,35 @@ export function fetchPieces(projectList){
             projectID: project.id
           }
         })
-        console.log(formatted);
         dispatch({type: "FETCHED_PIECES", payload: formatted})
       })
   }
 }
 
 export function createPiece(piece){
-  return function(dispatch){
-
+  return function(dispatch, getState){
+    dispatch({type: "CREATE_PIECE", payload: piece})
+    const clientID = findByID(getState().projects.list, piece.projectID).clientID
+    return api().piece.post({...piece, clientID})
+      .then(json => {
+        dispatch({type: "ADD_ID_TO_NEW_PIECE", payload: json.id})
+      })
   }
 }
 
 export function patchPiece(piece){
-  return function(dispatch){
-
+  return function(dispatch, getState){
+    dispatch({type: "PATCH_PIECE", payload: piece})
+    const clientID = findByID(getState().projects.list, piece.projectID).clientID
+    return api().piece.patch({...piece, clientID})
   }
 }
 
 export function destroyPiece(piece){
-  return function(dispatch){
-
+  return function(dispatch, getState){
+    dispatch({type: "DESTROY_PIECE", payload: piece})
+    const clientID = findByID(getState().projects.list, piece.projectID).clientID
+    return api().piece.destroy({...piece, clientID})
   }
 }
 

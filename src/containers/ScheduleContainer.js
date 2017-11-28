@@ -21,7 +21,7 @@ class ScheduleContainer extends Component{
   }
 
   onEmployeeClick = employeeID => {
-    // console.log(employeeID, 'from Container');
+    // log(employeeID, 'from Container');
     //Abandoned for later(?) Button too close to want a move
   }
 
@@ -38,9 +38,9 @@ class ScheduleContainer extends Component{
   componentDidMount = () => {
     if(!this.props.didFetchEmployees){
       this.props.fetchEmployees()
-        .then(() => this.props.fetchSchedules(this.props.employees))
+        .then(() => this.props.fetchSchedules())
     } else {
-      this.props.didFetchSchedules ? null : this.props.fetchSchedules(this.props.employees)
+      this.props.didFetchSchedules ? null : this.props.fetchSchedules()
     }
 
     if(this.props.employees.length > 0){

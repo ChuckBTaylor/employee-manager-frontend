@@ -4,22 +4,25 @@ import { Button } from 'semantic-ui-react';
 
 const ProjectShow = props => {
 
-  const handleEditClick = ev => {
+  const handleEditClick = () => {
     props.onEditClick()
   }
 
-  const handleDeleteClick = ev => {
+  const handleDeleteClick = () => {
     props.onDeleteClick()
   }
 
+  const handleNewPieceClick = () => {
+    props.onNewPieceClick()
+  }
 
-  const pieces = props.pieces.map(piece => (<li key={piece.id}>{piece.name}</li>))
   return (
   <div className='six wide column'>
     <h2>{props.client.name}</h2>
-    {props.project.name}
+    <h4>{props.project.name}</h4>
+    {props.pieces.length > 0 ? <PieceList pieces={props.pieces} onSelectPiece={props.onSelectPiece}/> : "No Current Pieces"}
     <br />
-    {props.pieces.length > 0 ? <PieceList pieces={props.pieces} onSelectPiece={props.onSelectPiece}/> : null}
+    <Button onClick={handleNewPieceClick} > New Piece </Button>
     <Button onClick={handleEditClick} > Edit </Button>
     <Button onClick={handleDeleteClick} > Delete </Button>
   </div>

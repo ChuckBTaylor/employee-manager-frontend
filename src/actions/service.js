@@ -18,15 +18,15 @@ export function createService(service){
 
 export function patchService(service){
   return function(dispatch){
-    return api().service.patch(service)
     dispatch({type: "PATCH_SERVICE", payload: service})
+    return api().service.patch(service)
   }
 }
 
 export function destroyService(service){
   return function(dispatch){
-    return api().service.destroy(service)
     dispatch({type: "DESTROY_SERVICE", payload: service.id})
+    return api().service.destroy(service)
   }
 }
 

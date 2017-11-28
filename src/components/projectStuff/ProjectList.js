@@ -1,8 +1,9 @@
 import React from 'react';
+import cuid from 'cuid';
 import ProjectCard from './ProjectCard';
 
 const ProjectList = props => {
-  const projects = props.projects.map(project => (<ProjectCard key={project.id} project={project} onSelectProject={props.onSelectProject} />))
+  const projects = props.projects.map(project => (<ProjectCard key={cuid()} project={project} onSelectProject={props.onSelectProject} />))
   return (
   <div className="four wide column" >
     <ul>

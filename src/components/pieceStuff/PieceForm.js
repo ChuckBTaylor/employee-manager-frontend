@@ -6,8 +6,8 @@ import { createPiece, patchPiece } from '../../actions/piece';
 class PieceForm extends Component{
 
   state = {
-    name: this.props.isModal ? this.props.piece.name : "",
-    projectID: this.props.isModal ? this.props.piece.projectID : ""
+    name: this.props.piece.name || "",
+    projectID: this.props.selectedProject.id || -1
   }
 
   handleNameChange = ev => {
@@ -16,7 +16,7 @@ class PieceForm extends Component{
   }
 
   handleProjectChange = ev => {
-    this.setState({projectID: ev.target.value})
+    this.setState({projectID: +ev.target.value})
   }
 
   handleSubmit = ev => {
@@ -40,7 +40,7 @@ class PieceForm extends Component{
           <br />
           <label htmlFor="select-project">Select a project</label>
           <select required id='select-project' onChange={this.handleProjectChange} value={this.state.projectID}>
-            <option value="" disabled >--Choose a Project--</option>
+            <option value={-1} disabled >--Choose a Project--</option>
             {projectOptions}
           </select>
           <input type='submit' />
@@ -52,11 +52,10 @@ class PieceForm extends Component{
 
 PieceForm.defaultProps = {
   isModal: false,
-  projectID: -1,
+  selectedProject: {},
   piece: {
     name: ""
-  },
-  isFromProject: false
+  }
 }
 
 const mapDispatchToProps = dispatch => {

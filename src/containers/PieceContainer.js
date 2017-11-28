@@ -54,7 +54,7 @@ class PieceContainer extends Component{
       <div>
         <Route exact path='/pieces' render={() => (<button onClick={this.handleNewPieceClick} >New Piece</button>) } /><br />
         <div className='ui grid'>
-          <Route path='/pieces/new' render={props => (<PieceForm {...props} projects={this.props.projects}  selectedProject={this.props.selectedProject }/>) } />
+          <Route path='/pieces/new' render={props => (<PieceForm {...props} projects={this.props.projects}  selectedProject={this.props.selectedProject} />) } />
 
           <PieceList onSelectPiece={this.onSelectPiece} pieces={filteredPieces} />
 
@@ -68,7 +68,7 @@ class PieceContainer extends Component{
         </select>
         <br />
 
-        <PieceModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} piece={this.props.selectedPiece} />
+        <PieceModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} piece={this.props.selectedPiece} projects={this.props.projects} selectedProject={this.props.selectedProject} />
       </div>
     )
   }

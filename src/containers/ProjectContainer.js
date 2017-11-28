@@ -21,6 +21,10 @@ class ProjectContainer extends Component{
     this.props.selectPiece(piece)
   }
 
+  onNewPieceClick = () => {
+    this.props.history.push('/pieces/new')
+  }
+
   handleFilterChange = ev => {
     this.setState({filteredClient: +ev.target.value})
   }
@@ -50,8 +54,6 @@ class ProjectContainer extends Component{
   }
 
   render(){
-
-    console.log(this.props);
     const clientOptions = this.props.clients.map((client, idx) => (<option value={client.id} key={idx*10}>{client.name}</option>))
 
     const filteredProjects = (this.state.filteredClient === -1) ? (this.props.projects) : (this.props.projects.filter(project => project.clientID === this.state.filteredClient))
@@ -64,7 +66,7 @@ class ProjectContainer extends Component{
 
           <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
 
-          {this.hasSelectedProject() > 0 ? (<Route exact path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} client={this.props.selectedClient} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} />} />) : null}
+          {this.hasSelectedProject() > 0 ? (<Route exact path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} client={this.props.selectedClient} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} onNewPieceClick={this.onNewPieceClick} />} />) : null}
         </div>
         <br />
         <label htmlFor="client-project-filter">Filter Projects By Client: </label>
@@ -73,7 +75,7 @@ class ProjectContainer extends Component{
           {clientOptions}
         </select>
         <br />
-        <ProjectModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} project={this.props.selectedProject} clients={this.props.clients} />
+        <ProjectModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} project={this.props.selectedProject} clients={this.props.clients} selectedClient={this.props.selectedClient} />
       </div>
     )
   }

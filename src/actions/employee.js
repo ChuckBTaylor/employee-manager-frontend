@@ -2,7 +2,6 @@ import api from '../services/apiRequests'
 
 export function fetchEmployees(){
   return function(dispatch){
-    console.log("fetching employees");
     dispatch({type: "FETCHING_EMPLOYEES"})
     return api().employee.fetch()
       .then(json => {
@@ -13,35 +12,23 @@ export function fetchEmployees(){
 
 export function createEmployee(employee){
   return function(dispatch){
-    dispatch({
-      type: "CREATE_EMPLOYEE",
-      payload: employee
-    })
-    api().employee.post(employee)
-      .then(json => {
-        dispatch({type: "ADD_ID_TO_NEW_EMPLOYEE", payload: json.id})
-      })
-
+    dispatch({type: "CREATE_EMPLOYEE", payload: employee})
+    return api().employee.post(employee)
+      .then(json => dispatch({type: "ADD_ID_TO_NEW_EMPLOYEE", payload: json.id}))
   }
 }
 
 export function patchEmployee(employee){
   return function(dispatch){
-    api().employee.patch(employee)
-    dispatch({
-      type: "PATCH_EMPLOYEE",
-      payload: employee
-    })
+    dispatch({type: "PATCH_EMPLOYEE", payload: employee})
+    return api().employee.patch(employee)
   }
 }
 
 export function destroyEmployee(employee){
   return function(dispatch){
-    api().employee.destroy(employee)
-    dispatch({
-      type: "DESTROY_EMPLOYEE",
-      payload: employee.id
-    })
+    dispatch({type: "DESTROY_EMPLOYEE", payload: employee.id})
+    return api().employee.destroy(employee)
   }
 }
 

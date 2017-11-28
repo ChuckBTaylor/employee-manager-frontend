@@ -13,7 +13,7 @@ const ClientShow = props => {
   }
 
   const handleNewProjectClick = () => {
-    props.onNewProjectClick(props.client)
+    props.onNewProjectClick()
   }
 
   return (

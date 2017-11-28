@@ -9,7 +9,7 @@ const PieceModal = props => {
   return(
     <Modal open={props.modalOpen} onClose={props.onModalClose} className="Modal">
       <Modal.Content>
-        <PieceForm isModal={true} onModalClose={props.onModalClose} Piece={props.Piece} />
+        <PieceForm isModal={true} onModalClose={props.onModalClose} piece={props.piece} projects={props.projects} selectedProject={props.selectedProject} />
       </Modal.Content>
     </Modal>
   )

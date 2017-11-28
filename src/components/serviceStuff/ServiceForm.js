@@ -25,7 +25,6 @@ class ServiceForm extends Component{
   }
 
   render(){
-    console.log(this.props, 'form props');
     return(
       <div className="sixteen wide column">
         <form onSubmit={this.handleSubmit}>

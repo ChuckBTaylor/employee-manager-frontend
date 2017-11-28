@@ -3,7 +3,7 @@ import { findByID } from '../helpers/generalHelpers';
 import { formatMoment } from '../helpers/momentHelper';
 
 
-export function fetchSchedules(employeeList){
+export function fetchSchedules(){
   return function(dispatch){
     dispatch({type: "FETCHING_SCHEDULES"})
     return api().schedule.fetch()
@@ -28,7 +28,7 @@ export function createSchedule(schedule){
       type: "CREATE_SCHEDULE",
       payload: schedule
     })
-    api().schedule.post(schedule)
+    return api().schedule.post(schedule)
       .then(json => {
         dispatch({type: "ADD_ID_TO_NEW_SCHEDULE", payload: json.id})
       })

@@ -23,8 +23,7 @@ class ClientContainer extends Component{
     this.props.selectProject(project)
   }
 
-  onNewProjectClick = client => {
-    console.log(this.props, "from Client Container");
+  onNewProjectClick = () => {
     this.props.history.push('/projects/new')
   }
 

@@ -44,7 +44,6 @@ class EmployeeForm extends Component{
   }
 
   render(){
-    console.log(this.props, "props from form");
     return(
       <div className='sixteen wide column'>
         <form onSubmit={this.handleSubmit}>

@@ -41,8 +41,12 @@ export default function projectReducer(state = {
       })
       return {...state, list: patchedProjects, selectedProject: patchedProjects[index]};
 
+    case "DESTROY_CLIENT":
+      const sanitizedProjects = state.list.filter(project => project.clientID !== action.payload.id)
+      return {...state, list: sanitizedProjects};
+
     case "DESTROY_PROJECT":
-      const filteredProjects = state.list.filter(project => project.id !== action.payload)
+      const filteredProjects = state.list.filter(project => project.id !== action.payload.id)
       return {...state, list: filteredProjects, selectedProject: {}};
 
     case (!!action.type.match("SELECT") ? action.type : null):

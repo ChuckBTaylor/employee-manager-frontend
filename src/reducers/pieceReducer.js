@@ -37,6 +37,14 @@ export default function pieceReducer(state = {
       })
       return {...state, list: patchedPieces, selectedPiece: patchedPieces[index]};
 
+    case "DESTROY_CLIENT":
+      const clientSanitizedPieces = state.list.filter(piece => action.payload.projectIDs.includes(piece.projectID))
+      return {...state, list: clientSanitizedPieces};
+
+    case "DESTROY_PROJECT":
+      const sanitizedPieces = state.list.filter(piece => piece.projectID !== action.payload.id)
+      return {...state, list: sanitizedPieces}
+
     case "DESTROY_PIECE":
       const filteredPieces = state.list.filter(piece => piece.id !== action.payload)
       return {...state, list: filteredPieces, selectedPiece: {}};
@@ -45,7 +53,7 @@ export default function pieceReducer(state = {
       const projectPieces = state.list.filter(piece => piece.projectID === action.payload.projectID)
       switch(action.type){
         case "SELECT_PROJECT": //Yes, SELECT_PROJECT. A new project is selected, the right pieces are loaded
-        return {...state, projectPieces: projectPieces};
+        return {...state, projectPieces};
 
         case "SELECT_PIECE":
         return {...state, selectedPiece: action.payload, projectPieces};

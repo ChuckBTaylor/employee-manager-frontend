@@ -127,10 +127,10 @@ class NewScheduleForm extends Component{
   }
 
   render(){
-
-    console.log(this.props);
     const employeeOptions = this.props.employees.map(employee => (<option data-color={employee.scheduleColor} key={employee.id} value={employee.id} >{employee.name}</option>))
+
     const employee = findByID(this.props.employees, this.props.selectedEmployee)
+
     return(
       <div className="new-schedule form">
         <form onSubmit={this.handleSubmit}>

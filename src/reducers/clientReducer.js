@@ -34,7 +34,8 @@ export default function clientReducer(state = {
       return {...state, list: patchedClients, selectedClient: patchedClients[index]};
 
     case "DESTROY_CLIENT":
-      const filteredClients = state.list.filter(client => client.id !== action.payload)
+      const filteredClients = state.list.filter(client => client.id !== action.payload.id)
+      console.log(action);
       return {...state, list: filteredClients, selectedClient: {}};
 
     case "ADD_ID_TO_NEW_CLIENT":

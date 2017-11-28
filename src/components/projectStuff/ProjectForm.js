@@ -6,8 +6,8 @@ import { createProject, patchProject } from '../../actions/project';
 class ProjectForm extends Component{
 
   state = {
-    name: this.props.isModal ? this.props.project.name : "",
-    clientID: this.props.isModal ? this.props.project.clientID : -1
+    name: this.props.project.name || "",
+    clientID: this.props.project.clientID || this.props.selectedClient.id || -1
   }
 
   handleNameChange = ev => {
@@ -22,7 +22,7 @@ class ProjectForm extends Component{
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchProject({...this.state, id: this.props.project.id})
+      this.props.patchProject({...this.props.project, ...this.state})
       this.props.onModalClose()
     } else {
       this.props.createProject(this.state)
@@ -31,7 +31,6 @@ class ProjectForm extends Component{
   }
 
   render(){
-    console.log(this.props);
     const clientOptions = this.props.clients.map((client, idx) => (<option key={idx} value={client.id} >{client.name}</option>))
     return(
       <div className="sixteen wide column">
@@ -41,9 +40,10 @@ class ProjectForm extends Component{
           <br />
           <label htmlFor="select-client">Select a client</label>
           <select required id='select-client' value={this.state.clientID} onChange={this.handleClientChange}>
-            <option value='' disabled >--Choose a Client--</option>
+            <option value={-1} disabled >--Choose a Client--</option>
             {clientOptions}
           </select>
+          <br />
           <input type='submit' />
         </form>
       </div>
@@ -53,12 +53,10 @@ class ProjectForm extends Component{
 
 ProjectForm.defaultProps = {
   isModal: false,
-  clientID: -1,
+  selectedClient: {},
   project: {
     name: ""
-  },
-  isFromClient: false,
-  clients: []
+  }
 }
 
 const mapDispatchToProps = dispatch => {
