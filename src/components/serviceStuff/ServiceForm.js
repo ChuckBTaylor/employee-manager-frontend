@@ -6,7 +6,7 @@ import { createService, patchService } from '../../actions/service';
 class ServiceForm extends Component{
 
   state = {
-    name: this.props.isModal ? this.props.service.name : ""
+    name: this.props.service.name || ""
   }
 
   handleNameChange = ev => {
@@ -16,7 +16,7 @@ class ServiceForm extends Component{
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchService({...this.state, id: this.props.service.id})
+      this.props.patchService({...this.props.service, ...this.state})
       this.props.onModalClose()
     } else {
       this.props.createService(this.state)
@@ -40,7 +40,8 @@ class ServiceForm extends Component{
 ServiceForm.defaultProps = {
   isModal: false,
   service: {
-    name: ""
+    name: "",
+    id: -1
   }
 }
 

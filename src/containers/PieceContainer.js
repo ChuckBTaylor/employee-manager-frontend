@@ -79,12 +79,12 @@ class PieceContainer extends Component{
         this.props.didFetchPieces ? null : this.props.fetchPieces(this.props.projects)
       } else {
         this.props.fetchProjects()
-          .then(() => this.props.fetchPieces(this.props.projects))
+          .then(() => this.props.fetchPieces())
       }
     } else {
       this.props.fetchClients()
-        .then(() => this.props.fetchProjects(this.props.clients))
-          .then(() => this.props.fetchPieces(this.props.projects))
+        .then(() => this.props.fetchProjects())
+          .then(() => this.props.fetchPieces())
     }
   }
 }

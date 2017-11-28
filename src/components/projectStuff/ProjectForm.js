@@ -53,9 +53,13 @@ class ProjectForm extends Component{
 
 ProjectForm.defaultProps = {
   isModal: false,
-  selectedClient: {},
+  selectedClient: {
+    clientID: -1
+  },
   project: {
-    name: ""
+    name: "",
+    id: -1,
+    complete: false
   }
 }
 

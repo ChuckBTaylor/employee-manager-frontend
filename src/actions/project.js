@@ -2,18 +2,19 @@ import api from '../services/apiRequests';
 import { findByID } from '../helpers/generalHelpers';
 
 
-export function fetchProjects(clientList){
-  return function(dispatch){
+export function fetchProjects(){
+  return function(dispatch, getState){
     dispatch({type: "FETCHING_PROJECTS"})
     return api().project.fetch()
       .then(json => {
         const formatted = json.map(project => {
-          const client = findByID(clientList, project.client_id)
+          const client = findByID(getState().clients.list, project.client_id)
           return {
             name: project.name,
             id: project.id,
             subtype: project.subtype,
-            clientID: client.id
+            clientID: client.id,
+            complete: project.complete
           }
         })
         dispatch({type: "FETCHED_PROJECTS", payload: formatted})

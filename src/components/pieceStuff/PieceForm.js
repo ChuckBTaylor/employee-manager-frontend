@@ -22,7 +22,7 @@ class PieceForm extends Component{
   handleSubmit = ev => {
     ev.preventDefault()
     if(this.props.isModal){
-      this.props.patchPiece({...this.state, id: this.props.piece.id})
+      this.props.patchPiece({...this.props.piece, ...this.state})
       this.props.onModalClose()
     } else {
       this.props.createPiece(this.state)
@@ -52,9 +52,13 @@ class PieceForm extends Component{
 
 PieceForm.defaultProps = {
   isModal: false,
-  selectedProject: {},
+  selectedProject: {
+    projectID: -1
+  },
   piece: {
-    name: ""
+    name: "",
+    id: -1,
+    complete: false
   }
 }
 
