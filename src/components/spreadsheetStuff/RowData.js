@@ -7,15 +7,15 @@ import TableCheckbox from './TableDataTypes/TableCheckbox';
 const RowData = props => {
 
   if(props.isImmutable){
-    return (<TableImmutable rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} />)
+    return (<TableImmutable aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} />)
   } else {
     switch(typeof(props.data)){
       case "boolean":
-        return (<TableCheckbox rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
+        return (<TableCheckbox cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
       case "number":
-        return (<TableFloat rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
+        return (<TableFloat cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
       case "string":
-        return (<TableText rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
+        return (<TableText cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
       default:
         return (<td> Invalid Format! </td>);
     }

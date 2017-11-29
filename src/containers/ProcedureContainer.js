@@ -31,7 +31,7 @@ class ProcedureContainer extends Component{
     const columnKeys = this.props.procedures.length > 0 ? Array.from(Object.keys(this.props.procedures[0])) : []
 
     const columnFilters = columnKeys.filter(column => !column.match(/ID$/i))
-    const columns = columnFilters.map(column => ({key: column, name: column, isImmutable: column === 'name' ? true : false}))
+    const columns = columnFilters.map(column => ({key: column, name: column, isImmutable: false}))
     // columns = [
     //   {
     //     key: 'name',
@@ -92,26 +92,26 @@ class ProcedureContainer extends Component{
     )
   }
 
-  componentDidMount = () => {
-    if(this.props.didFetchPieces){
-      if(this.props.didFetchServices){
-        if(!this.props.didFetchProcedures){
-          this.props.fetchProcedures()
-        }
-      } else {
-        this.props.fetchServices()
-          .then(() => this.props.fetchProcedures())
-      }
-    } else {
-      if(this.props.didFetchServices){
-        this.props.fetchPieces()
-          .then(() => this.props.fetchProcedures())
-      } else {
-        Promise.all([this.props.fetchPieces(), this.props.fetchServices()])
-          .then(() => this.props.fetchProcedures())
-      }
-    }
-  }
+  // componentDidMount = () => {
+  //   if(this.props.didFetchPieces){
+  //     if(this.props.didFetchServices){
+  //       if(!this.props.didFetchProcedures){
+  //         this.props.fetchProcedures()
+  //       }
+  //     } else {
+  //       this.props.fetchServices()
+  //         .then(() => this.props.fetchProcedures())
+  //     }
+  //   } else {
+  //     if(this.props.didFetchServices){
+  //       this.props.fetchPieces()
+  //         .then(() => this.props.fetchProcedures())
+  //     } else {
+  //       Promise.all([this.props.fetchPieces(), this.props.fetchServices()])
+  //         .then(() => this.props.fetchProcedures())
+  //     }
+  //   }
+  // }
 }
 
 const mapStateToProps = state => {

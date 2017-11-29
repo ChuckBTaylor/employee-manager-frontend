@@ -51,11 +51,11 @@ class ServiceContainer extends Component{
     )
   }
 
-  componentDidMount = () => {
-    if(!this.props.didFetchServices){
-      this.props.fetchServices()
-    }
-  }
+  // componentDidMount = () => {
+  //   if(!this.props.didFetchServices){
+  //     this.props.fetchServices()
+  //   }
+  // }
 }
 
 const mapStateToProps = state => {

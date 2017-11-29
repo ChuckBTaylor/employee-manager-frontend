@@ -7,12 +7,14 @@ class Spreadsheet extends Component{
 
   state = {
     activeRow: 0,
-    activeColumn: 0
+    activeColumn: 0,
+    cursorPosition: 0
   }
 
   handleTDC = ev => {
-    console.log(ev);
+    this.setState({activeRow: ev.rowNum, activeColumn: ev.colNum, cursorPosition: ev.cursorPosition})
     const rowObj = findByID(this.props.rows, ev.id)
+
     this.props.onTableDataChange({...rowObj, ...ev})
   }
 
@@ -20,6 +22,7 @@ class Spreadsheet extends Component{
   //   return objectArrayToObject(props.rows, 'id')
   // }
   render(){
+    console.log("Spreadsheet", this.state);
     return(
     <div>
       <table>
@@ -34,14 +37,11 @@ class Spreadsheet extends Component{
           rows={this.props.rows}
           columns={this.props.columnHeaders}
           onTDC={this.handleTDC}
+          cPos={this.state.cursorPosition}
         />
       </table>
     </div>
     )
-  }
-
-  componentWillUpdate = () => {
-    console.log("Oh please don't see me");
   }
 }
 

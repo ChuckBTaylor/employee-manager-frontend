@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchServices } from './actions/service';
+import { fetchClients } from './actions/client';
+import { fetchProjects } from './actions/project';
+import { fetchPieces } from './actions/piece';
+import { fetchProcedures } from './actions/procedure';
 import ScheduleContainer from './containers/ScheduleContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
 import ServiceContainer from './containers/ServiceContainer';
@@ -43,7 +50,7 @@ class App extends Component {
   }
 
   handleSummaryClick = () => {
-    this.props.history.push('/summary')
+    this.props.history.push('/currentProjects')
   }
 
   render() {
@@ -78,7 +85,7 @@ class App extends Component {
             </Menu.Item>
             <Menu.Item name='Summary' onClick={this.handleSummaryClick}>
               <Icon name='group object' />
-              Summary
+              CurrentProjects
             </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher>
@@ -98,8 +105,17 @@ class App extends Component {
       </div>
     );
   }
+
+  componentDidMount = () => {
+    Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces()])
+      .then(() => this.props.fetchProcedures())
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures }, dispatch)
 }
 
 // const mapStateToProps = () => {}
 
-export default App;
+export default connect(null, mapDispatchToProps)(App);

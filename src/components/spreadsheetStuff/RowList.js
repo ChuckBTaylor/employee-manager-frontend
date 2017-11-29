@@ -4,7 +4,7 @@ import cuid from 'cuid';
 
 
 const RowList = props => {
-  const rows = props.rows.map((row, rowNum) => (<RowLine key={cuid()} rowNum={rowNum + 1} row={row} columns={props.columns} onTDC={props.onTDC} />))
+  const rows = props.rows.map((row, rowNum) => (<RowLine key={cuid()} rowNum={rowNum + 1} row={row} columns={props.columns} onTDC={props.onTDC} aRow={props.aRow} aCol={props.aCol} cPos={props.cPos}/>))
 
   return (
   <tbody>
@@ -20,7 +20,8 @@ RowList.defaultProps = {
     column3Id: ""
   }, {}],
   columns: ["column1Name", "Column2Name"],
-  onTDC: ev => (console.log(ev))
+  onTDC: ev => (console.log(ev)),
+  cPos: 0
 }
 
 export default RowList
