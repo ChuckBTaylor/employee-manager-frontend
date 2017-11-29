@@ -60,14 +60,16 @@ class ClientContainer extends Component{
     )
   }
 
-  componentDidMount = () => {
-    if(this.props.didFetchClients){
-      this.props.didFetchProjects ? null : this.props.fetchProjects(this.props.clients)
-    } else {
-      this.props.fetchClients()
-        .then(() => this.props.fetchProjects(this.props.clients))
-    }
-  }
+  // componentDidMount = () => {
+  //   if(this.props.didFetchClients){
+  //     if(!this.props.didFetchProjects){
+  //       this.props.fetchProjects()
+  //     }
+  //   } else {
+  //     this.props.fetchClients()
+  //       .then(() => this.props.fetchProjects(this.props.clients))
+  //   }
+  // }
 }
 
 const mapStateToProps = state => {

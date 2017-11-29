@@ -1,5 +1,4 @@
 import { findByID } from '../helpers/generalHelpers';
-import clientReducer from './clientReducer'
 
 export default function projectReducer(state = {
   list: [],
@@ -59,7 +58,6 @@ export default function projectReducer(state = {
           return {...state, selectedProject: action.payload, clientProjects};
 
         case "SELECT_PIECE":
-          const cProjects = state.list.filter(project => project.clientID === action.payload.id)
           return {...state, selectedProject: findByID(state.list, action.payload.projectID), clientProjects};
 
         default:

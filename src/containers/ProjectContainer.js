@@ -80,20 +80,22 @@ class ProjectContainer extends Component{
     )
   }
 
-  componentDidMount = () => {
-    if(this.props.didFetchClients){
-      if(this.props.didFetchProjects){
-        this.props.didFetchPieces ? null : this.props.fetchPieces(this.props.projects)
-      } else {
-        this.props.fetchProjects()
-          .then(() => this.props.fetchPieces(this.props.projects))
-      }
-    } else {
-      this.props.fetchClients()
-        .then(() => this.props.fetchProjects(this.props.clients))
-          .then(() => this.props.fetchPieces(this.props.projects))
-    }
-  }
+  // componentDidMount = () => {
+  //   if(this.props.didFetchClients){
+  //     if(this.props.didFetchProjects){
+  //       if(!this.props.didFetchPieces){
+  //         this.props.fetchPieces()
+  //       }
+  //     } else {
+  //       this.props.fetchProjects()
+  //         .then(() => this.props.fetchPieces(this.props.projects))
+  //     }
+  //   } else {
+  //     this.props.fetchClients()
+  //       .then(() => this.props.fetchProjects(this.props.clients))
+  //         .then(() => this.props.fetchPieces(this.props.projects))
+  //   }
+  // }
 }
 
 const mapStateToProps = state => {

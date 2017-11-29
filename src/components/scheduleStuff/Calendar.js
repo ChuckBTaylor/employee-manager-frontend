@@ -31,7 +31,7 @@ class Calendar extends Component{
   }
 
   onModalClose = () => {
-    this.setState({modalOpen: false, selectedStart: "", selectedEnd: "", isEdit: false, selectedID: "", selectedID: 0, selectedDescription: ""})
+    this.setState({modalOpen: false, selectedStart: "", selectedEnd: "", isEdit: false, selectedID: -1, selectedDescription: ""})
   }
 
   getScheduleProps = ev => {

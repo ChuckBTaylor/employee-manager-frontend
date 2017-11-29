@@ -232,6 +232,13 @@ export default function() {
         })
           .then(res => res.json())
       }
+    },
+
+    procedure: {
+      fetch: () => {
+        return fetch(`${API_ROOT}/companies/1/all_procedures`)
+          .then(res => res.json())
+      }
     }
   }
 }
