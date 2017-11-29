@@ -6,6 +6,7 @@ import ServiceContainer from './containers/ServiceContainer';
 import ClientContainer from './containers/ClientContainer';
 import ProjectContainer from './containers/ProjectContainer';
 import PieceContainer from './containers/PieceContainer';
+import ProcedureContainer from './containers/ProcedureContainer';
 import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
 
@@ -90,6 +91,7 @@ class App extends Component {
               <Route path='/clients' component={ClientContainer} />
               <Route path='/projects' component={ProjectContainer} />
               <Route path='/pieces' component={PieceContainer} />
+              <Route path='/summary' component={ProcedureContainer} />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>

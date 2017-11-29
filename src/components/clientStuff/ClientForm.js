@@ -9,6 +9,11 @@ class ClientForm extends Component{
     name: this.props.isModal ? this.props.client.name : ""
   }
 
+  focusTextInput = () => {
+    this.textInput.focus();
+  }
+
+
   handleNameChange = ev => {
     this.setState({name: ev.target.value})
   }
@@ -29,11 +34,15 @@ class ClientForm extends Component{
       <div className="sixteen wide column">
         <form onSubmit={this.handleSubmit}>
           <label htmlFor="">Name: </label>
-          <input type='text' onChange={this.handleNameChange} value={this.state.name}/>
+          <input type='text' onChange={this.handleNameChange} value={this.state.name} ref={(input) => {this.textInput = input; }}/>
           <input type='submit' />
         </form>
       </div>
     )
+  }
+
+  componentDidMount = () => {
+    this.focusTextInput()
   }
 }
 

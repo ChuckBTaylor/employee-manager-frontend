@@ -55,7 +55,9 @@ class EmployeeContainer extends Component{
   }
 
   componentDidMount = () => {
-    this.props.didFetchEmployees ? null : this.props.fetchEmployees()
+    if(!this.props.didFetchEmployees){
+      this.props.fetchEmployees()
+    }
   }
 }
 

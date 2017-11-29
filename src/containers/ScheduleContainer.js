@@ -40,7 +40,9 @@ class ScheduleContainer extends Component{
       this.props.fetchEmployees()
         .then(() => this.props.fetchSchedules())
     } else {
-      this.props.didFetchSchedules ? null : this.props.fetchSchedules()
+      if(!this.props.didFetchSchedules){
+        this.props.fetchSchedules()
+      }
     }
 
     if(this.props.employees.length > 0){

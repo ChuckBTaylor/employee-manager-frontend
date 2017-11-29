@@ -83,7 +83,9 @@ class ProjectContainer extends Component{
   componentDidMount = () => {
     if(this.props.didFetchClients){
       if(this.props.didFetchProjects){
-        this.props.didFetchPieces ? null : this.props.fetchPieces(this.props.projects)
+        if(!this.props.didFetchPieces){
+          this.props.fetchPieces()
+        }
       } else {
         this.props.fetchProjects()
           .then(() => this.props.fetchPieces(this.props.projects))

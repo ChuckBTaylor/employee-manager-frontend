@@ -52,7 +52,9 @@ class ServiceContainer extends Component{
   }
 
   componentDidMount = () => {
-    this.props.didFetchServices ? null : this.props.fetchServices()
+    if(!this.props.didFetchServices){
+      this.props.fetchServices()
+    }
   }
 }
 
