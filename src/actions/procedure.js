@@ -16,7 +16,8 @@ export function fetchProcedures(){
             complete: procedure.complete,
             pieceID: procedure.piece_id,
             serviceID: procedure.service_id,
-            expectedTime: procedure.expected_time
+            projectID: piece.projectID,
+            estimatedTime: procedure.estimated_time
           }
         })
         dispatch({type: "FETCHED_PROCEDURES", payload: formatted})
@@ -24,8 +25,10 @@ export function fetchProcedures(){
   }
 }
 
+
 export function patchProcedure(procedure){
   return function(dispatch){
     dispatch({type: "PATCH_PROCEDURE", payload: procedure})
+    return api().procedure.patch(procedure)
   }
 }

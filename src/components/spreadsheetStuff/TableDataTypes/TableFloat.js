@@ -12,7 +12,9 @@ class TableFloat extends Component{
     if(!ev.target.value.match(/\.$/)){
       this.props.onTDC({...this.props, newData: +ev.target.value, cursorPosition: cPos})
     } else {
-      this.setState({newData: ev.target.value})
+      if(!ev.target.value.slice(0,-1).match(/\./)){
+        this.setState({newData: ev.target.value})
+      }
     }
   }
 
@@ -21,7 +23,6 @@ class TableFloat extends Component{
   }
 
   render(){
-    console.log(this.state);
     return(
       <td>
         <input
@@ -52,7 +53,7 @@ class TableFloat extends Component{
 }
 
 TableFloat.defaultProps = {
-  newData: 0,
+  newData: "",
   id: 0,
   rowNum: 0,
   colNum: 0,

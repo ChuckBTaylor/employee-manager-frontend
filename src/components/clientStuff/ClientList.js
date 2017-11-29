@@ -8,6 +8,7 @@ const ClientList = (props) => {
 
   return (
   <div className='four wide column'>
+    <h2>Active Clients</h2>
     <ul>
       {clients}
     </ul>

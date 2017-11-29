@@ -17,7 +17,7 @@ const RowData = props => {
       case "string":
         return (<TableText cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
       default:
-        return (<td> Invalid Format! </td>);
+        return (<td> Invalid Format!{props.data} </td>);
     }
   }
 }

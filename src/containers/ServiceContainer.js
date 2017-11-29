@@ -37,7 +37,6 @@ class ServiceContainer extends Component{
   render(){
     return(
       <div>
-        <Route exact path='/services' render={() => (<button onClick={this.handleNewServiceClick} >New Service</button>) } /><br />
         <div className='ui grid'>
           <Route path='/services/new' render={props => (<ServiceForm {...props} />) } />
 
@@ -45,8 +44,13 @@ class ServiceContainer extends Component{
 
           {this.hasSelectedService() > 0 ? (<Route exact path='/services' render={() => <ServiceShow service={this.props.selectedService} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} />} />) : null}
         </div>
+        <Route exact path='/services' render={() => (<button onClick={this.handleNewServiceClick} >New Service</button>) } /><br />
 
-        <ServiceModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} service={this.props.selectedService} />
+        <ServiceModal
+          modalOpen={this.state.modalOpen}
+          onModalClose={this.onModalClose}
+          service={this.props.selectedService}
+        />
       </div>
     )
   }

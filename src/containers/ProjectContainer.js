@@ -60,13 +60,12 @@ class ProjectContainer extends Component{
 
     return(
       <div>
-        <Route exact path='/projects' render={() => (<button onClick={this.handleNewProjectClick} >New Project</button>) } /><br />
         <div className='ui grid'>
           <Route path='/projects/new' render={props => (<ProjectForm {...props} clients={this.props.clients}  selectedClient={this.props.selectedClient }/>) } />
 
           <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
 
-          {this.hasSelectedProject() > 0 ? (<Route exact path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} client={this.props.selectedClient} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} onNewPieceClick={this.onNewPieceClick} />} />) : null}
+          {this.hasSelectedProject() > 0 ? (<Route path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} client={this.props.selectedClient} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} onNewPieceClick={this.onNewPieceClick} />} />) : null}
         </div>
         <br />
         <label htmlFor="client-project-filter">Filter Projects By Client: </label>
@@ -75,7 +74,15 @@ class ProjectContainer extends Component{
           {clientOptions}
         </select>
         <br />
-        <ProjectModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} project={this.props.selectedProject} clients={this.props.clients} selectedClient={this.props.selectedClient} />
+        <Route exact path='/projects' render={() => (<button onClick={this.handleNewProjectClick} >New Project</button>) } />
+        <br />
+        <ProjectModal
+          modalOpen={this.state.modalOpen}
+          onModalClose={this.onModalClose}
+          project={this.props.selectedProject}
+          clients={this.props.clients}
+          selectedClient={this.props.selectedClient}
+        />
       </div>
     )
   }

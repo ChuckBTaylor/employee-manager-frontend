@@ -85,7 +85,7 @@ class App extends Component {
             </Menu.Item>
             <Menu.Item name='Summary' onClick={this.handleSummaryClick}>
               <Icon name='group object' />
-              CurrentProjects
+              Current Projects
             </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher>
@@ -98,7 +98,7 @@ class App extends Component {
               <Route path='/clients' component={ClientContainer} />
               <Route path='/projects' component={ProjectContainer} />
               <Route path='/pieces' component={PieceContainer} />
-              <Route path='/summary' component={ProcedureContainer} />
+              <Route path='/currentProjects' component={ProcedureContainer} />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>

@@ -7,7 +7,8 @@ class ProjectForm extends Component{
 
   state = {
     name: this.props.project.name || "",
-    clientID: this.props.project.clientID || this.props.selectedClient.id || -1
+    clientID: this.props.project.clientID || this.props.selectedClient.id || '',
+    complete: this.props.project.complete
   }
 
   handleNameChange = ev => {
@@ -35,14 +36,14 @@ class ProjectForm extends Component{
     return(
       <div className="sixteen wide column">
         <form onSubmit={this.handleSubmit}>
-          <label htmlFor="">Name: </label>
-          <input type='text' onChange={this.handleNameChange} value={this.state.name}/>
-          <br />
           <label htmlFor="select-client">Select a client</label>
-          <select required id='select-client' value={this.state.clientID} onChange={this.handleClientChange}>
-            <option value={-1} disabled >--Choose a Client--</option>
+          <select required id='select-client' value={this.state.clientID} onChange={this.handleClientChange} >
+            <option value={''} disabled >--Choose a Client--</option>
             {clientOptions}
           </select>
+          <br />
+          <label htmlFor="">Project Name: </label>
+          <input type='text' onChange={this.handleNameChange} value={this.state.name}/>
           <br />
           <input type='submit' />
         </form>

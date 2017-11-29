@@ -14,7 +14,7 @@ class Spreadsheet extends Component{
   handleTDC = ev => {
     this.setState({activeRow: ev.rowNum, activeColumn: ev.colNum, cursorPosition: ev.cursorPosition})
     const rowObj = findByID(this.props.rows, ev.id)
-
+    console.log(rowObj);
     this.props.onTableDataChange({...rowObj, ...ev})
   }
 
@@ -22,7 +22,6 @@ class Spreadsheet extends Component{
   //   return objectArrayToObject(props.rows, 'id')
   // }
   render(){
-    console.log("Spreadsheet", this.state);
     return(
     <div>
       <table>
