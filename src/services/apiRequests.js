@@ -249,6 +249,13 @@ export default function() {
         })
           .then(res => res.json())
       }
+    },
+
+    operation: {
+      fetch: () => {
+        return fetch(`${API_ROOT}/companies/1/operations`)
+          .then(res => res.json())
+      }
     }
   }
 }

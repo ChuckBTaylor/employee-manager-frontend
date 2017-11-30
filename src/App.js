@@ -7,6 +7,7 @@ import { fetchClients } from './actions/client';
 import { fetchProjects } from './actions/project';
 import { fetchPieces } from './actions/piece';
 import { fetchProcedures } from './actions/procedure';
+import { fetchOperations } from './actions/operation';
 import ScheduleContainer from './containers/ScheduleContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
 import ServiceContainer from './containers/ServiceContainer';
@@ -14,6 +15,7 @@ import ClientContainer from './containers/ClientContainer';
 import ProjectContainer from './containers/ProjectContainer';
 import PieceContainer from './containers/PieceContainer';
 import ProcedureContainer from './containers/ProcedureContainer';
+import OperationContainer from './containers/OperationContainer';
 import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
 
@@ -53,6 +55,10 @@ class App extends Component {
     this.props.history.push('/currentProjects')
   }
 
+  handleOperationClick = () => {
+    this.props.history.push('/weeklyPlanner')
+  }
+
   render() {
     return (
       <div>
@@ -87,6 +93,10 @@ class App extends Component {
               <Icon name='group object' />
               Current Projects
             </Menu.Item>
+            <Menu.Item name='Planner' onClick={this.handleOperationClick}>
+              <Icon name='add to calendar' />
+              Planner
+            </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher>
             <Segment basic>
@@ -99,6 +109,7 @@ class App extends Component {
               <Route path='/projects' component={ProjectContainer} />
               <Route path='/pieces' component={PieceContainer} />
               <Route path='/currentProjects' component={ProcedureContainer} />
+              <Route path='/weeklyPlanner' component={OperationContainer} />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
@@ -109,11 +120,12 @@ class App extends Component {
   componentDidMount = () => {
     Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces()])
       .then(() => this.props.fetchProcedures())
+        .then(() => this.props.fetchOperations())
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures }, dispatch)
+  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures, fetchOperations }, dispatch)
 }
 
 // const mapStateToProps = () => {}

@@ -47,7 +47,7 @@ class PieceContainer extends Component{
   render(){
     const pieceServices = []
     if(this.hasSelectedPiece()){
-      const procedures = this.props.procedures.filter(procedure => procedure.pieceID === this.props.selectedPiece.id).forEach(procedure => pieceServices.push(findByID(this.props.services, procedure.serviceID)))
+      this.props.procedures.filter(procedure => procedure.pieceID === this.props.selectedPiece.id).forEach(procedure => pieceServices.push(findByID(this.props.services, procedure.serviceID)))
     }
 
     const pieceServiceIDs = pieceServices.map(service => service.id)

@@ -1,4 +1,4 @@
-import api from '../services/apiRequests'
+import api from '../services/apiRequests';
 
 export function fetchEmployees(){
   return function(dispatch){

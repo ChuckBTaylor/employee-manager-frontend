@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createPiece, patchPiece } from '../../actions/piece';
 import { Dropdown } from 'semantic-ui-react';
-import { findByID } from '../../helpers/generalHelpers';
 
 class PieceForm extends Component{
 
