@@ -21,7 +21,7 @@ class ProcedureContainer extends Component{
 
   onTableDataChange = ev => {
     console.log(ev);
-    const newProcedure = (({id, name, complete, estimatedTime, pieceID, serviceID}) => ({id, name, complete, estimatedTime, pieceID, serviceID}))(ev)
+    const newProcedure = (({id, name, complete, estimatedTime, pieceID, serviceID, projectID}) => ({id, name, complete, estimatedTime, pieceID, serviceID, projectID}))(ev)
     console.log(newProcedure);
     newProcedure[ev.colName] = ev.newData
     this.props.patchProcedure(newProcedure)
@@ -79,7 +79,6 @@ class ProcedureContainer extends Component{
 
     const columnFilters = columnKeys.filter(column => !column.match(/ID$/i))
     const columns = columnFilters.map(column => ({key: column, name: column, isImmutable: false}))
-
     return(
       <div>
       <h2>All Active Projects' Processes</h2>

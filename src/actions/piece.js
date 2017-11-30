@@ -2,6 +2,7 @@ import api from '../services/apiRequests';
 import { findByID } from '../helpers/generalHelpers';
 
 
+
 export function fetchPieces(){
   return function(dispatch){
     dispatch({type: "FETCHING_PIECES"})
@@ -20,6 +21,19 @@ export function fetchPieces(){
   }
 }
 
+
+function createProcedureFromPieces(procedure, piece, service){
+  return{
+    name: `${piece.name} - ${service.name}`,
+    id: procedure.id,
+    estimatedTime: service.defaultTime,
+    complete: procedure.complete,
+    pieceID: piece.id,
+    serviceID: service.id,
+    projectID: piece.projetID
+  }
+}
+
 export function createPiece(piece){
   return function(dispatch, getState){
     dispatch({type: "CREATE_PIECE", payload: piece})
@@ -29,14 +43,8 @@ export function createPiece(piece){
         dispatch({type: "ADD_ID_TO_NEW_PIECE", payload: json.piece.id})
 
         json.procedures.forEach(procedure => {
-          const formatted = {
-            id: procedure.id,
-            serviceID: procedure.service_id,
-            pieceID: procedure.piece_id,
-            estimatedTime: procedure.estimated_time,
-            complete: procedure.complete,
-            projectID: piece.projectID
-          }
+          const service = findByID(getState().services.list, procedure.service_id)
+          const formatted = createProcedureFromPieces(procedure, piece, service)
           dispatch({type: "CREATE_PROCEDURE", payload: formatted})
         })
       })
@@ -45,10 +53,17 @@ export function createPiece(piece){
 
 export function patchPiece(piece){
   return function(dispatch, getState){
-    debugger
     dispatch({type: "PATCH_PIECE", payload: piece})
-    const clientID = findByID(getState().projects.list, piece.projectID).clientID
-    return api().piece.patch({...piece, clientID})
+    console.log("from the action", piece);
+    return api().piece.patch(piece)
+      .then(json => {
+
+        json.procedures.forEach(procedure => {
+          const service = findByID(getState().services.list, procedure.service_id)
+          const formatted = createProcedureFromPieces(procedure, piece, service)
+          dispatch({type: "CREATE_PROCEDURE", payload: formatted})
+        })
+      })
   }
 }
 

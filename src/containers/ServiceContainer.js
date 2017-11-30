@@ -35,6 +35,7 @@ class ServiceContainer extends Component{
   }
 
   render(){
+    console.log(this.props.services);
     return(
       <div>
         <div className='ui grid'>

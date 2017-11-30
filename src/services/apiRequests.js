@@ -216,7 +216,7 @@ export default function() {
 
       patch: piece => {
         const body = (({name, id}) => ({name, id}))(piece)
-        const json = JSON.stringify({...body})
+        const json = JSON.stringify({...body, service_ids: piece.serviceIDs})
         return fetch(`${API_ROOT}/companies/1/pieces/${piece.id}`, {
           ...railsPatch,
           body: json
