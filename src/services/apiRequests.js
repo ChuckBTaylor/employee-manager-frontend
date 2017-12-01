@@ -267,6 +267,26 @@ export default function() {
       fetch: () => {
         return fetch(`${API_ROOT}/companies/1/planners`)
           .then(res => res.json())
+      },
+
+      addToPlanner: (project_id, id) => { //projectID, plannerID
+        const body = {planner: {project_id, id}}
+        const json = JSON.stringify(body)
+        return fetch(`${API_ROOT}/companies/1/planners/${id}/add_project`, {
+          ...railsPost,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      removeFromPlanner: (project_id, id) => { //projectID, plannerID
+        const body = {planner: {project_id, id}}
+        const json = JSON.stringify(body)
+        return fetch(`${API_ROOT}/companies/1/planners/${id}/remove_project`, {
+          ...railsDestroy,
+          body: json
+        })
+          .then(res => res.json())
       }
     }
   }

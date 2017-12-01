@@ -11,9 +11,6 @@ export default function operationReducer(state = {
     case "FETCHED_OPERATIONS":
       return {...state, list: action.payload, fetchingOperations: false, didFetch: true};
 
-    case "ADD_PROJECT_TO_PLANNER":
-      return {...state, plannerProjects: [...state.plannerProjects, action.payload]};
-
     default:
       return state;
   }

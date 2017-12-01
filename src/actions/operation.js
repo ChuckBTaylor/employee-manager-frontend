@@ -6,7 +6,6 @@ export function fetchOperations(){
     dispatch({type: "FETCHING_OPERATIONS"})
     return api().operation.fetch()
       .then(json => {
-        console.log(json);
         const formatted = json.map(operation => {
           return{
             id: operation.id,
@@ -18,12 +17,6 @@ export function fetchOperations(){
         })
         dispatch({type: "FETCHED_OPERATIONS", payload: formatted})
       })
-  }
-}
-
-export function addToWeeklyPlanner(projectID){
-  return function(dispatch){
-    dispatch({type: "ADD_PROJECT_TO_PLANNER", payload: projectID})
   }
 }
 

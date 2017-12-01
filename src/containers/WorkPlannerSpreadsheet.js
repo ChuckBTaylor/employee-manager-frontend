@@ -25,6 +25,7 @@ class WorkPlannerSpreadsheet extends Component{
         blockHeaders={project}
         sheetWidth={sheetWidth + this.calculateRowHeadersLength()}
         employeeCount={employeeCount}
+        onXClick={this.props.onXClick}
       />))
 
     // console.log("WorkPlannerSpreadsheet rowHeaders", this.props.rowHeaders);
@@ -74,7 +75,8 @@ WorkPlannerSpreadsheet.defaultProps = {
   cellContents: {}, //incorporate operations in here
   onTableDataChange: ev => console.log("function onTableDataChange(ev){ev}", ev),
   autoFormatColumnHeaders: true,
-  hasEmptyTopLeft: true
+  hasEmptyTopLeft: true,
+  onXClick: id => console.log(id, "from the WorkPlannerSpreadsheet compoenent")
 
 }
 

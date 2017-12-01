@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import cuid from 'cuid';
 import { findByID } from '../helpers/generalHelpers';
 
-class SelectComponent extends Component{
+const SelectComponent = props => {
 
-  handleSelectChange = ev => {
-    return this.props.onSelectChange(ev.target.value)
+  const handleSelectChange = ev => {
+    return props.onSelectChange(ev.target.value)
   }
 
-  render(){
-    const optionedOptions = this.props.options.map(option => (<option value={option.id} key={cuid()} >{option.name}</option>))
-    return(
-      <select value={this.props.value} onChange={this.handleSelectChange}>
-        <option value="" disabled>{this.props.defaultText}</option>
-        {optionedOptions}
-      </select>
-    )
-  }
+  const optionedOptions = props.options.map(option => (<option value={option.id} key={cuid()} >{option.name}</option>))
+  return(
+    <select value={props.value} onChange={handleSelectChange}>
+      {props.hasDefaultValue ? <option value="" disabled>{props.defaultText}</option> : null}
+      {optionedOptions}
+    </select>
+  )
 }
 
 SelectComponent.defaultProps = {
   defaultValue: "",
   defaultText: "",
-  options: []
+  options: [],
+  hasDefaultValue: true
 }
 
 export default SelectComponent;

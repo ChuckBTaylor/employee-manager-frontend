@@ -18,10 +18,11 @@ const PlannerRowList = props => {
       employeeCount={props.employeeCount}
       cellContents={props.cellContents}
     /> )) : null
+  const projectInfo = {name: props.blockHeaders.name, id: props.blockHeaders.id}
 
   return (
   <tbody>
-    <HeaderRow text={props.blockHeaders.name} sheetWidth={props.sheetWidth} />
+    <HeaderRow info={projectInfo} sheetWidth={props.sheetWidth} onXClick={props.onXClick} />
     <LabelRow labels={labels} employeeCount={props.employeeCount} />
     {infoRows}
   </tbody>
@@ -42,7 +43,8 @@ PlannerRowList.defaultProps = {
   },
   cellContents: [{}],
   sheetWidth: 0,
-  employeeCount: 0
+  employeeCount: 0,
+  onXClick: id => console.log(id, "from the PlannerRowList component")
 }
 
 export default PlannerRowList
