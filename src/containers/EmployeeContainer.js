@@ -39,8 +39,6 @@ class EmployeeContainer extends Component{
   render(){
     return(
       <div>
-        <Route exact path='/employees' render={() => (<button onClick={this.handleNewEmployeeClick} > Create New Employee</button>)} />
-
         <div className='ui grid'>
           <Route path='/employees/new' render={props => (<EmployeeForm {...props} />) } />
 
@@ -48,7 +46,7 @@ class EmployeeContainer extends Component{
 
           {this.hasSelectedEmployee() ? (<Route exact path='/employees' render={() => (<EmployeeShow employee={this.props.selectedEmployee} onDeleteClick={this.onDeleteClick} onEditClick={this.onEditClick} />)} />) : null}
         </div>
-
+        <Route exact path='/employees' render={() => (<button onClick={this.handleNewEmployeeClick} > Create New Employee</button>)} />
         <EmployeeModal modalOpen={this.state.modalOpen} onModalClose={this.onModalClose} employee={this.props.selectedEmployee} />
       </div>
     )

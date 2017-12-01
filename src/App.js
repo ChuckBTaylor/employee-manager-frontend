@@ -7,6 +7,9 @@ import { fetchClients } from './actions/client';
 import { fetchProjects } from './actions/project';
 import { fetchPieces } from './actions/piece';
 import { fetchProcedures } from './actions/procedure';
+import { fetchOperations } from './actions/operation';
+import { fetchEmployees } from './actions/employee';
+import { fetchPlanners, fetchPlannerProjects } from './actions/planner';
 import ScheduleContainer from './containers/ScheduleContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
 import ServiceContainer from './containers/ServiceContainer';
@@ -14,6 +17,7 @@ import ClientContainer from './containers/ClientContainer';
 import ProjectContainer from './containers/ProjectContainer';
 import PieceContainer from './containers/PieceContainer';
 import ProcedureContainer from './containers/ProcedureContainer';
+import OperationContainer from './containers/OperationContainer';
 import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
 
@@ -53,6 +57,10 @@ class App extends Component {
     this.props.history.push('/currentProjects')
   }
 
+  handleOperationClick = () => {
+    this.props.history.push('/weeklyPlanner')
+  }
+
   render() {
     return (
       <div>
@@ -85,7 +93,11 @@ class App extends Component {
             </Menu.Item>
             <Menu.Item name='Summary' onClick={this.handleSummaryClick}>
               <Icon name='group object' />
-              CurrentProjects
+              Current Projects
+            </Menu.Item>
+            <Menu.Item name='Planner' onClick={this.handleOperationClick}>
+              <Icon name='add to calendar' />
+              Planner
             </Menu.Item>
           </Sidebar>
           <Sidebar.Pusher>
@@ -98,7 +110,8 @@ class App extends Component {
               <Route path='/clients' component={ClientContainer} />
               <Route path='/projects' component={ProjectContainer} />
               <Route path='/pieces' component={PieceContainer} />
-              <Route path='/summary' component={ProcedureContainer} />
+              <Route path='/currentProjects' component={ProcedureContainer} />
+              <Route path='/weeklyPlanner' component={OperationContainer} />
             </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
@@ -107,13 +120,15 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces()])
+    Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces(), this.props.fetchPlanners()])
       .then(() => this.props.fetchProcedures())
+        .then(() => this.props.fetchOperations())
+    this.props.fetchEmployees()
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures }, dispatch)
+  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures, fetchOperations, fetchEmployees, fetchPlannerProjects, fetchPlanners }, dispatch)
 }
 
 // const mapStateToProps = () => {}

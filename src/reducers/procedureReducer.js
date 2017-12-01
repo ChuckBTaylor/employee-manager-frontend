@@ -37,23 +37,34 @@ export default function procedureReducer(state = {
       })
       return {...state, list: patchedProcedures, selectedProcedure: patchedProcedures[index]};
 
-    case "DESTROY_CLIENT":
-      const clientSanitizedProcedures = state.list.filter(procedure => action.payload.projectIDs.includes(procedure.projectID))
-      return {...state, list: clientSanitizedProcedures};
+    case "PATCH_PIECE":
+      const removePatchedPieceProcedures = state.list.filter(procedure => {
+        if(procedure.pieceID !== action.payload.id) return true
+        if(action.payload.serviceIDs.includes(procedure.serviceID)) return true
+        return false
+      })
+      return {...state, list: removePatchedPieceProcedures};
 
+    case "DESTROY_CLIENT":
     case "DESTROY_PROJECT":
-      const sanitizedProcedures = state.list.filter(procedure => procedure.projectID !== action.payload.id)
-      return {...state, list: sanitizedProcedures}
+      const projectSanitizedProcedures = state.list.filter(procedure => action.payload.projectIDs.includes(procedure.projectID))
+      return {...state, list: projectSanitizedProcedures, selectedProcedure: {}};
+
+    case "DESTROY_PIECE":
+      const pieceSanitizedProcedures = state.list.filter(procedure => procedure.pieceID !== action.payload)
+      return {...state, list: pieceSanitizedProcedures, selectedProcedure: {}}
 
     case "DESTROY_PROCEDURE":
-      const filteredProcedures = state.list.filter(procedure => procedure.id !== action.payload)
-      return {...state, list: filteredProcedures, selectedProcedure: {}};
+      const sanitizedProcedures = state.list.filter(procedure => procedure.id !== action.payload)
+        return {...state, list: sanitizedProcedures, selectedProcedure: {}};
+
 
     case(!!action.type.match("SELECT") ? action.type : null):
       const projectProcedures = state.list.filter(procedure => procedure.projectID === action.payload.projectID)
+
       switch(action.type){
-        case "SELECT_PROJECT": //Yes, SELECT_PROJECT. A new project is selected, the right procedures are loaded
-        return state;
+        case "SELECT_PROJECT":
+        return {...state, projectProcedures};
 
         case "SELECT_PROCEDURE":
         return {...state, selectedProcedure: action.payload, projectProcedures};

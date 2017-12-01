@@ -26,7 +26,8 @@ export function patchClient(client){
 export function destroyClient(client){
   return function(dispatch, getState){
     const projectIDs = getState().projects.list.filter(project => project.clientID === client.id).map(project => project.id)
-    dispatch({type: "DESTROY_CLIENT", payload: {...client, projectIDs}})
+    const pieceIDs = getState().pieces.list.filter(piece => projectIDs.includes(piece.projectID)).map(piece => piece.id)
+    dispatch({type: "DESTROY_CLIENT", payload: {...client, projectIDs, pieceIDs}})
     return api().client.destroy(client)
   }
 }

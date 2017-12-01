@@ -20,18 +20,16 @@ class ProcedureContainer extends Component{
   }
 
   onTableDataChange = ev => {
-    console.log(ev);
-    const newProcedure = (({id, name, complete, expectedTime, pieceID, serviceID}) => ({id, name, complete, expectedTime, pieceID, serviceID}))(ev)
-    console.log(newProcedure);
+    const newProcedure = (({id, name, complete, estimatedTime, pieceID, serviceID, projectID}) => ({id, name, complete, estimatedTime, pieceID, serviceID, projectID}))(ev)
     newProcedure[ev.colName] = ev.newData
     this.props.patchProcedure(newProcedure)
   }
 
-  render(){
-    const columnKeys = this.props.procedures.length > 0 ? Array.from(Object.keys(this.props.procedures[0])) : []
+  handleFilterChange = ev => {
+    this.setState({filteredProject: +ev.target.value})
+  }
 
-    const columnFilters = columnKeys.filter(column => !column.match(/ID$/i))
-    const columns = columnFilters.map(column => ({key: column, name: column, isImmutable: false}))
+  render(){
     // columns = [
     //   {
     //     key: 'name',
@@ -70,10 +68,26 @@ class ProcedureContainer extends Component{
     //     ['3,0', '3,1', '3,2', '3,3']
     //   ]
     // }
+    const projectOptions = this.props.projects.map((project, idx) => (<option value={project.id} key={idx*10}>{project.name}</option>))
+
+
+    const filteredProcedures = this.state.filteredProject === -1 ? this.props.procedures : this.props.procedures.filter(procedure => procedure.projectID === this.state.filteredProject)
+
+    const columnKeys = filteredProcedures.length > 0 ? Array.from(Object.keys(filteredProcedures[0])) : []
+
+    const columnFilters = columnKeys.filter(column => !column.match(/ID$/i))
+    const columns = columnFilters.map(column => ({key: column, name: column, isImmutable: false}))
     return(
       <div>
+      <h2>All Active Projects' Processes</h2>
+      <p>Filter By Project:</p>
+      <select id='procedure-project-filter' value={this.state.filteredProject} onChange={this.handleFilterChange}>
+        <option value={-1}>All</option>
+        {projectOptions}
+      </select>
+      <br />
       <Spreadsheet
-        rows={this.props.procedures}
+        rows={filteredProcedures}
         columnHeaders={columns}
         onTableDataChange={this.onTableDataChange}
         autoFormatColumnHeaders={true}
@@ -118,6 +132,7 @@ const mapStateToProps = state => {
   return {
     didFetchProcedures: state.procedures.didFetch,
     procedures: state.procedures.list,
+    projects: state.projects.list,
     didFetchServices: state.services.didFetch,
     didFetchPieces: state.pieces.didFetch
   }

@@ -10,10 +10,11 @@ const ServiceShow = props => {
   const handleDeleteClick = () => {
     props.onDeleteClick()
   }
-  
+
   return (
   <div className='six wide column'>
-    {props.service.name}<br />
+    <h2>{props.service.name}</h2><br />
+    <p>Default Time: {props.service.defaultTime} hours</p>
     <Button onClick={handleEditClick}>Edit {props.name}</Button>
     <Button onClick={handleDeleteClick}>Delete {props.name}</Button>
   </div>
@@ -21,7 +22,10 @@ const ServiceShow = props => {
 }
 
 ServiceShow.defaultProps = {
-
+  service: {
+    name: "",
+    defaultTime: 0
+  }
 }
 
 export default ServiceShow

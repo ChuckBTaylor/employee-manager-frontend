@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 class TableText extends Component{
 
   state = {
-    newData: this.props.newData
+    data: this.props.data
   }
 
   handleDataChange = ev => {
     const cursorPosition = ev.target.selectionStart
-    this.setState({newData: ev.target.value}, () => this.props.onTDC({...this.props, ...this.state, cursorPosition}))
+    this.setState({data: ev.target.value}, () => this.props.onTDC({...this.props, ...this.state, cursorPosition}))
   }
 
   focusTextInput = () => {
@@ -20,7 +20,7 @@ class TableText extends Component{
       <td>
         <input
         type="text"
-        value={this.state.newData}
+        value={this.state.data}
         onChange={this.handleDataChange}
         ref={input => this.textInput = input}
         onFocus={ev => {
@@ -39,7 +39,7 @@ class TableText extends Component{
 }
 
 TableText.defaultProps = {
-  newData: "",
+  data: "",
   id: 0,
   rowNum: 0,
   colNum: 0,
