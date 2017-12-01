@@ -256,6 +256,18 @@ export default function() {
         return fetch(`${API_ROOT}/companies/1/operations`)
           .then(res => res.json())
       }
+    },
+
+    planner: {
+      fetchProjects: monday => {
+        return fetch(`${API_ROOT}/companies/1/planners/${monday}`)
+          .then(res => res.json())
+      },
+
+      fetch: () => {
+        return fetch(`${API_ROOT}/companies/1/planners`)
+          .then(res => res.json())
+      }
     }
   }
 }

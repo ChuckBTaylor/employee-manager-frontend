@@ -8,6 +8,8 @@ import { fetchProjects } from './actions/project';
 import { fetchPieces } from './actions/piece';
 import { fetchProcedures } from './actions/procedure';
 import { fetchOperations } from './actions/operation';
+import { fetchEmployees } from './actions/employee';
+import { fetchPlanners, fetchPlannerProjects } from './actions/planner';
 import ScheduleContainer from './containers/ScheduleContainer';
 import EmployeeContainer from './containers/EmployeeContainer';
 import ServiceContainer from './containers/ServiceContainer';
@@ -118,14 +120,15 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces()])
+    Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces(), this.props.fetchPlanners()])
       .then(() => this.props.fetchProcedures())
         .then(() => this.props.fetchOperations())
+    this.props.fetchEmployees()
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures, fetchOperations }, dispatch)
+  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures, fetchOperations, fetchEmployees, fetchPlannerProjects, fetchPlanners }, dispatch)
 }
 
 // const mapStateToProps = () => {}

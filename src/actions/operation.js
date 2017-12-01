@@ -1,5 +1,5 @@
 import api from '../services/apiRequests';
-import { findByID } from '../helpers/generalHelpers';
+// import { findByID } from '../helpers/generalHelpers';
 
 export function fetchOperations(){
   return function(dispatch, getState){
@@ -10,6 +10,7 @@ export function fetchOperations(){
         const formatted = json.map(operation => {
           return{
             id: operation.id,
+            name: operation.name,
             employeeID: operation.employee_id,
             procedureID: operation.procedure_id,
             hours: operation.hours
@@ -17,5 +18,23 @@ export function fetchOperations(){
         })
         dispatch({type: "FETCHED_OPERATIONS", payload: formatted})
       })
+  }
+}
+
+export function addToWeeklyPlanner(projectID){
+  return function(dispatch){
+    dispatch({type: "ADD_PROJECT_TO_PLANNER", payload: projectID})
+  }
+}
+
+export function createOperation(operation){
+  return function(dispatch){
+
+  }
+}
+
+export function patchOperation(operation){
+  return function(dispatch){
+
   }
 }

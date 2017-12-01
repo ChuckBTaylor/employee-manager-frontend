@@ -20,9 +20,7 @@ class ProcedureContainer extends Component{
   }
 
   onTableDataChange = ev => {
-    console.log(ev);
     const newProcedure = (({id, name, complete, estimatedTime, pieceID, serviceID, projectID}) => ({id, name, complete, estimatedTime, pieceID, serviceID, projectID}))(ev)
-    console.log(newProcedure);
     newProcedure[ev.colName] = ev.newData
     this.props.patchProcedure(newProcedure)
   }

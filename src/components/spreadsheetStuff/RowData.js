@@ -15,7 +15,7 @@ const RowData = props => {
       case "number":
         return (<TableFloat cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
       case "string":
-        return (<TableText cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
+        return (<TableText cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} data={props.data} onTDC={props.onTDC} />);
       default:
         return (<td> Invalid Format!{props.data} </td>);
     }
@@ -23,12 +23,14 @@ const RowData = props => {
 }
 
 RowData.defaultProps = {
-  data: {},
+  data: "",
   isImmutable: false,
   onTDC: ev => console.log(ev),
   rowNum: 0,
   colNum: 0,
-  colName: ""
+  colName: "",
+  aRow: 0,
+  aCol: 0
 }
 
 export default RowData;
