@@ -12,9 +12,9 @@ class Spreadsheet extends Component{
   }
 
   handleTDC = ev => {
+    console.log(ev);
     this.setState({activeRow: ev.rowNum, activeColumn: ev.colNum, cursorPosition: ev.cursorPosition})
     const rowObj = findByID(this.props.rows, ev.id)
-    console.log(rowObj);
     this.props.onTableDataChange({...rowObj, ...ev})
   }
 

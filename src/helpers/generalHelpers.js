@@ -12,7 +12,7 @@ export function objectArrayToObject(arr, key){
 
 export function formatProjectForSpreadsheet(project, procedures){
   const formattedProcedures = procedures.map(procedure => {
-    return ((({name, estimatedTime, complete}) => ({name, estimatedTime, complete}))(procedure))
+    return ((({name, estimatedTime, complete, id}) => ({name, estimatedTime, complete, id}))(procedure))
   })
   return {
     ...project,

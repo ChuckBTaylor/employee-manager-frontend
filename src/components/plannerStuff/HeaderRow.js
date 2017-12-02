@@ -5,7 +5,7 @@ const HeaderRow = props => {
     ev.preventDefault()
     props.onXClick(props.info.id)
   }
-  return (
+  return ( //Project Name
   <tr>
     <th colSpan={props.sheetWidth - 1}><h2>{props.info.name}</h2></th>
     <td onClick={handleXClick}><i className='remove icon' /></td>

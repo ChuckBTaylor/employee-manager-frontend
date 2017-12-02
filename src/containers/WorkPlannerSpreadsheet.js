@@ -18,15 +18,25 @@ class WorkPlannerSpreadsheet extends Component{
   }
 
   render(){
-    const employeeCount = this.props.columnHeaders.length
+    const employeeIDs = this.props.columnHeaders.map(employee => employee.id)
+    const employeeCount = employeeIDs.length
+    employeeIDs.unshift('allottedTime')
     const sheetWidth = this.props.hasEmptyTopLeft ? employeeCount + 1 : employeeCount
-    const rowList = this.props.rowHeaders.map(project => (
-      <PlannerRowList key={cuid()}
-        blockHeaders={project}
-        sheetWidth={sheetWidth + this.calculateRowHeadersLength()}
-        employeeCount={employeeCount}
-        onXClick={this.props.onXClick}
-      />))
+    const rowList = this.props.rowHeaders.map((project, blockNumber) => {
+      const filteredCellContents = this.props.cellContents.filter(cell => cell.projectID === project.id)
+      return (
+        <PlannerRowList key={cuid()}
+          blockHeaders={project}
+          blockNumber={blockNumber}
+          sheetWidth={sheetWidth + this.calculateRowHeadersLength()}
+          employeeCount={employeeCount}
+          onXClick={this.props.onXClick}
+          employeeIDs={employeeIDs}
+          onTDC={this.props.onTableDataChange}
+          cellContents={filteredCellContents}
+        />
+      )
+    })
 
     // console.log("WorkPlannerSpreadsheet rowHeaders", this.props.rowHeaders);
     return(
@@ -72,11 +82,11 @@ WorkPlannerSpreadsheet.defaultProps = {
       id: -2
     }
   ],
-  cellContents: {}, //incorporate operations in here
-  onTableDataChange: ev => console.log("function onTableDataChange(ev){ev}", ev),
+  cellContents: [{}, {}], //incorporate operations in here
+  onTableDataChange: data => console.log("function onTableDataChange(data){data}", data),
   autoFormatColumnHeaders: true,
   hasEmptyTopLeft: true,
-  onXClick: id => console.log(id, "from the WorkPlannerSpreadsheet compoenent")
+  onXClick: id => console.log(id, "from the WorkPlannerSpreadsheet compoenent"),
 
 }
 

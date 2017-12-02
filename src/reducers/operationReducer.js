@@ -1,6 +1,5 @@
 export default function operationReducer(state = {
-  list: [],
-  plannerProjects: [],
+  list: {},
   fetchingOperations: false,
   didFetch: false
 }, action){ //plannerProjects array of projectIDs.
@@ -9,7 +8,9 @@ export default function operationReducer(state = {
       return {...state, fetchingOperations: true};
 
     case "FETCHED_OPERATIONS":
-      return {...state, list: action.payload, fetchingOperations: false, didFetch: true};
+      const newList = {...state.list}
+      newList[action.payload.plannerID] = action.payload.operations
+      return {...state, list: newList, fetchingOperations: false, didFetch: true};
 
     default:
       return state;

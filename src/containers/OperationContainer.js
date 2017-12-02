@@ -4,10 +4,10 @@ import WorkPlannerSpreadsheet from './WorkPlannerSpreadsheet';
 import { connect } from 'react-redux';
 import ConfirmModal from '../components/operationStuff/ConfirmModal';
 import { bindActionCreators } from 'redux';
-import { createOperation, patchOperation } from '../actions/operation';
+import { createOperation, patchOperation, fetchPlannerOperations } from '../actions/operation';
 import SelectComponent from '../components/SelectComponent';
 import { formatProjectForSpreadsheet, findByID } from '../helpers/generalHelpers';
-import { selectPlanner, fetchPlannerProjects, addToWeeklyPlanner, removeFromWeeklyPlanner } from '../actions/planner';
+import { selectPlanner, createPlanner, fetchPlannerProjects, addToWeeklyPlanner, removeFromWeeklyPlanner } from '../actions/planner';
 
 class OperationContainer extends Component{
 
@@ -31,7 +31,12 @@ class OperationContainer extends Component{
       this.props.selectPlanner(value)
     } else {
       this.props.fetchPlannerProjects(value)
+      this.props.fetchPlannerOperations(value)
     }
+  }
+
+  handleNewPlannerClick = () => {
+    this.props.createPlanner()
   }
 
   handleAddClick = () => {
@@ -44,10 +49,9 @@ class OperationContainer extends Component{
     }
   }
 
-  onTableDataChange = ev => {
-    const newOperation = (({id, name, complete, estimatedTime, pieceID, serviceID, projectID}) => ({id, name, complete, estimatedTime, pieceID, serviceID, projectID}))(ev)
-    newOperation[ev.colName] = ev.newData
-    this.props.patchOperation(newOperation)
+  onTableDataChange = data => {
+    console.log(data);
+    // this.props.patchOperation(newOperation)
   }
 
   onXClick = id => {
@@ -79,10 +83,10 @@ class OperationContainer extends Component{
       const procedures = this.props.procedures.filter(procedure => pieceIDs.includes(procedure.pieceID))
       return formatProjectForSpreadsheet(findByID(this.props.projects, projectID), procedures)
     })
+    const allottedTime = this.props.currentPlanner === -1 ? null : findByID(this.props.planners, this.props.currentPlanner).allottedTime
 
     return(
       <div>
-        <ul>
         <h1>Weekly Planner</h1>
         <h3>Choose Week</h3>
         <SelectComponent
@@ -91,14 +95,17 @@ class OperationContainer extends Component{
           onSelectChange={this.onPlannerChange}
           hasDefaultValue={false}
         />
+        <br />
+        <h3>Allotted Time for the week: {allottedTime}</h3>
 
         {this.props.plannerProjects.length < 1 ? null :
           <WorkPlannerSpreadsheet
             rowHeaders={formattedProjects}
             columnHeaders={this.props.employees}
             onTableDataChange={this.onTableDataChange}
-            autoFormatColumnHeaders={true}
+            autoFormatColumnHeaders={false}
             onXClick={this.onXClick}
+            cellContents={this.props.operations}
           />
         }
         <ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
@@ -126,7 +133,9 @@ class OperationContainer extends Component{
         {this.state.filteredProject === "" ? null :
           <button onClick={this.handleAddClick}>Add Project</button>
         }
-        </ul>
+        <br /><br /><br />
+        <button onClick={this.handleNewPlannerClick}>Create New Week</button>
+
       </div>
     )
   }
@@ -141,18 +150,19 @@ const mapStateToProps = state => {
   return {
     clients: state.clients.list,
     projects: state.projects.list,
+    currentPlanner: state.planners.currentPlanner,
     pieces: state.pieces.list,
     procedures: state.procedures.list,
-    operations: state.operations.list,
+    operations: state.operations.list[state.planners.currentPlanner],
     employees: state.employees.list,
     plannerProjects: state.planners.projectIDs, //{plannerID: [projectID, projectID], plannerID: [...]}
-    planners: state.planners.list,
-    currentPlanner: state.planners.currentPlanner
+    planners: state.planners.list
+
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPlannerProjects, removeFromWeeklyPlanner }, dispatch)
+  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPlannerProjects, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OperationContainer);

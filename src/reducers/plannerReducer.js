@@ -4,7 +4,8 @@ projectIDs: {},
 currentPlanner: -1,
 fetchingPlanners: false,
 didFetch: false,
-fetchingWeek: false
+fetchingWeek: false,
+creatingPlanner: false
 }, action){ //state.projectsIDs = {plannerID: [projectID, projectID], plannerID: [projectID, projectID]}
   switch(action.type){
     case "FETCHING_WEEK":
@@ -26,6 +27,15 @@ fetchingWeek: false
 
     case "FETCHED_PLANNERS":
       return {...state, list: action.payload};
+
+    case "CREATING_PLANNER":
+      return {...state, creatingPlanner: true};
+
+    case "CREATED_PLANNER":
+      const postList = [...state.list, action.payload]
+      const postProjectIDs = {...state.projectIDs}
+      postProjectIDs[action.payload.id] = []
+      return {...state, creatingPlanner: false, list: postList, projectIDs: postProjectIDs, currentPlanner: action.payload.id }
 
     case "SELECT_PLANNER":
       return {...state, currentPlanner: action.payload};

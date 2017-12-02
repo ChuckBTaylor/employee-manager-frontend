@@ -2,8 +2,8 @@ import React from 'react';
 import cuid from 'cuid';
 
 const LabelRow = props => {
-  const headers = props.labels.map(key => (<th key={cuid()}><h3>{key}</h3></th>))
-  return (
+  const headers = props.labels.filter(key => key !== 'id').map(key => (<th key={cuid()}><h3>{key}</h3></th>))
+  return ( //Sub Headers (name, estimatedTime, complete)
   <tr>
     {headers}
     <th><h3>Alotted Time</h3></th>

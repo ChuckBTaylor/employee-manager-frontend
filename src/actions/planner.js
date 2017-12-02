@@ -1,5 +1,6 @@
 import api from '../services/apiRequests';
 import { formatForPlanner } from '../helpers/momentHelper';
+import { fetchPlannerOperations } from './operation';
 
 
 export function fetchPlannerProjects(week){ //week == plannerID
@@ -13,18 +14,35 @@ export function fetchPlannerProjects(week){ //week == plannerID
   }
 }
 
+function formatMondayFriday(planner){
+  return `Mon: ${planner.monday.slice(5).replace('-','/')}  Fri: ${planner.friday.slice(5).replace('-','/')}`
+}
+
 export function fetchPlanners(){
-  return function(dispatch){
-    console.log("Fetching Planners");
+  return function(dispatch, getState){
     dispatch({type: "FETCHING_PLANNERS"})
     api().planner.fetch()
       .then(json => {
         const payload = json.map(planner => {
-          const name = `Mon: ${planner.monday.slice(5).replace('-','/')}  Fri: ${planner.friday.slice(5).replace('-','/')}`
-          return {...planner, name, didFetchWeek: false }
+          const name = formatMondayFriday(planner)
+          const formatted  = {name, allottedTime: planner.allotted_time, didFetchWeek: false, id: planner.id}
+          return formatted;
         })
         dispatch({type: "FETCHED_PLANNERS", payload})
         fetchPlannerProjects(payload[payload.length - 1].id)(dispatch) //Fetches current week planner
+        fetchPlannerOperations(payload[payload.length - 1].id)(dispatch, getState) //Fetches Operations for week
+      })
+  }
+}
+
+export function createPlanner(){
+  return function(dispatch){
+    dispatch({type: "CREATING_PLANNER"})
+    api().planner.post()
+      .then(json => {
+        console.log(json);
+        const payload = {name: formatMondayFriday(json), didFetchWeek: true, id: json.id}
+        dispatch({type: "CREATED_PLANNER", payload})
       })
   }
 }

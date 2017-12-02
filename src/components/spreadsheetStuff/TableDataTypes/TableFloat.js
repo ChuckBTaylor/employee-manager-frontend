@@ -3,17 +3,17 @@ import React, { Component } from 'react';
 class TableFloat extends Component{
 
   state = {
-    newData: this.props.newData
+    data: this.props.data
   }
 
 
   handleDataChange = ev => {
     const cPos = ev.target.selectionStart
     if(!ev.target.value.match(/\.$/)){
-      this.props.onTDC({...this.props, newData: +ev.target.value, cursorPosition: cPos})
+      this.props.onTDC({...this.props, data: +ev.target.value, cursorPosition: cPos})
     } else {
       if(!ev.target.value.slice(0,-1).match(/\./)){
-        this.setState({newData: ev.target.value})
+        this.setState({data: ev.target.value})
       }
     }
   }
@@ -26,6 +26,7 @@ class TableFloat extends Component{
     return(
       <td>
         <input
+        size='5'
         onKeyPress={ev => {
           if((ev.which >= 48 && ev.which <= 57) || ev.which === 46){
             return
@@ -38,7 +39,7 @@ class TableFloat extends Component{
           ev.target.selectionStart = ev.target.selectionEnd = this.props.cPos
         }}
          type="text"
-         value={this.state.newData}
+         value={this.state.data}
          onChange={this.handleDataChange} />
       </td>
     )
@@ -53,14 +54,16 @@ class TableFloat extends Component{
 }
 
 TableFloat.defaultProps = {
-  newData: "",
+  data: 0,
   id: 0,
   rowNum: 0,
   colNum: 0,
   aRow: 0,
   aCol:0,
   isSelected: false,
-  cPos: 0
+  cPos: 0,
+  colName: "",
+  onTDC: ev => console.log(ev.target.value)
 }
 
 export default TableFloat;
