@@ -23,17 +23,24 @@ const InfoRow = props => {
     const operation = procedureOperations.find(cell => cell.employeeID === props.employeeIDs[i])
     const data = operation ? operation.hours : ""
     sum = procedureOperations.reduce((agg, cell) => agg + cell.hours, 0)
+    console.log(props.aEmp);
+    if(props.rowIsActive && props.aEmp === props.employeeIDs[i]){
+      console.log(`${props.employeeIDs[i]}`);
+    }
+    // console.log(props.rowIsActive);
+    // console.log(props.aEmp);
+    // console.log(props.employeeIDs[i]);
     inputRows.push(
       <TableFloat
         onTDC={props.onTDC}
+        procedureID={props.procedure.id}
+        employeeID={props.employeeIDs[i]}
         cPos={props.cPos}
-        aRow={props.aRow}
-        aCol={props.aCol}
-        rowNum={props.rowNum}
-        colNum={i}
         colName={props.employeeIDs[i]}
         key={cuid()}
         data={data}
+        id={operation ? operation.id : -1}
+        isSelected={props.rowIsActive && props.aEmp === props.employeeIDs[i]}
       />
     )
   }
@@ -61,10 +68,9 @@ InfoRow.defaultProps = {
   employeeCount: 0,
   cellContents: [{}, {}], //array of operation objects
   onTDC: data => console.log(data),
+  aEmp: -1,
   cPos: 0,
-  aRow: 0,
-  aCol: 0,
-  rowNum: 0,
+  rowIsActive: false,
   data: 0,
   employeeIDs: []
 }

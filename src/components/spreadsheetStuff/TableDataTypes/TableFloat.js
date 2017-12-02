@@ -46,7 +46,7 @@ class TableFloat extends Component{
   }
 
   componentDidMount = () => {
-    if(this.props.rowNum === this.props.aRow && this.props.colNum === this.props.aCol){
+    if(this.props.isSelected){
       this.focusTextInput()
     }
   }
@@ -55,14 +55,11 @@ class TableFloat extends Component{
 
 TableFloat.defaultProps = {
   data: 0,
-  id: 0,
+  id: -1,
   rowNum: 0,
   colNum: 0,
-  aRow: 0,
-  aCol:0,
   isSelected: false,
   cPos: 0,
-  colName: "",
   onTDC: ev => console.log(ev.target.value)
 }
 

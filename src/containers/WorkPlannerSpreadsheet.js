@@ -7,7 +7,9 @@ import PlannerRowList from '../components/plannerStuff/PlannerRowList';
 class WorkPlannerSpreadsheet extends Component{
 
   state = {
-
+    activeProcedure: -1,
+    activeEmployee: -1,
+    cursorPosition: -1
   }
 
   calculateRowHeadersLength = () => {
@@ -17,23 +19,36 @@ class WorkPlannerSpreadsheet extends Component{
     return 0
   }
 
+  onTDC = data => {
+    console.log(data);
+    this.setState({activeProcedure: data.procedureID, activeEmployee: data.employeeID, cursorPosition: data.cursorPosition})
+    if(data.id !== -1){
+      const operation = findByID(this.props.cellContents, data.id)
+      return this.props.onTableDataChange({...operation, data: data.data, existed: true})
+    }
+    return this.props.onTableDataChange({data: data.data, existed: false, procedureID: data.procedureID, employeeID: data.employeeID})
+  }
+
   render(){
     const employeeIDs = this.props.columnHeaders.map(employee => employee.id)
     const employeeCount = employeeIDs.length
     employeeIDs.unshift('allottedTime')
     const sheetWidth = this.props.hasEmptyTopLeft ? employeeCount + 1 : employeeCount
-    const rowList = this.props.rowHeaders.map((project, blockNumber) => {
+    const rowList = this.props.rowHeaders.map((project, blockID) => {
       const filteredCellContents = this.props.cellContents.filter(cell => cell.projectID === project.id)
       return (
         <PlannerRowList key={cuid()}
           blockHeaders={project}
-          blockNumber={blockNumber}
+          blockID={blockID}
           sheetWidth={sheetWidth + this.calculateRowHeadersLength()}
           employeeCount={employeeCount}
           onXClick={this.props.onXClick}
           employeeIDs={employeeIDs}
-          onTDC={this.props.onTableDataChange}
+          onTDC={this.onTDC}
           cellContents={filteredCellContents}
+          aPro={this.state.activeProcedure}
+          aEmp={this.state.activeEmployee}
+          cPos={this.state.cursorPosition}
         />
       )
     })

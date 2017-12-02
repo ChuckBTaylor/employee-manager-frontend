@@ -260,6 +260,26 @@ export default function() {
       fetchWeek: planner_id => {
         return fetch(`${API_ROOT}/companies/1/operations/week/${planner_id}`)
           .then(res => res.json())
+      },
+
+      post: operation => {
+        const body = (({hours}) => ({hours}))(operation)
+        const json = JSON.stringify({...body, planner_id: operation.plannerID, employee_id: operation.employeeID, procedure_id: operation.procedureID})
+        return fetch(`${API_ROOT}/companies/1/operations`, {
+          ...railsPost,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      patch: operation => {
+        const body = (({hours, id}) => ({hours, id}))(operation)
+        const json = JSON.stringify({...body})
+        return fetch(`${API_ROOT}/companies/1/operations/${operation.id}`, {
+          ...railsPatch,
+          body: json
+        })
+          .then(res => res.json())
       }
     },
 

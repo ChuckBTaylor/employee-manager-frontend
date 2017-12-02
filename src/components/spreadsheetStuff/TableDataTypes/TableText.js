@@ -32,7 +32,7 @@ class TableText extends Component{
   }
 
   componentDidMount = () => {
-    if(this.props.rowNum === this.props.aRow && this.props.colNum === this.props.aCol){
+    if(this.props.isSelected){
       this.focusTextInput()
     }
   }
@@ -41,10 +41,10 @@ class TableText extends Component{
 TableText.defaultProps = {
   data: "",
   id: 0,
-  rowNum: 0,
-  colNum: 0,
-  aRow: 0,
-  aCol: 0
+  cPos: -1,
+  isSelected: false,
+  rowNum: -1,
+  colNum: -1
 }
 
 export default TableText;

@@ -43,13 +43,27 @@ export function fetchPlannerOperations(plannerID){
 }
 
 export function createOperation(operation){
-  return function(dispatch){
-
+  return function(dispatch, getState){
+    dispatch({type: "CREATING_OPERATION"})
+    api().operation.post(operation)
+      .then(json => {
+        const payload = {
+          name: json.name,
+          id: json.id,
+          hours: json.hours,
+          plannerID: json.planner_id,
+          procedureID: json.procedure_id,
+          employeeID: json.employee_id,
+          projectID: findByID(getState().procedures.list, json.procedure_id).projectID
+        }
+        dispatch({type: "CREATED_OPERATION", payload })
+      })
   }
 }
 
 export function patchOperation(operation){
   return function(dispatch){
-
+    dispatch({type: "PATCH_OPERATION", payload: operation})
+    api().operation.patch(operation)
   }
 }

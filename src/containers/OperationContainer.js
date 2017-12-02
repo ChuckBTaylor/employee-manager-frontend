@@ -50,8 +50,11 @@ class OperationContainer extends Component{
   }
 
   onTableDataChange = data => {
-    console.log(data);
-    // this.props.patchOperation(newOperation)
+    if(data.existed){
+      this.props.patchOperation({...data, hours: data.data})
+    } else {
+      this.props.createOperation({...data, hours: data.data, plannerID: this.props.currentPlanner})
+    }
   }
 
   onXClick = id => {
