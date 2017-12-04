@@ -29,8 +29,10 @@ export function fetchPlanners(){
           return formatted;
         })
         dispatch({type: "FETCHED_PLANNERS", payload})
-        fetchPlannerProjects(payload[payload.length - 1].id)(dispatch) //Fetches current week planner
-        fetchPlannerOperations(payload[payload.length - 1].id)(dispatch, getState) //Fetches Operations for week
+        if(payload.length > 0){
+          fetchPlannerProjects(payload[payload.length - 1].id)(dispatch) //Fetches current week planner
+          fetchPlannerOperations(payload[payload.length - 1].id)(dispatch, getState) //Fetches Operations for week
+        }
       })
   }
 }
@@ -41,7 +43,7 @@ export function createPlanner(){
     api().planner.post()
       .then(json => {
         console.log(json);
-        const payload = {name: formatMondayFriday(json), didFetchWeek: true, id: json.id}
+        const payload = {name: formatMondayFriday(json), didFetchWeek: true, id: json.id, allottedTime: json.allotted_time}
         dispatch({type: "CREATED_PLANNER", payload})
       })
   }
@@ -65,6 +67,14 @@ export function removeFromWeeklyPlanner(projectID, plannerID){
   return function(dispatch){
     dispatch({type: "REMOVE_PROJECT_FROM_PLANNER", payload: projectID})
     api().planner.removeFromPlanner(projectID, plannerID)
+      .then(json => console.log(json))
+  }
+}
+
+export function patchPlanner(planner){
+  return function(dispatch){
+    dispatch({type: "PATCH_PLANNER", payload: planner})
+    api().planner.patch(planner)
       .then(json => console.log(json))
   }
 }

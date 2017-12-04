@@ -20,8 +20,10 @@ class WorkPlannerSpreadsheet extends Component{
   }
 
   onTDC = data => {
-    console.log(data);
     this.setState({activeProcedure: data.procedureID, activeEmployee: data.employeeID, cursorPosition: data.cursorPosition})
+    if(data.colName === "allottedTime"){
+      return this.props.onTableRowChange(data)
+    }
     if(data.id !== -1){
       const operation = findByID(this.props.cellContents, data.id)
       return this.props.onTableDataChange({...operation, data: data.data, existed: true})
@@ -32,7 +34,7 @@ class WorkPlannerSpreadsheet extends Component{
   render(){
     const employeeIDs = this.props.columnHeaders.map(employee => employee.id)
     const employeeCount = employeeIDs.length
-    employeeIDs.unshift('allottedTime')
+    // employeeIDs.unshift('allottedTime')
     const sheetWidth = this.props.hasEmptyTopLeft ? employeeCount + 1 : employeeCount
     const rowList = this.props.rowHeaders.map((project, blockID) => {
       const filteredCellContents = this.props.cellContents.filter(cell => cell.projectID === project.id)
@@ -99,6 +101,7 @@ WorkPlannerSpreadsheet.defaultProps = {
   ],
   cellContents: [{}, {}], //incorporate operations in here
   onTableDataChange: data => console.log("function onTableDataChange(data){data}", data),
+  onTableRowChange: data => console.log("function onTableRowChange(data){data}", data),
   autoFormatColumnHeaders: true,
   hasEmptyTopLeft: true,
   onXClick: id => console.log(id, "from the WorkPlannerSpreadsheet compoenent"),

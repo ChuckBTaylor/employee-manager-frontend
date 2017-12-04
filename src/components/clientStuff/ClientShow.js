@@ -21,6 +21,7 @@ const ClientShow = props => {
     {props.client.name}<br />
     Current Projects:
     {props.projects.length > 0 ? <ProjectList onSelectProject={props.onSelectProject}  projects={props.projects} /> : "No Current Projects"}
+    <br />
     <Button onClick={handleNewProjectClick}>New Project </Button>
     <Button onClick={handleEditClick}>Edit {props.name}</Button>
     <Button onClick={handleDeleteClick}>Delete {props.name}</Button>

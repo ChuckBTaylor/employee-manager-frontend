@@ -7,7 +7,8 @@ import { bindActionCreators } from 'redux';
 import { createOperation, patchOperation, fetchPlannerOperations } from '../actions/operation';
 import SelectComponent from '../components/SelectComponent';
 import { formatProjectForSpreadsheet, findByID } from '../helpers/generalHelpers';
-import { selectPlanner, createPlanner, fetchPlannerProjects, addToWeeklyPlanner, removeFromWeeklyPlanner } from '../actions/planner';
+import { selectPlanner, createPlanner, fetchPlannerProjects, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner } from '../actions/planner';
+import NumberInputComponent from '../components/NumberInputComponent';
 
 class OperationContainer extends Component{
 
@@ -57,6 +58,10 @@ class OperationContainer extends Component{
     }
   }
 
+  onTableRowChange = data => {
+    console.log('changing allotted Time', data);
+  }
+
   onXClick = id => {
     this.setState({modalOpen: true, projectOnBlock: id})
   }
@@ -74,6 +79,15 @@ class OperationContainer extends Component{
     this.setState({projectOnBlock: -1, modalOpen: false})
   }
 
+  handleAllottedTimeChange = ev => {
+    const planner = {...ev.object, allottedTime: ev.value}
+    this.props.patchPlanner(planner)
+  }
+
+  totalTimeWorkedThisWeek = () => {
+    return this.props.operations.reduce((agg, operation) => agg + operation.hours, 0)
+  }
+
   render(){
     //This works with the select options.  Gives the correct project after a client is selected
     const filteredProjectOptions = this.state.filteredClient === "" ? [] : this.props.projects.filter(project => project.clientID === this.state.filteredClient)
@@ -86,10 +100,12 @@ class OperationContainer extends Component{
       const procedures = this.props.procedures.filter(procedure => pieceIDs.includes(procedure.pieceID))
       return formatProjectForSpreadsheet(findByID(this.props.projects, projectID), procedures)
     })
-    const allottedTime = this.props.currentPlanner === -1 ? null : findByID(this.props.planners, this.props.currentPlanner).allottedTime
-
+    const currentPlanner = this.props.currentPlanner === -1 ? null : findByID(this.props.planners, this.props.currentPlanner)
+    const allottedTime = currentPlanner ? currentPlanner.allottedTime : 0
+    const totalTime = this.totalTimeWorkedThisWeek()
+    console.log(totalTime);
     return(
-      <div>
+      <div className='ui grid'>
         <h1>Weekly Planner</h1>
         <h3>Choose Week</h3>
         <SelectComponent
@@ -99,13 +115,24 @@ class OperationContainer extends Component{
           hasDefaultValue={false}
         />
         <br />
-        <h3>Allotted Time for the week: {allottedTime}</h3>
+        <h3>
+          Allotted Time for the week: {currentPlanner ?
+          <NumberInputComponent
+            onValueChange={this.handleAllottedTimeChange}
+            object={currentPlanner ? currentPlanner : null}
+            objectKey={'allottedTime'}
+          />
+        : null}
+        <br />
+        Time worked this week: {totalTime ? totalTime : 0}
+        </h3>
 
         {this.props.plannerProjects.length < 1 ? null :
           <WorkPlannerSpreadsheet
             rowHeaders={formattedProjects}
             columnHeaders={this.props.employees}
             onTableDataChange={this.onTableDataChange}
+            onTableRowChange={this.onTableRowChange}
             autoFormatColumnHeaders={false}
             onXClick={this.onXClick}
             cellContents={this.props.operations}
@@ -165,7 +192,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPlannerProjects, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations }, dispatch)
+  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPlannerProjects, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations, patchPlanner }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OperationContainer);

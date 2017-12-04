@@ -8,7 +8,7 @@ const ColumnHeaders = props => {
   </th>))
   return (
   <tr>
-    {props.hasEmptyTopLeft ? <th colSpan={props.rowHeadersLength - 1}> Key </th> : null}
+    {props.hasEmptyTopLeft ? <th colSpan={props.rowHeadersLength - 2}> Key </th> : null}
     {columns}
   </tr>
   )

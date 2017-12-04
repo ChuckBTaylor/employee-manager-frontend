@@ -10,11 +10,11 @@ export default function userReducer(state = {
       return {...state, loggingIn: true, logInFailed: false, errorMessage: ""};
 
     case "LOG_IN":
-      console.log(action.payload, "from userReducer");
-      localStorage.setItem('jwtToken', action.payload.jwt_token)
+      localStorage.setItem('jwtToken', action.payload.jwtToken)
       return {...state, loggingIn: false, isLoggedIn: true, currentUser: action.payload.user};
 
     case "LOG_OUT":
+    console.log('removing jwtToken');
     localStorage.removeItem('jwtToken')
       return {...state, isLoggedIn: false, currentUser: {}};
 

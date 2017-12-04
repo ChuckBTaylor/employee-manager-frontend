@@ -18,18 +18,11 @@ const InfoRow = props => {
   ))
   let inputRows = []
   let sum = 0
-  for (let i = 0; i < props.employeeCount + 1; i++) { // +1 [ALLOTTED_TIME x x x x x sum]
+  for (let i = 0; i < props.employeeCount; i++) { // +1 [ALLOTTED_TIME x x x x x sum]
     const procedureOperations = props.cellContents.filter(cell => cell.procedureID === props.procedure.id)
     const operation = procedureOperations.find(cell => cell.employeeID === props.employeeIDs[i])
     const data = operation ? operation.hours : ""
     sum = procedureOperations.reduce((agg, cell) => agg + cell.hours, 0)
-    console.log(props.aEmp);
-    if(props.rowIsActive && props.aEmp === props.employeeIDs[i]){
-      console.log(`${props.employeeIDs[i]}`);
-    }
-    // console.log(props.rowIsActive);
-    // console.log(props.aEmp);
-    // console.log(props.employeeIDs[i]);
     inputRows.push(
       <TableFloat
         onTDC={props.onTDC}

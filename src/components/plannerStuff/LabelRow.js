@@ -6,7 +6,7 @@ const LabelRow = props => {
   return ( //Sub Headers (name, estimatedTime, complete)
   <tr>
     {headers}
-    <th><h3>Alotted Time</h3></th>
+    {/*}<th><h3>Alotted Time</h3></th>*/}
     <th colSpan={props.employeeCount}><h3>Employee Hours Spent</h3></th>
     <th><h3>Sum</h3></th>
   </tr>

@@ -39,7 +39,7 @@ export default function clientReducer(state = {
 
     case "ADD_ID_TO_NEW_CLIENT":
       if(!state.list[state.list.length - 1].id){
-        const createdWithID = state.list[state.list.length - 1]
+        const createdWithID = {...state.list[state.list.length - 1]}
         createdWithID.id = action.payload
         return{...state, list: [...state.list.slice(0, -1), createdWithID]}
       }

@@ -51,6 +51,17 @@ creatingPlanner: false
       plannerIDsObject[state.currentPlanner] = sanitizedIDs //Receives new array of projectIDs
       return {...state, projectIDs: plannerIDsObject}
 
+    case "PATCH_PLANNER":
+    console.log(action.payload);
+      const updatedList = state.list.map(planner => {
+        if(planner.id === action.payload.id){
+          return action.payload
+        }
+        return planner
+      })
+      console.log(updatedList);
+      return {...state, list: updatedList};
+
     default:
       return state;
   }

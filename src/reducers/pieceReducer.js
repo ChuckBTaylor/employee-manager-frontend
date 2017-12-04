@@ -20,7 +20,7 @@ export default function pieceReducer(state = {
 
     case "ADD_ID_TO_NEW_PIECE":
       if(!state.list[state.list.length - 1].id){
-        const createdWithID = state.list[state.list.length - 1]
+        const createdWithID = {...state.list[state.list.length - 1]}
         createdWithID.id = action.payload
         return{...state, list: [...state.list.slice(0, -1), createdWithID]};
       }
@@ -46,7 +46,8 @@ export default function pieceReducer(state = {
       return {...state, list: sanitizedPieces}
 
     case "DESTROY_PIECE":
-      const filteredPieces = state.list.filter(piece => piece.id !== action.payload)
+      console.log(action.payload);
+      const filteredPieces = state.list.filter(piece => piece.id !== action.payload.id)
       return {...state, list: filteredPieces, selectedPiece: {}};
 
     case(!!action.type.match("SELECT") ? action.type : null):
