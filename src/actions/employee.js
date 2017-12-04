@@ -57,3 +57,25 @@ export function fetchSomething(){
       })
   }
 }
+
+export function logInEmployee(employee){
+  return function(dispatch){
+    dispatch({type: "LOGGING_IN"})
+    api().employee.logIn(employee)
+      .then(json => {
+        if(json.errors){
+          dispatch({type: "LOG_IN_FAILED", payload: json.message})
+        } else {
+          console.log('dispatching "LOG_IN"');
+          dispatch({type: "LOG_IN", payload: json})
+        }
+      })
+
+  }
+}
+
+export function logOutEmployee(employee){
+  return function(dispatch){
+    dispatch({type: "LOG_OUT"})
+  }
+}

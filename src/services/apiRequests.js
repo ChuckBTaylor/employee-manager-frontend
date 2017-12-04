@@ -50,6 +50,16 @@ export default function() {
           body: json
         })
           .then(res => res.json())
+      },
+
+      logIn: employee => {
+        console.log(employee, 'from apiRequests');
+        const json = JSON.stringify({name: employee.name, password: employee.password})
+        return fetch(`${API_ROOT}/login`, {
+          ...railsPost,
+          body: json
+        })
+          .then(res => res.json())
       }
     },
 
