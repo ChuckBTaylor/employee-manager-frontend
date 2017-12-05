@@ -4,13 +4,13 @@ class TableCheckbox extends Component{
 
 
   handleDataChange = ev => {
-    this.props.onTDC({...this.props, newData: !this.props.newData})
+    this.props.onTDC({...this.props, data: !this.props.data})
   }
 
   render(){
     return(
       <td onClick={this.handleDataChange}>
-        <i className={this.props.newData ? 'checkmark icon' : 'remove icon'} style={{color: this.props.newData ? 'green' : 'red'}}/>
+        <i className={this.props.data ? 'checkmark icon' : 'remove icon'} style={{color: this.props.data ? 'green' : 'red'}}/>
       </td>
     )
   }
@@ -19,7 +19,7 @@ class TableCheckbox extends Component{
 }
 
 TableCheckbox.defaultProps = {
-  newData: false,
+  data: false,
   id: 0,
   rowNum: 0,
   colNum: 0

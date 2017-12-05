@@ -55,9 +55,9 @@ class Calendar extends Component{
 
     const filteredSchedules = this.state.filteredEmployee === "" ? this.props.schedules : this.props.schedules.filter(sched => sched.employeeID === this.state.filteredEmployee)
     const withTitle = filteredSchedules.map(sched => ({...sched, title: sched.description}))
-
+    console.log(withTitle);
     const employeeColors = this.props.employees.map(emp => {return <div key={emp.id} className="four wide column" onClick={this.handleEmployeeClick} data-id={emp.id}><i className="circle icon" style={{color: emp.scheduleColor}}></i>{emp.name}</div>})
-
+    console.log(this.props);
     return(
       <div>
         <NewScheduleModal start={this.state.selectedStart} end={this.state.selectedEnd} onModalClose={this.onModalClose} modalOpen={this.state.modalOpen} selectedEmployee={this.props.selectedEmployee} onSelectEmployee={this.props.onSelectEmployee} isEdit={this.state.isEdit} id={this.state.selectedID} description={this.state.selectedDescription}/>
@@ -73,7 +73,6 @@ class Calendar extends Component{
         <br />
         <BigCalendar
           selectable
-          {...this.props}
           events={withTitle}
           eventPropGetter={this.getScheduleProps}
           timeslots={6}

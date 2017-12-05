@@ -23,8 +23,6 @@ class NumberInputComponent extends Component{
   }
 
   render(){
-    console.log('NIC state', this.state);
-    console.log(this.lastCharacterDecimal());
     return(
       <input
       size={this.props.size}

@@ -40,6 +40,7 @@ export function createPiece(piece){
     const clientID = findByID(getState().projects.list, piece.projectID).clientID
     return api().piece.post({...piece, clientID})
       .then(json => {
+        console.log(json);
         dispatch({type: "ADD_ID_TO_NEW_PIECE", payload: json.piece.id})
 
         json.procedures.forEach(procedure => {

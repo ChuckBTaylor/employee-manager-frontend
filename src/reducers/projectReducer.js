@@ -14,6 +14,7 @@ export default function projectReducer(state = {
       return state.didFetch ? state : {...state, fetchingProjects: true};
 
     case "FETCHED_PROJECTS":
+      if(state.didFetch){return state}
       const withID = action.payload.map(project => ({...project}))
       return {...state, list: withID, fetchingProjects: false, didFetch: true};
 
@@ -62,7 +63,10 @@ export default function projectReducer(state = {
 
         default:
           return state;
-      }
+      };
+
+    case "LOG_OUT":
+      return {...state, list: [], clientProjects: [], selectedProjects: {}, didFetch: false};
 
     default:
       return state;

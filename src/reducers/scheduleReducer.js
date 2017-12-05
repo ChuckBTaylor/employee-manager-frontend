@@ -37,7 +37,10 @@ export default function scheduleReducer(state = {
 
     case "DESTROY_EMPLOYEE":
       const sanitizedSchedules = state.list.filter(sched => sched.employeeID !== action.payload)
-      return {...state, list: sanitizedSchedules}
+      return {...state, list: sanitizedSchedules};
+
+    case "LOG_OUT":
+      return {...state, list: [], didFetch: false};
 
     default:
       return state

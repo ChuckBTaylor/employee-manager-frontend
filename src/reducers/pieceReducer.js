@@ -11,18 +11,19 @@ export default function pieceReducer(state = {
       return state.didFetch ? state : {...state, fetchingPieces: true};
 
     case "FETCHED_PIECES":
+      if(state.didFetch){return state}
       const withID = action.payload.map(piece => ({...piece}))
       return {...state, list: withID, fetchingPieces: false, didFetch: true};
 
     case "CREATE_PIECE":
-      const createWithID = {...action.payload}
-      return {...state, list: [...state.list, createWithID]};
+      const newPiece = {...action.payload}
+      return {...state, list: [...state.list, newPiece]};
 
     case "ADD_ID_TO_NEW_PIECE":
       if(!state.list[state.list.length - 1].id){
         const createdWithID = {...state.list[state.list.length - 1]}
         createdWithID.id = action.payload
-        return{...state, list: [...state.list.slice(0, -1), createdWithID]};
+        return {...state, list: [...state.list.slice(0, -1), createdWithID]};
       }
       return state;
 
@@ -62,6 +63,9 @@ export default function pieceReducer(state = {
         default:
           return state;
       }
+
+    case "LOG_OUT":
+      return {...state, list: [], selectedPiece: {}, projectPieces: [], didFetch: false};
 
     default:
       return state;

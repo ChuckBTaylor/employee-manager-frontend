@@ -10,9 +10,7 @@ export default function employeeReducer(state = {
       return state.didFetch ? state : {...state, fetchingEmployees: true};
 
     case "FETCHED_EMPLOYEES":
-      if(state.didFetch){
-        return state;
-      }
+      if(state.didFetch){return state}
       const withID = action.payload.map(employee => ({name: employee.name, scheduleColor: employee.schedule_color, id: employee.id, isAdmin: employee.is_admin}))
       return {...state, fetchingEmployees: false, list: withID, didFetch: true};
 
@@ -45,6 +43,9 @@ export default function employeeReducer(state = {
 
     case "SELECT_EMPLOYEE":
       return {...state, selectedEmployee: action.payload};
+
+    case "LOG_OUT":
+      return {...state, list: [], selectedEmployee: {}, didFetch: false};
 
     default:
       return state;

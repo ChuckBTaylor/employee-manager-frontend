@@ -11,6 +11,7 @@ export default function serviceReducer(state = {
       return state.didFetch ? state : {...state, fetchingServices: true};
 
     case "FETCHED_SERVICES":
+      if(state.didFetch){return state}
       const withID = action.payload.map(service => ({name: service.name, id: service.id, defaultTime: service.default_time}))
       return {...state, list: withID, fetchingServices: false, didFetch: true};
 
@@ -43,6 +44,9 @@ export default function serviceReducer(state = {
 
     case "SELECT_SERVICE":
       return {...state, selectedService: action.payload};
+
+    case "LOG_OUT":
+      return {...state, selectedService: {}, list: [], didFetch: false};
 
     default:
       return state;

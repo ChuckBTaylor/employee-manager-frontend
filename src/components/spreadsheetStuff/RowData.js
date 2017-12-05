@@ -11,7 +11,7 @@ const RowData = props => {
   } else {
     switch(typeof(props.data)){
       case "boolean":
-        return (<TableCheckbox cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} newData={props.data} onTDC={props.onTDC} />);
+        return (<TableCheckbox cPos={props.cPos} aRow={props.aRow} aCol={props.aCol} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} data={props.data} onTDC={props.onTDC} />);
       case "number":
         return (<TableFloat isSelected={props.aRow === props.rowNum && props.aCol === props.colNum} cPos={props.cPos} rowNum={props.rowNum} colNum={props.colNum} colName={props.colName} id={props.id} data={props.data} onTDC={props.onTDC} />);
       case "string":

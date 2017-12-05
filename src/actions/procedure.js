@@ -11,13 +11,14 @@ export function fetchProcedures(){
         const formatted = json.map(procedure => {
           const service = findByID(getState().services.list, procedure.service_id)
           const piece = findByID(getState().pieces.list, procedure.piece_id)
+
           return {
-            name: `${piece.name} - ${service.name}`,
+            name: `${piece ? piece.name : "ERROR"} - ${service.name}`,
             id: procedure.id,
             complete: procedure.complete,
             pieceID: procedure.piece_id,
             serviceID: procedure.service_id,
-            projectID: piece.projectID,
+            projectID: piece ? piece.projectID : -1,
             estimatedTime: procedure.estimated_time
           }
         })

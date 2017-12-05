@@ -9,6 +9,7 @@ export default function operationReducer(state = {
       return {...state, fetchingOperations: true};
 
     case "FETCHED_OPERATIONS":
+      if(state.didFetch){return state}
       const list = {...state.list}
       list[action.payload.plannerID] = action.payload.operations
       return {...state, list, fetchingOperations: false, didFetch: true};
@@ -27,6 +28,9 @@ export default function operationReducer(state = {
       const updatedPlanner = [...updatedList[action.payload.plannerID].filter(operation => operation.id !== action.payload.id), action.payload]
       updatedList[action.payload.plannerID] = updatedPlanner
       return {...state, list: updatedList};
+
+    case "LOG_OUT":
+      return {...state, list: {}, didFetch: false};
 
     default:
       return state;

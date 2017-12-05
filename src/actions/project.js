@@ -37,7 +37,7 @@ export function patchProject(project){
 
 export function destroyProject(project){
   return function(dispatch, getState){
-    const pieceIDs = getState().pieces.filter(piece => project.id === piece.projectID).map(piece => piece.id)
+    const pieceIDs = getState().pieces.list.filter(piece => project.id === piece.projectID).map(piece => piece.id)
     dispatch({type: "DESTROY_PROJECT", payload: {...project, pieceIDs}})
     return api().project.destroy(project)
   }

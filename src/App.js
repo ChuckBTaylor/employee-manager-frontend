@@ -11,7 +11,7 @@ const App = props => {
     const authApp = authorize(AppContainer)
     const authUser = authorize(UserContainer)
     return (
-      <div>
+      <div className='main-div'>
         <Switch>
           <Route path='/login' component={authUser} />
           <Route path='/logout' component={authUser} />

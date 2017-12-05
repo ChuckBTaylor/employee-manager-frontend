@@ -11,6 +11,7 @@ export default function procedureReducer(state = {
       return state.didFetch ? state : {...state, fetchingProcedures: true};
 
     case "FETCHED_PROCEDURES":
+      if(state.didFetch){return state}
       const list = action.payload.map(procedure => ({...procedure}))
       return {...state, list, fetchingProcedures: false, didFetch: true};
 
@@ -47,8 +48,9 @@ export default function procedureReducer(state = {
 
     case "DESTROY_CLIENT":
     case "DESTROY_PROJECT":
-      const projectSanitizedProcedures = state.list.filter(procedure => action.payload.projectIDs.includes(procedure.projectID))
+      const projectSanitizedProcedures = state.list.filter(procedure => action.payload.pieceIDs.includes(procedure.pieceID))
       return {...state, list: projectSanitizedProcedures, selectedProcedure: {}};
+
 
     case "DESTROY_PIECE":
       const pieceSanitizedProcedures = state.list.filter(procedure => procedure.pieceID !== action.payload)
@@ -72,6 +74,9 @@ export default function procedureReducer(state = {
         default:
           return state;
       }
+
+    case "LOG_OUT":
+      return {...state, list: [], projectProcedures: [], selectedProcedure: {}, didFetch: false};
 
     default:
       return state;

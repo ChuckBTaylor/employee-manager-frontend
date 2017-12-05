@@ -85,23 +85,15 @@ class App extends Component {
     const AuthLogOut = authorize(LogOutComponent)
 
     return (
-      <div>
+      <div className='main-div'>
       <Route path='/' render={props => {
           return (<div>
             <Button onClick={this.toggleVisibility}>Menu</Button>
-            <Sidebar.Pushable as={Segment} >
+            <Sidebar.Pushable as={Segment} style={{ minHeight: 700, padding: '1em 0em' }}>
               <Sidebar as={Menu} animation='push' width='thin' visible={this.state.visible} icon='labeled' vertical inverted >
-                <Menu.Item name='Schedules' onClick={this.handleScheduleClick}>
-                  <Icon name='calendar' />
-                  Schedules
-                </Menu.Item>
-                <Menu.Item name='Employees' onClick={this.handleEmployeeClick}>
-                  <Icon name='users' />
-                  Employees
-                </Menu.Item>
-                <Menu.Item name="Services" onClick={this.handleServiceClick}>
-                  <Icon name='archive' />
-                  Services
+                <Menu.Item name='Planner' onClick={this.handleOperationClick}>
+                  <Icon name='add to calendar' />
+                  Planner
                 </Menu.Item>
                 <Menu.Item name='Clients' onClick={this.handleClientClick}>
                   <Icon name='address card' />
@@ -115,13 +107,21 @@ class App extends Component {
                   <Icon name='database' />
                   Pieces
                 </Menu.Item>
+                <Menu.Item name='Schedules' onClick={this.handleScheduleClick}>
+                  <Icon name='calendar' />
+                  Schedules
+                </Menu.Item>
+                <Menu.Item name='Employees' onClick={this.handleEmployeeClick}>
+                  <Icon name='users' />
+                  Employees
+                </Menu.Item>
+                <Menu.Item name="Services" onClick={this.handleServiceClick}>
+                  <Icon name='archive' />
+                  Services
+                </Menu.Item>
                 <Menu.Item name='Summary' onClick={this.handleSummaryClick}>
                   <Icon name='group object' />
                   Current Projects
-                </Menu.Item>
-                <Menu.Item name='Planner' onClick={this.handleOperationClick}>
-                  <Icon name='add to calendar' />
-                  Planner
                 </Menu.Item>
                 <Menu.Item name='Log Out' onClick={this.handleLogOutClick}>
                   <Icon name='window close' />
@@ -157,6 +157,10 @@ class App extends Component {
       .then(() => this.props.fetchProcedures())
         .then(() => this.props.fetchPlanners())
     this.props.fetchEmployees()
+  }
+
+  componentWillUnmount = () => {
+    console.log('unmounting');
   }
 }
 

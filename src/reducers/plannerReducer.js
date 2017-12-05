@@ -12,6 +12,7 @@ creatingPlanner: false
       return {...state, fetchingWeek: true};
 
     case "FETCHED_WEEK":
+      if(state.didFetch){return state}
       const alteredPlanners = state.list.map(planner => {
         if(planner.id === action.payload.plannerID){
           return {...planner, didFetchWeek: true};
@@ -61,6 +62,9 @@ creatingPlanner: false
       })
       console.log(updatedList);
       return {...state, list: updatedList};
+
+    case "LOG_OUT":
+      return {...state, list: [], currentPlanner: -1, didFetch: false, projectIDs: {}};
 
     default:
       return state;

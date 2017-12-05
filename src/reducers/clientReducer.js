@@ -12,9 +12,7 @@ export default function clientReducer(state = {
       return state.didFetch ? state : {...state, fetchingClients: true};
 
     case "FETCHED_CLIENTS":
-      if(state.didFetch){
-        return state;
-      }
+      if(state.didFetch){return state}
       const withID = action.payload.map(client => ({name: client.name, id: client.id}))
       return {...state, fetchingClients: false, list: withID, didFetch: true};
 
@@ -53,6 +51,9 @@ export default function clientReducer(state = {
 
     case "SELECT_PIECE":
       return {...state, selectedClient: findByID(state.list, action.payload.clientID)};
+
+    case "LOG_OUT":
+      return {...state, list: [], selectedClient: {}, didFetch: false};
 
     default:
       return state;
