@@ -38,3 +38,21 @@ export function calculateTimeWorked(allottedTime, timeWorkedThisWeek){
         }])}
   return arr
 }
+
+export function allPPArray(statePPs){
+  const arr = []
+  Object.keys(statePPs).forEach(plannerID => {
+    statePPs[plannerID].forEach(pp => {
+      arr.push(pp)
+    })
+  })
+  return arr
+}
+
+export function randomColorArray(length){
+  const arr = []
+  for(let i=0; i<length;i++){
+    arr.push('#'+(Math.random()*0xFFFFFF<<0).toString(16))
+  }
+  return arr;
+}

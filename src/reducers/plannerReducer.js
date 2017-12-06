@@ -34,9 +34,8 @@ creatingPlanner: false
 
     case "CREATED_PLANNER":
       const postList = [...state.list, action.payload]
-      const postProjectIDs = {...state.projectIDs}
-      postProjectIDs[action.payload.id] = []
-      return {...state, creatingPlanner: false, list: postList, projectIDs: postProjectIDs, currentPlanner: action.payload.id }
+      const newPPs = {...state.pps, [action.payload.id]: []}
+      return {...state, creatingPlanner: false, list: postList, pps: newPPs, currentPlanner: action.payload.id }
 
     case "SELECT_PLANNER":
       return {...state, currentPlanner: action.payload};
@@ -102,7 +101,7 @@ creatingPlanner: false
       return ({...state, pps: {...state.pps, [state.currentPlanner] : fixedPlanner}});
 
     case "LOG_OUT":
-      return {...state, list: [], currentPlanner: -1, didFetch: false, projectIDs: {}};
+      return {...state, list: [], currentPlanner: -1, didFetch: false, pps: {}};
 
     default:
       return state;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import cuid from 'cuid';
+import PropTypes from 'prop-types';
 import {findByID } from '../helpers/generalHelpers';
 import ColumnHeaders from '../components/spreadsheetStuff/ColumnHeaders';
 import PlannerRowList from '../components/plannerStuff/PlannerRowList';
@@ -20,6 +21,7 @@ class WorkPlannerSpreadsheet extends Component{
   }
 
   render(){
+    console.log(this.props.ssData);
     const rowList = this.props.ssData.projects.map((project, blockID) => {
       const filteredPieces = this.props.ssData.pieces.filter(piece => piece.projectID === project.id)
       const filteredPPs = this.props.ssData.pps.filter(pp => pp.projectID === project.id)
@@ -70,8 +72,12 @@ WorkPlannerSpreadsheet.defaultProps = {
   onTableRowChange: data => console.log("function onTableRowChange(data){data}", data),
   autoFormatColumnHeaders: true,
   hasEmptyTopLeft: true,
-  onXClick: id => console.log(id, "from the WorkPlannerSpreadsheet compoenent"),
+  onXClick: id => console.log(id, "from the WorkPlannerSpreadsheet compoenent")
+}
 
+WorkPlannerSpreadsheet.propTypes = {
+  ssData: PropTypes.objectOf(PropTypes.array),
+  employee: PropTypes.arrayOf(PropTypes.object)
 }
 
 export default WorkPlannerSpreadsheet;

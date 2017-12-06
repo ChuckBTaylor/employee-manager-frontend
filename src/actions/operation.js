@@ -31,10 +31,8 @@ export function fetchPlannerOperations(plannerID){
             name: operation.name,
             id: operation.id,
             hours: operation.hours,
-            plannerID: operation.planner_id,
-            procedureID: operation.procedure_id,
-            employeeID: operation.employee_id,
-            projectID: findByID(getState().procedures.list, operation.procedure_id).projectID
+            ppID: operation.planners_procedure_id,
+            employeeID: operation.employee_id
           }
         })
         dispatch({type: "FETCHED_OPERATIONS", payload: {operations, plannerID}})
