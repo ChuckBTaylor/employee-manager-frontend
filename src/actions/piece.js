@@ -45,7 +45,7 @@ export function createPiece(piece){
 
         json.procedures.forEach(procedure => {
           const service = findByID(getState().services.list, procedure.service_id)
-          const formatted = createProcedureFromPieces(procedure, piece, service)
+          const formatted = createProcedureFromPieces(procedure, json.piece, service)
           dispatch({type: "CREATE_PROCEDURE", payload: formatted})
         })
       })

@@ -2,7 +2,7 @@ import React from 'react';
 import { PieChart, Pie, Legend, Cell } from 'recharts';
 import cuid from 'cuid';
 
-const MyPieChart = props => {
+const PlannerTimeWorked = props => {
   const COLORS = ['#0088FE', '#00C49F']
   const pie = (
     <Pie
@@ -40,9 +40,9 @@ const MyPieChart = props => {
   )
 }
 
-MyPieChart.defaultProps = {
+PlannerTimeWorked.defaultProps = {
   data: [{}, {}],
   xtData: [{}, {}]
 }
 
-export default MyPieChart
+export default PlannerTimeWorked

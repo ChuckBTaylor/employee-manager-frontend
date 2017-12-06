@@ -42,19 +42,18 @@ export function fetchPlannerOperations(plannerID){
   }
 }
 
-export function createOperation(operation){
+export function createOperation(newOperation){
   return function(dispatch, getState){
+    console.log(newOperation);
     dispatch({type: "CREATING_OPERATION"})
-    api().operation.post(operation)
+    api().operation.post(newOperation)
       .then(json => {
         const payload = {
           name: json.name,
           id: json.id,
           hours: json.hours,
-          plannerID: json.planner_id,
-          procedureID: json.procedure_id,
-          employeeID: json.employee_id,
-          projectID: findByID(getState().procedures.list, json.procedure_id).projectID
+          ppID: json.planners_procedure_id,
+          employeeID: json.employee_id
         }
         dispatch({type: "CREATED_OPERATION", payload })
       })

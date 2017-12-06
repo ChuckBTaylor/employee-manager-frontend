@@ -6,34 +6,41 @@ import ConfirmModal from '../components/operationStuff/ConfirmModal';
 import { bindActionCreators } from 'redux';
 import { createOperation, patchOperation, fetchPlannerOperations } from '../actions/operation';
 import SelectComponent from '../components/SelectComponent';
-import { formatProjectForSpreadsheet, findByID } from '../helpers/generalHelpers';
-import { selectPlanner, createPlanner, fetchPlannerProjects, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner } from '../actions/planner';
+import { formatForSpreadsheet, findByID, calculateTimeWorked } from '../helpers/generalHelpers';
+import { selectPlanner, createPlanner, fetchPPs, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner, patchPP } from '../actions/planner';
 import NumberInputComponent from '../components/NumberInputComponent';
 import { Grid } from 'semantic-ui-react';
-import MyPieChart from '../components/chartStuff/MyPieChart';
+import PlannerTimeWorked from '../components/chartStuff/PlannerTimeWorked';
+import TimeSpent from '../components/chartStuff/TimeSpent';
+
 
 class OperationContainer extends Component{
 
   state = {
-    filteredClient: "",
-    filteredProject: "",
+    selectedProject: "",
+    selectedPiece: "",
+    selectedProcedure: "",
     modalOpen: false,
     projectOnBlock: -1
   }
 
-  onClientFilterChange = value => {
-    this.setState({filteredClient: +value, filteredProject: ""})
+  onProjectSelectChange = value => {
+    this.setState({selectedProject: +value, selectedPiece: ""})
   }
 
-  onProjectFilterChange = value => {
-    this.setState({filteredProject: +value})
+  onPieceSelectChange = value => {
+    this.setState({selectedPiece: +value, selectedProcedure: ""})
+  }
+
+  onProcedureSelectChange = value => {
+    this.setState({selectedProcedure: +value})
   }
 
   onPlannerChange = value => {
     if(findByID(this.props.planners, value).didFetchWeek){
       this.props.selectPlanner(value)
     } else {
-      this.props.fetchPlannerProjects(value)
+      this.props.fetchPPs(value)
       this.props.fetchPlannerOperations(value)
     }
   }
@@ -43,20 +50,30 @@ class OperationContainer extends Component{
   }
 
   handleAddClick = () => {
-    if(this.props.plannerProjects[this.props.currentPlanner].includes(this.state.filteredProject)){
-      alert(`That Project is already in the planner!`)
-      this.setState({filteredProject: ""})
+    if(this.props.activePPs.map(pp => pp.procedureID).includes(this.state.selectedProcedure)){
+      alert(`That process is already in the planner!`)
+      this.setState({filteredProcedure: ""})
     } else {
-      this.props.addToWeeklyPlanner(this.state.filteredProject, this.props.currentPlanner)
-      this.setState({filteredClient: "", filteredProject: ""})
+      this.props.addToWeeklyPlanner(this.state.selectedProcedure, this.props.currentPlanner)
+      this.setState({selectedProject: "", selectedPiece: "", selectedProcedure: ""})
     }
   }
 
   onTableDataChange = data => {
-    if(data.existed){
-      this.props.patchOperation({...data, hours: data.data})
-    } else {
-      this.props.createOperation({...data, hours: data.data, plannerID: this.props.currentPlanner})
+    switch(data.type){
+      case "OPERATION":
+        if(data.operation){
+          return this.props.patchOperation({...data.operation, hours: data.data})
+        } else {
+          return this.props.createOperation({...data, hours: data.data, plannerID: this.props.currentPlanner})
+        }
+      case "ALLOTTED":
+        const uPP = findByID(this.props.pps[this.props.currentPlanner], data.ppID)
+        return this.props.patchPP({...uPP, allottedTime: data.data})
+      case "DESTROY":
+        return this.props.removeFromWeeklyPlanner(data.ppID)
+      default:
+        console.log('unknown data.type', data);
     }
   }
 
@@ -87,37 +104,56 @@ class OperationContainer extends Component{
   }
 
   totalTimeWorkedThisWeek = () => {
-    return this.props.operations.reduce((agg, operation) => agg + operation.hours, 0)
+    return this.props.activePPs.reduce((sum, pp) => {
+      return sum + pp.operations.reduce((agg, op) => agg + op.hours, 0)
+    }, 0)
   }
 
   render(){
-    //This works with the select options.  Gives the correct project after a client is selected
-    const filteredProjectOptions = this.state.filteredClient === "" ? [] : this.props.projects.filter(project => project.clientID === this.state.filteredClient)
+    // This works with the select options.  Gives the correct project after a client is selected
+    // const filteredProjectOptions = this.state.filteredClient === "" ? [] : this.props.projects.filter(project => project.clientID === this.state.filteredClient)
     // /\ /\ /\ /\ /\ /\ //
     // \/ \/ \/ \/ \/ \/ //
-    //Formats for the spreadsheet
-
-    const formattedProjects = this.props.currentPlanner === -1 ? [] : this.props.plannerProjects[this.props.currentPlanner].map(projectID => {
-      const pieceIDs = this.props.pieces.filter(piece => piece.projectID === projectID).map(piece => piece.id)
-      const procedures = this.props.procedures.filter(procedure => pieceIDs.includes(procedure.pieceID))
-      return formatProjectForSpreadsheet(findByID(this.props.projects, projectID), procedures)
+    const formattedPPs = this.props.activePPs.map(pp => {
+      const procedure = findByID(this.props.procedures, pp.procedureID)
+      if(!procedure){
+        const t = this
+        debugger
+      }
+      return {
+        ...pp,
+        procedure_info: {
+          complete: procedure.complete,
+          process: procedure.name.split(' - ')[1],
+          est: procedure.estimatedTime
+        }
+      }
     })
+    const formattedForSpreadsheet = formattedPPs.length > 1 ? formatForSpreadsheet(formattedPPs, this.props.pieces, this.props.projects) : null
+    //formattedForSpreadsheet = {pps: [{}], pieces: [{}], projects: [{}]}
+    //   /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\    //
+    //   \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/    //
     const currentPlanner = this.props.currentPlanner === -1 ? null : findByID(this.props.planners, this.props.currentPlanner)
     const allottedTime = currentPlanner ? currentPlanner.allottedTime : 0
-    const totalTime = this.totalTimeWorkedThisWeek()
-    const dataForPie = [{time: (totalTime <= allottedTime ? (allottedTime - totalTime) : 0), name: "Allotted Time Remaining"}, {time: (totalTime <= allottedTime ? totalTime : allottedTime), name: "Time Worked"}]
-    const xtDataForPie = allottedTime - totalTime < 0 ? [{time: totalTime - allottedTime, name: "Time Over"}, {time: (allottedTime * 2) - totalTime, name:""}] : null
+    const totalTimeWorked = this.totalTimeWorkedThisWeek()
+    const dataForTimeWorked = calculateTimeWorked(allottedTime, totalTimeWorked) //First Pie Graph
+
+    const filteredPieceOptions = this.state.selectedProject === "" ? [] :
+      this.props.pieces.filter(piece => piece.projectID === this.state.selectedProject)
+    const filteredProcedureOptions = this.state.selectedPiece === "" ? [] :
+      this.props.procedures.filter(procedure => procedure.pieceID === this.state.selectedPiece)
 
     return(
       <div>
-      <h1>Weekly Planner</h1>
-      <h3>Choose Week</h3>
-      <SelectComponent
-        options={this.props.planners}
-        value={this.props.currentPlanner}
-        onSelectChange={this.onPlannerChange}
-        hasDefaultValue={false}
-      />
+        <h1>Weekly Planner</h1>
+        <h3>Choose Week</h3>
+        <SelectComponent
+          options={this.props.planners}
+          value={this.props.currentPlanner}
+          onSelectChange={this.onPlannerChange}
+          hasDefaultValue={false}
+        />
+        <button onClick={this.handleNewPlannerClick}>Create New Week</button>
           <h3>
             Allotted Time for the week: {currentPlanner ?
             <NumberInputComponent
@@ -127,57 +163,70 @@ class OperationContainer extends Component{
             />
           : null}
           <br />
-          Time worked this week: {totalTime ? totalTime : 0}
+          Time worked this week: {totalTimeWorked ? totalTimeWorked : 0}
           </h3>
-        <Grid celled='internally'>
+        <Grid>
           <Grid.Row>
-            {this.props.plannerProjects.length < 1 ? null :
+            {formattedPPs.length < 1 ? null :
               <WorkPlannerSpreadsheet
-                rowHeaders={formattedProjects}
-                columnHeaders={this.props.employees}
+                ssData={formattedForSpreadsheet}
+                employees={this.props.employees}
                 onTableDataChange={this.onTableDataChange}
-                onTableRowChange={this.onTableRowChange}
                 autoFormatColumnHeaders={false}
                 onXClick={this.onXClick}
-                cellContents={this.props.operations}
               />
             }
-            <ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
+            {/*<ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
             onConfirm={this.onConfirm}
             onCancel={this.onCancel}
             modalOpen={this.state.modalOpen}
             onModalClose={this.onModalClose}
-            />
+            />*/}
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column width={5}>
+            <Grid.Column width={2}>
               <SelectComponent
-                options={this.props.clients}
-                defaultValue=""
-                value={this.state.filteredClient}
-                defaultText="Add a Client"
-                onSelectChange={this.onClientFilterChange}
+                options={this.props.projects}
+                value={this.state.selectedProject}
+                onSelectChange={this.onProjectSelectChange}
+                hasDefaultValue={true}
+                defaultText="Choose a Project"
               />
-              {this.state.filteredClient === "" ? null :
+            </Grid.Column>
+            <Grid.Column width={2}>
+              {this.state.selectedProject === "" ? null :
                 <SelectComponent
-                  options={filteredProjectOptions}
-                  defaultValue=""
-                  value={this.state.filteredProject}
-                  defaultText="Select a Project"
-                  onSelectChange={this.onProjectFilterChange}
+                  options={filteredPieceOptions}
+                  value={this.state.selectedPiece}
+                  onSelectChange={this.onPieceSelectChange}
+                  hasDefaultValue={true}
+                  defaultText="Choose a Piece"
                 />
               }
-              {this.state.filteredProject === "" ? null :
-                <button onClick={this.handleAddClick}>Add Project</button>
+            </Grid.Column>
+            <Grid.Column width={2}>
+              {this.state.selectedPiece === "" ? null :
+                <SelectComponent
+                  options={filteredProcedureOptions}
+                  value={this.state.selectedProcedure}
+                  onSelectChange={this.onProcedureSelectChange}
+                  hasDefaultValue={true}
+                  defaultText="Choose a Process"
+                />
               }
             </Grid.Column>
-            <Grid.Column width={5} >
-              <button onClick={this.handleNewPlannerClick}>Create New Week</button>
+            <Grid.Column width={2}>
+              {this.state.selectedProcedure === "" ? null :
+                <button onClick={this.handleAddClick}>Add Process</button>
+              }
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             <Grid.Column width={5}>
-              <MyPieChart data={dataForPie} xtData={xtDataForPie}/>
+              <PlannerTimeWorked data={dataForTimeWorked[0]} xtData={dataForTimeWorked.length > 1 ? dataForTimeWorked[1] : null}/>
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <TimeSpent />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -198,16 +247,16 @@ const mapStateToProps = state => {
     currentPlanner: state.planners.currentPlanner,
     pieces: state.pieces.list,
     procedures: state.procedures.list,
-    operations: state.operations.list[state.planners.currentPlanner],
     employees: state.employees.list,
-    plannerProjects: state.planners.projectIDs, //{plannerID: [projectID, projectID], plannerID: [...]}
+    pps: state.planners.pps, //{plannerID: [projectID, projectID], plannerID: [...]}
+    activePPs: state.planners.pps[state.planners.currentPlanner] ? state.planners.pps[state.planners.currentPlanner] : [],
     planners: state.planners.list
 
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPlannerProjects, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations, patchPlanner }, dispatch)
+  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPPs, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations, patchPlanner, patchPP }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OperationContainer);

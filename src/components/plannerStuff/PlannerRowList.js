@@ -1,8 +1,7 @@
 import React from 'react';
 import cuid from 'cuid';
-import HeaderRow from './HeaderRow';
 import LabelRow from './LabelRow';
-import InfoRow from './InfoRow';
+import PPRow from './PPRow';
 
 
 const PlannerRowList = props => {
@@ -10,57 +9,63 @@ const PlannerRowList = props => {
   const onTDC = data => {
     props.onTDC({...data, projectID: props.blockID})
   }
-  const labels = props.blockHeaders.procedures.length > 0 ? Array.from(Object.keys(props.blockHeaders.procedures[0])) : []
-  const infoRows = props.blockHeaders.procedures.length > 0 ? props.blockHeaders.procedures.map((procedure, rowNum) => {
-    const filteredCellContents = props.cellContents.filter(cell => cell.procedureID === procedure.id)
-    
-    return (
-      <InfoRow key={cuid()}
-        labels={labels}
-        procedure={procedure}
-        employeeCount={props.employeeCount}
-        cellContents={props.cellContents}
-        employeeIDs={props.employeeIDs}
-        onTDC={onTDC}
-        rowIsActive={props.aPro === procedure.id}
-        aEmp={props.aEmp}
-        cPos={props.cPos}
-      />
-    )
-  }) : null
-  const projectInfo = {name: props.blockHeaders.name, id: props.blockHeaders.id}
+  const rowSpan = props.pieces.length + props.pps.length
+  const labels = Object.keys(props.pps[0].procedure_info).filter(key => key !== 'complete')
+  const labelCells = labels.map(key => (<th key={cuid()}>{` ${key.toUpperCase()} `}</th>))
+  const employees = props.employees.map(emp => (<td key={cuid()}>{emp.name}</td>))
+
+  const ppRows = []
+  props.pieces.forEach(piece => {
+    const pps = props.pps.filter(pp => pp.pieceID === piece.id)
+    pps.forEach((pp, idx) => {
+      ppRows.push(
+        <PPRow
+          pp={pp}
+          piece={idx === 0 ? piece : null}
+          ppCount={pps.length}
+          employees={props.employees}
+          cPos={props.cPos}
+          aEmp={props.aEmp}
+          aPP={props.aPP}
+          onTDC={props.onTDC}
+          onXClick={props.onXClick}
+          labels={labels}
+          key={cuid()}
+        />
+      )
+    })
+  })
+
+  const projectInfo = {name: props.project.name, id: props.project.id}
   return (
-  <tbody>
-    <HeaderRow info={projectInfo} sheetWidth={props.sheetWidth} onXClick={props.onXClick} />
-    <LabelRow labels={labels} employeeCount={props.employeeCount} />
-    {infoRows}
-  </tbody>
+    <tbody>
+      <tr>
+        <th rowSpan={rowSpan}>{props.project.name}</th>
+        <th> Piece </th>
+        {labelCells}
+        <th>Allotted</th>
+        <th>Sum</th>
+        {employees}
+        <th>Complete</th>
+        <th>Remove</th>
+      </tr>
+      {ppRows}
+    </tbody>
   )
 }
 
 PlannerRowList.defaultProps = {
-  blockHeaders: {
-    name: "", //projectName
-    id: -1,
-    procedures: [
-      {
-        name: "",
-        estimatedTime: 0.00,
-        complete: false,
-        id: -1
-      }
-    ]
-  },
-  cellContents: [{}],
-  sheetWidth: 0,
-  employeeCount: 0,
+  project: {},
+  pieces: [{}],
+  pps: [{}],
   onXClick: id => console.log(id, "from the PlannerRowList component"),
   blockID: -1, //Used to find which input has been editted
-  employeeIDs: [], //Array of names for colName
+  employees: [{}], //Array of names for colName
   onTDC: data => console.log(data, "from the PlannerRowList"),
-  aPro: -1,
+  aPP: -1,
   aEmp: -1,
-  cPos: -1
+  cPos: -1,
+  aOp: -1
 }
 
 export default PlannerRowList

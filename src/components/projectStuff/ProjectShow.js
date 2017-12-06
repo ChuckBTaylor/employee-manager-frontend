@@ -17,15 +17,15 @@ const ProjectShow = props => {
   }
 
   return (
-  <div className='six wide column'>
-    <h2>{props.client.name}</h2>
-    <h4>{props.project.name}</h4>
-    {props.pieces.length > 0 ? <PieceList pieces={props.pieces} onSelectPiece={props.onSelectPiece}/> : "No Current Pieces"}
-    <br />
-    <Button onClick={handleNewPieceClick} > New Piece </Button>
-    <Button onClick={handleEditClick} > Edit </Button>
-    <Button onClick={handleDeleteClick} > Delete </Button>
-  </div>
+    <div className='six wide column'>
+      <h2>{props.client.name}</h2>
+      <h4>{props.project.name}</h4>
+      {props.pieces.length > 0 ? <PieceList pieces={props.pieces} onSelectPiece={props.onSelectPiece}/> : "No Current Pieces"}
+      <br />
+      <Button onClick={handleNewPieceClick} > New Piece </Button>
+      <Button onClick={handleEditClick} > Edit </Button>
+      <Button onClick={handleDeleteClick} > Delete </Button>
+    </div>
   )
 }
 

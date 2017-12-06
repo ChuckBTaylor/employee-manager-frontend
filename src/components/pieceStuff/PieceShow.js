@@ -28,7 +28,7 @@ const PieceShow = props => {
 }
 
 PieceShow.defaultProps = {
-
+  services: []
 }
 
 export default PieceShow

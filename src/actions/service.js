@@ -5,7 +5,6 @@ export function fetchServices(){
     dispatch({type: "FETCHING_SERVICES"})
     return api().service.fetch()
       .then(json => {
-        console.log('services json', json);
         dispatch({type: "FETCHED_SERVICES", payload: json})
       })
   }

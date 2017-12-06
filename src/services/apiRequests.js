@@ -196,6 +196,11 @@ export default function() {
           .then(res => res.json())
       },
 
+      show: projectID => {
+        return fetch(`${API_ROOT}/companies/${companyID()}/projects/${projectID}`)
+          .then(res => res.json())
+      },
+
       patch: project => {
         const body = (({name, id}) => ({name, id}))(project)
         const json = JSON.stringify({...body})
@@ -282,7 +287,7 @@ export default function() {
 
       post: operation => {
         const body = (({hours}) => ({hours}))(operation)
-        const json = JSON.stringify({...body, planner_id: operation.plannerID, employee_id: operation.employeeID, procedure_id: operation.procedureID})
+        const json = JSON.stringify({...body, planner_id: operation.plannerID, employee_id: operation.employeeID, planners_procedure_id: operation.ppID})
         return fetch(`${API_ROOT}/companies/${companyID()}/operations`, {
           ...railsPost,
           body: json
@@ -302,7 +307,7 @@ export default function() {
     },
 
     planner: {
-      fetchProjects: monday => {
+      fetchPPs: monday => {
         return fetch(`${API_ROOT}/companies/${companyID()}/planners/${monday}`)
           .then(res => res.json())
       },
@@ -327,22 +332,31 @@ export default function() {
           body: json
         })
           .then(res => res.json())
-      },
+      }
+    },
 
-      addToPlanner: (project_id, id) => { //projectID, plannerID
-        const body = {planner: {project_id, id}}
-        const json = JSON.stringify(body)
-        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/add_project`, {
+    pp: {
+      post: (procedure_id, planner_id) => { //projectID, plannerID
+        const json = JSON.stringify({procedure_id, planner_id})
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures`, {
           ...railsPost,
           body: json
         })
           .then(res => res.json())
       },
 
-      removeFromPlanner: (project_id, id) => { //projectID, plannerID
-        const body = {planner: {project_id, id}}
-        const json = JSON.stringify(body)
-        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/remove_project`, {
+      patch: pp => {
+        const json = JSON.stringify({allotted_time: pp.allottedTime, planner_id: pp.plannerID, procedure_id: pp.procedureID, id: pp.id})
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures/${pp.id}`, {
+          ...railsPatch,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      destroy: id => { //procedureID, plannerID
+        const json = JSON.stringify({id})
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures/${id}`, {
           ...railsDestroy,
           body: json
         })

@@ -7,66 +7,42 @@ import PlannerRowList from '../components/plannerStuff/PlannerRowList';
 class WorkPlannerSpreadsheet extends Component{
 
   state = {
-    activeProcedure: -1,
+    activePP: -1,
     activeEmployee: -1,
     cursorPosition: -1
   }
 
-  calculateRowHeadersLength = () => {
-    if(this.props.rowHeaders.length > 0 && this.props.rowHeaders[0].procedures.length > 0){
-      return Object.keys(this.props.rowHeaders[0].procedures[0]).length + 1
-    }
-    return 0
-  }
-
   onTDC = data => {
-    this.setState({activeProcedure: data.procedureID, activeEmployee: data.employeeID, cursorPosition: data.cursorPosition})
-    if(data.colName === "allottedTime"){
-      return this.props.onTableRowChange(data)
-    }
-    if(data.id !== -1){
-      const operation = findByID(this.props.cellContents, data.id)
-      return this.props.onTableDataChange({...operation, data: data.data, existed: true})
-    }
-    return this.props.onTableDataChange({data: data.data, existed: false, procedureID: data.procedureID, employeeID: data.employeeID})
+    console.log(data);
+    this.setState({activePP: data.ppID, activeEmployee: data.employeeID, cursorPosition: data.cursorPosition}, () => console.log(this.state))
+    const formatted = (({data, employeeID, operation, ppID, type}) => ({data, employeeID, operation, ppID, type}))(data)
+    this.props.onTableDataChange(formatted)
   }
 
   render(){
-    const employeeIDs = this.props.columnHeaders.map(employee => employee.id)
-    const employeeCount = employeeIDs.length
-    // employeeIDs.unshift('allottedTime')
-    const sheetWidth = this.props.hasEmptyTopLeft ? employeeCount + 1 : employeeCount
-    const rowList = this.props.rowHeaders.map((project, blockID) => {
-      const filteredCellContents = this.props.cellContents.filter(cell => cell.projectID === project.id)
+    const rowList = this.props.ssData.projects.map((project, blockID) => {
+      const filteredPieces = this.props.ssData.pieces.filter(piece => piece.projectID === project.id)
+      const filteredPPs = this.props.ssData.pps.filter(pp => pp.projectID === project.id)
       return (
         <PlannerRowList key={cuid()}
-          blockHeaders={project}
+          project={project}
           blockID={blockID}
-          sheetWidth={sheetWidth + this.calculateRowHeadersLength()}
-          employeeCount={employeeCount}
           onXClick={this.props.onXClick}
-          employeeIDs={employeeIDs}
+          employees={this.props.employees}
           onTDC={this.onTDC}
-          cellContents={filteredCellContents}
-          aPro={this.state.activeProcedure}
+          pieces={filteredPieces}
+          pps={filteredPPs}
+          aPP={this.state.activePP}
           aEmp={this.state.activeEmployee}
           cPos={this.state.cursorPosition}
         />
       )
     })
 
-    // console.log("WorkPlannerSpreadsheet rowHeaders", this.props.rowHeaders);
+    // console.log("WorkPlannerSpreadsheet ssData", this.props.ssData);
     return(
       <div>
         <table>
-          <thead>
-            <ColumnHeaders
-              autoFormat={this.props.autoFormatColumnHeaders}
-              columns={this.props.columnHeaders}
-              hasEmptyTopLeft={this.props.hasEmptyTopLeft}
-              rowHeadersLength={this.calculateRowHeadersLength()}
-            />
-          </thead>
           {rowList}
         </table>
       </div>
@@ -75,21 +51,12 @@ class WorkPlannerSpreadsheet extends Component{
 }
 
 WorkPlannerSpreadsheet.defaultProps = {
-  rowHeaders: [ //Array of project Objects
-    {
-      name: "",
-      id: -1,
-      complete: false,
-      clientID: -1,
-      subtype: 'office',
-      procedures: [{
-        name: "",
-        compelte: false,
-        estimatedTime: 0.00
-      }, {}]
-    }
-  ],
-  columnHeaders: [//Array of employee objects
+  ssData: {
+    pps: [], //array of pp objects with operations
+    pieces: [], //array of piece objects
+    projects: [] //array of project objects
+  },
+  employees: [//Array of employee objects
     {
       name: "",
       id: -1
@@ -99,7 +66,6 @@ WorkPlannerSpreadsheet.defaultProps = {
       id: -2
     }
   ],
-  cellContents: [{}, {}], //incorporate operations in here
   onTableDataChange: data => console.log("function onTableDataChange(data){data}", data),
   onTableRowChange: data => console.log("function onTableRowChange(data){data}", data),
   autoFormatColumnHeaders: true,
