@@ -62,9 +62,10 @@ class ProjectContainer extends Component{
     return(
       <div>
         <div className='ui grid'>
+        {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
+          <ProjectTimeChart chartData={[this.props.chartData]} safe={this.props.chartData.totalEst >= this.props.chartData.totalWorked} />
+        )} />) : <div className='four wide column'></div>}
           <Route path='/projects/new' render={props => (<ProjectForm {...props} clients={this.props.clients}  selectedClient={this.props.selectedClient }/>) } />
-
-          <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
 
           {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
             <ProjectShow
@@ -76,20 +77,22 @@ class ProjectContainer extends Component{
               onSelectPiece={this.onSelectPiece}
               onNewPieceClick={this.onNewPieceClick}
             />
-          )} />) : null}
-          {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
-            <ProjectTimeChart chartData={[this.props.chartData]} safe={this.props.chartData.totalEst >= this.props.chartData.totalWorked} />
-          )} />) : null}
+          )} />) : <div className='six wide column'></div>}
+          <div className='four wide column'>
+            <label htmlFor="client-project-filter">Filter Projects By Client: </label>
+            <select id='client-project-filter' onChange={this.handleFilterChange} value={this.state.filteredClient} >
+              <option value={-1} >All</option>
+              {clientOptions}
+            </select>
+            <br />
+            <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
+
+            <Route exact path='/projects' render={() => (<button onClick={this.handleNewProjectClick} >New Project</button>) } />
+            <br />
+          </div>
         </div>
         <br />
-        <label htmlFor="client-project-filter">Filter Projects By Client: </label>
-        <select id='client-project-filter' onChange={this.handleFilterChange} value={this.state.filteredClient} >
-          <option value={-1} >All</option>
-          {clientOptions}
-        </select>
-        <br />
-        <Route exact path='/projects' render={() => (<button onClick={this.handleNewProjectClick} >New Project</button>) } />
-        <br />
+
         <ProjectModal
           modalOpen={this.state.modalOpen}
           onModalClose={this.onModalClose}

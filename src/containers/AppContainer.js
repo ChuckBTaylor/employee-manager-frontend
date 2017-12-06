@@ -87,7 +87,7 @@ class App extends Component {
       <Route path='/' render={props => {
           return (<div>
             <Button onClick={this.toggleVisibility}>Menu</Button>
-            <Sidebar.Pushable as={Segment} style={{ minHeight: 700, padding: '1em 0em' }}>
+            <Sidebar.Pushable as={Segment} style={{ minHeight: 1000, padding: '1em 0em' }}>
               <Sidebar as={Menu} animation='push' width='thin' visible={this.state.visible} icon='labeled' vertical inverted >
                 <Menu.Item name='Planner' onClick={this.handleOperationClick}>
                   <Icon name='add to calendar' />

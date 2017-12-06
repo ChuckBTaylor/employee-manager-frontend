@@ -1,6 +1,5 @@
 import React from 'react';
 import cuid from 'cuid';
-import LabelRow from './LabelRow';
 import PPRow from './PPRow';
 
 

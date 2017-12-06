@@ -9,7 +9,7 @@ const ClientModal = props => {
   return(
     <Modal open={props.modalOpen} onClose={props.onModalClose} className="Modal">
       <Modal.Content>
-        <ClientForm isModal={true} onModalClose={props.onModalClose} client={props.client} />
+        <ClientForm isModal={true} onModalClose={props.onModalClose} client={props.client} onDestroyClient={props.onDestroyClient} />
       </Modal.Content>
     </Modal>
   )

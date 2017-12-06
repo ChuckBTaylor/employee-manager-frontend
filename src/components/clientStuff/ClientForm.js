@@ -6,51 +6,77 @@ import { createClient, patchClient } from '../../actions/client';
 class ClientForm extends Component{
 
   state = {
-    name: this.props.isModal ? this.props.client.name : ""
+    name: this.props.client ? this.props.client.name : ""
   }
-
-  focusTextInput = () => {
-    this.textInput.focus();
-  }
-
 
   handleNameChange = ev => {
     this.setState({name: ev.target.value})
   }
 
-  handleSubmit = ev => {
-    ev.preventDefault()
+  handleClick = () => {
     if(this.props.isModal){
-      this.props.patchClient({...this.state, id: this.props.client.id})
+      this.props.patchClient({...this.props.client, name: this.state.name})
       this.props.onModalClose()
     } else {
       this.props.createClient(this.state)
-      this.props.history.push('/clients')
+      this.setState({name: ""})
     }
+  }
+
+  isEnter = ev => {
+    if(ev.which === 13 && this.state.name !== ""){
+      this.handleClick()
+    }
+  }
+
+  handleDelete = ev => {
+    this.props.onDestroyClient(this.props.client)
+    this.props.onModalClose()
+  }
+
+  focusTextInput = () => {
+    this.input.focus()
   }
 
   render(){
     return(
       <div className="sixteen wide column">
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="">Name: </label>
-          <input type='text' onChange={this.handleNameChange} value={this.state.name} ref={(input) => {this.textInput = input; }}/>
-          <input type='submit' />
-        </form>
+        <h3>Add Client:</h3>
+        <label htmlFor="">Name: </label>
+
+        <input type='text'
+        onKeyDown={this.isEnter}
+        onChange={this.handleNameChange}
+        value={this.state.name}
+        ref={input => {this.input = input; }}
+        onFocus={ev => {
+          ev.target.selectionEnd = this.state.name.length
+          ev.target.selectionStart = this.state.name.length
+        }}/>
+
+        <i onClick={this.handleClick} className={this.props.isModal ? 'save icon' : 'plus square outline icon'}/>
+        {!this.props.isModal ? null :
+          <div className='delete client'>
+            <br />
+            <i onClick={this.handleDelete} className='trash icon' />
+          </div>
+        }
       </div>
     )
   }
 
   componentDidMount = () => {
-    this.focusTextInput()
+    if(this.props.isModal){
+      this.focusTextInput()
+    }
   }
+
 }
 
 ClientForm.defaultProps = {
-  isModal: false,
-  client: {
-    name: ""
-  }
+  name: "",
+  client: null,
+  isModal: false
 }
 
 const mapDispatchToProps = dispatch => {
