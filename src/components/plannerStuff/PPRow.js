@@ -1,7 +1,8 @@
 import React from 'react';
-import InfoRow from './InfoRow';
 import OperationCell from './OperationCell';
 import cuid from 'cuid';
+import AllottedCell from './AllottedCell';
+import RemovePP from './RemovePP';
 
 const PPRow = props => {
   const procedureInfo = props.labels.map(label => (<td key={cuid()}>{props.pp.procedure_info[label]}</td>))
@@ -22,15 +23,28 @@ const PPRow = props => {
     )
 
   })
+  const allotted =
+    <AllottedCell
+      pp={props.pp}
+      ppID={props.pp.id}
+      cPos={props.cPos}
+      onTDC={props.onTDC}
+      isSelected={props.aPP === props.pp.id && props.aEmp === -1}
+    />
 
+  const sum = props.pp.operations.map(op => op.hours).reduce((agg, hours) => hours + agg, 0)
+  const icon = <i className={props.pp.procedure_info.complete ? 'checkmark icon' : 'remove icon'} style={{color: props.pp.procedure_info.complete ? 'green' : 'red'}}/>
+
+  const removePP = <RemovePP onTDC={props.onTDC} ppID={props.pp.id} />
   return (
     <tr>
       {props.piece ? (<td rowSpan={props.ppCount}>{props.piece.name}</td>) : null}
       {procedureInfo}
-      <td>0</td>
-      <td>Sum Cell</td>
+      {allotted}
+      <td>{sum}</td>
       {inputCells}
-      <td>Complete?</td>
+      <th>{icon}</th>
+      {removePP}
     </tr>
   )
 }

@@ -13,8 +13,9 @@ class WorkPlannerSpreadsheet extends Component{
   }
 
   onTDC = data => {
-    this.setState({activePP: data.ppID, activeEmployee: data.employeeID, cursorPosition: data.cursorPosition})
-    const formatted = (({data, employeeID, operation, ppID}) => ({data, employeeID, operation, ppID}))(data)
+    console.log(data);
+    this.setState({activePP: data.ppID, activeEmployee: data.employeeID, cursorPosition: data.cursorPosition}, () => console.log(this.state))
+    const formatted = (({data, employeeID, operation, ppID, type}) => ({data, employeeID, operation, ppID, type}))(data)
     this.props.onTableDataChange(formatted)
   }
 

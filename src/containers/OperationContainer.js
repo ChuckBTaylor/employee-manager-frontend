@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { createOperation, patchOperation, fetchPlannerOperations } from '../actions/operation';
 import SelectComponent from '../components/SelectComponent';
 import { formatForSpreadsheet, findByID, calculateTimeWorked } from '../helpers/generalHelpers';
-import { selectPlanner, createPlanner, fetchPPs, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner } from '../actions/planner';
+import { selectPlanner, createPlanner, fetchPPs, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner, patchPP } from '../actions/planner';
 import NumberInputComponent from '../components/NumberInputComponent';
 import { Grid } from 'semantic-ui-react';
 import PlannerTimeWorked from '../components/chartStuff/PlannerTimeWorked';
@@ -17,18 +17,23 @@ import TimeSpent from '../components/chartStuff/TimeSpent';
 class OperationContainer extends Component{
 
   state = {
-    filteredClient: "",
-    filteredProject: "",
+    selectedProject: "",
+    selectedPiece: "",
+    selectedProcedure: "",
     modalOpen: false,
     projectOnBlock: -1
   }
 
-  onClientFilterChange = value => {
-    this.setState({filteredClient: +value, filteredProject: ""})
+  onProjectSelectChange = value => {
+    this.setState({selectedProject: +value, selectedPiece: ""})
   }
 
-  onProjectFilterChange = value => {
-    this.setState({filteredProject: +value})
+  onPieceSelectChange = value => {
+    this.setState({selectedPiece: +value, selectedProcedure: ""})
+  }
+
+  onProcedureSelectChange = value => {
+    this.setState({selectedProcedure: +value})
   }
 
   onPlannerChange = value => {
@@ -45,20 +50,30 @@ class OperationContainer extends Component{
   }
 
   handleAddClick = () => {
-    if(this.props.plannerProjects[this.props.currentPlanner].includes(this.state.filteredProject)){
-      alert(`That Project is already in the planner!`)
-      this.setState({filteredProject: ""})
+    if(this.props.activePPs.map(pp => pp.procedureID).includes(this.state.selectedProcedure)){
+      alert(`That process is already in the planner!`)
+      this.setState({filteredProcedure: ""})
     } else {
-      this.props.addToWeeklyPlanner(this.state.filteredProject, this.props.currentPlanner)
-      this.setState({filteredClient: "", filteredProject: ""})
+      this.props.addToWeeklyPlanner(this.state.selectedProcedure, this.props.currentPlanner)
+      this.setState({selectedProject: "", selectedPiece: "", selectedProcedure: ""})
     }
   }
 
   onTableDataChange = data => {
-    if(data.operation){
-      this.props.patchOperation({...data.operation, hours: data.data})
-    } else {
-      this.props.createOperation({...data, hours: data.data, plannerID: this.props.currentPlanner})
+    switch(data.type){
+      case "OPERATION":
+        if(data.operation){
+          return this.props.patchOperation({...data.operation, hours: data.data})
+        } else {
+          return this.props.createOperation({...data, hours: data.data, plannerID: this.props.currentPlanner})
+        }
+      case "ALLOTTED":
+        const uPP = findByID(this.props.pps[this.props.currentPlanner], data.ppID)
+        return this.props.patchPP({...uPP, allottedTime: data.data})
+      case "DESTROY":
+        return this.props.removeFromWeeklyPlanner(data.ppID)
+      default:
+        console.log('unknown data.type', data);
     }
   }
 
@@ -89,18 +104,22 @@ class OperationContainer extends Component{
   }
 
   totalTimeWorkedThisWeek = () => {
-    return this.props.operations.reduce((agg, operation) => agg + operation.hours, 0)
+    return this.props.activePPs.reduce((sum, pp) => {
+      return sum + pp.operations.reduce((agg, op) => agg + op.hours, 0)
+    }, 0)
   }
 
   render(){
-
     // This works with the select options.  Gives the correct project after a client is selected
     // const filteredProjectOptions = this.state.filteredClient === "" ? [] : this.props.projects.filter(project => project.clientID === this.state.filteredClient)
     // /\ /\ /\ /\ /\ /\ //
     // \/ \/ \/ \/ \/ \/ //
-    const currentPPs = this.props.pps[this.props.currentPlanner] ? this.props.pps[this.props.currentPlanner] : []
-    const formattedPPs = currentPPs.map(pp => {
+    const formattedPPs = this.props.activePPs.map(pp => {
       const procedure = findByID(this.props.procedures, pp.procedureID)
+      if(!procedure){
+        const t = this
+        debugger
+      }
       return {
         ...pp,
         procedure_info: {
@@ -119,16 +138,22 @@ class OperationContainer extends Component{
     const totalTimeWorked = this.totalTimeWorkedThisWeek()
     const dataForTimeWorked = calculateTimeWorked(allottedTime, totalTimeWorked) //First Pie Graph
 
+    const filteredPieceOptions = this.state.selectedProject === "" ? [] :
+      this.props.pieces.filter(piece => piece.projectID === this.state.selectedProject)
+    const filteredProcedureOptions = this.state.selectedPiece === "" ? [] :
+      this.props.procedures.filter(procedure => procedure.pieceID === this.state.selectedPiece)
+
     return(
       <div>
-      <h1>Weekly Planner</h1>
-      <h3>Choose Week</h3>
-      {/*}<SelectComponent
-        options={this.props.planners}
-        value={this.props.currentPlanner}
-        onSelectChange={this.onPlannerChange}
-        hasDefaultValue={false}
-      />*/}
+        <h1>Weekly Planner</h1>
+        <h3>Choose Week</h3>
+        <SelectComponent
+          options={this.props.planners}
+          value={this.props.currentPlanner}
+          onSelectChange={this.onPlannerChange}
+          hasDefaultValue={false}
+        />
+        <button onClick={this.handleNewPlannerClick}>Create New Week</button>
           <h3>
             Allotted Time for the week: {currentPlanner ?
             <NumberInputComponent
@@ -151,7 +176,7 @@ class OperationContainer extends Component{
                 onXClick={this.onXClick}
               />
             }
-            {/*}<ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
+            {/*<ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
             onConfirm={this.onConfirm}
             onCancel={this.onCancel}
             modalOpen={this.state.modalOpen}
@@ -159,8 +184,41 @@ class OperationContainer extends Component{
             />*/}
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column width={5} >
-              <button onClick={this.handleNewPlannerClick}>Create New Week</button>
+            <Grid.Column width={2}>
+              <SelectComponent
+                options={this.props.projects}
+                value={this.state.selectedProject}
+                onSelectChange={this.onProjectSelectChange}
+                hasDefaultValue={true}
+                defaultText="Choose a Project"
+              />
+            </Grid.Column>
+            <Grid.Column width={2}>
+              {this.state.selectedProject === "" ? null :
+                <SelectComponent
+                  options={filteredPieceOptions}
+                  value={this.state.selectedPiece}
+                  onSelectChange={this.onPieceSelectChange}
+                  hasDefaultValue={true}
+                  defaultText="Choose a Piece"
+                />
+              }
+            </Grid.Column>
+            <Grid.Column width={2}>
+              {this.state.selectedPiece === "" ? null :
+                <SelectComponent
+                  options={filteredProcedureOptions}
+                  value={this.state.selectedProcedure}
+                  onSelectChange={this.onProcedureSelectChange}
+                  hasDefaultValue={true}
+                  defaultText="Choose a Process"
+                />
+              }
+            </Grid.Column>
+            <Grid.Column width={2}>
+              {this.state.selectedProcedure === "" ? null :
+                <button onClick={this.handleAddClick}>Add Process</button>
+              }
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -191,13 +249,14 @@ const mapStateToProps = state => {
     procedures: state.procedures.list,
     employees: state.employees.list,
     pps: state.planners.pps, //{plannerID: [projectID, projectID], plannerID: [...]}
+    activePPs: state.planners.pps[state.planners.currentPlanner] ? state.planners.pps[state.planners.currentPlanner] : [],
     planners: state.planners.list
 
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPPs, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations, patchPlanner }, dispatch)
+  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPPs, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations, patchPlanner, patchPP }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OperationContainer);

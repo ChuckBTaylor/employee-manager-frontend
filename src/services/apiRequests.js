@@ -332,22 +332,31 @@ export default function() {
           body: json
         })
           .then(res => res.json())
-      },
+      }
+    },
 
-      addToPlanner: (procedure_id, id) => { //projectID, plannerID
-        const body = {planner: {procedure_id, id}}
-        const json = JSON.stringify(body)
-        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/add_procedure`, {
+    pp: {
+      post: (procedure_id, planner_id) => { //projectID, plannerID
+        const json = JSON.stringify({procedure_id, planner_id})
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures`, {
           ...railsPost,
           body: json
         })
           .then(res => res.json())
       },
 
-      removeFromPlanner: (procedure_id, id) => { //procedureID, plannerID
-        const body = {planner: {procedure_id, id}}
-        const json = JSON.stringify(body)
-        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/remove_procedure`, {
+      patch: pp => {
+        const json = JSON.stringify({allotted_time: pp.allottedTime, planner_id: pp.plannerID, procedure_id: pp.procedureID, id: pp.id})
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures/${pp.id}`, {
+          ...railsPatch,
+          body: json
+        })
+          .then(res => res.json())
+      },
+
+      destroy: id => { //procedureID, plannerID
+        const json = JSON.stringify({id})
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures/${id}`, {
           ...railsDestroy,
           body: json
         })

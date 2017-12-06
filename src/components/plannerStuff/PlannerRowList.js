@@ -1,8 +1,6 @@
 import React from 'react';
 import cuid from 'cuid';
-import HeaderRow from './HeaderRow';
 import LabelRow from './LabelRow';
-import InfoRow from './InfoRow';
 import PPRow from './PPRow';
 
 
@@ -49,6 +47,7 @@ const PlannerRowList = props => {
         <th>Sum</th>
         {employees}
         <th>Complete</th>
+        <th>Remove</th>
       </tr>
       {ppRows}
     </tbody>

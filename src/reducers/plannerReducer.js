@@ -41,27 +41,32 @@ creatingPlanner: false
     case "SELECT_PLANNER":
       return {...state, currentPlanner: action.payload};
 
-    case "ADD_PROCEDURE_TO_PLANNER":
-      const plannerIDsObj = {...state.projectIDs}
-      plannerIDsObj[state.currentPlanner] = [...plannerIDsObj[state.currentPlanner], action.payload]
-      return {...state, projectIDs: plannerIDsObj};
+    case "ADD_PP_TO_PLANNER":
+      const pla = [...state.pps[state.currentPlanner], action.payload]
+      return {...state, pps: {...state.pps, [state.currentPlanner]: pla}};
 
-    case "REMOVE_PROCEDURE_FROM_PLANNER":
-      const plannerIDsObject = {...state.projectIDs}
-        const sanitizedIDs = [...plannerIDsObject[state.currentPlanner]].filter(projectID => projectID !== action.payload)
-      plannerIDsObject[state.currentPlanner] = sanitizedIDs //Receives new array of projectIDs
-      return {...state, projectIDs: plannerIDsObject}
+    case "REMOVE_PP_FROM_PLANNER":
+      const pl = [...state.pps[state.currentPlanner].filter(pp => pp.id !== action.payload)]
+      return {...state, pps: {...state.pps, [state.currentPlanner]: pl}}
 
     case "PATCH_PLANNER":
-    console.log(action.payload);
       const updatedList = state.list.map(planner => {
         if(planner.id === action.payload.id){
           return action.payload
         }
         return planner
       })
-      console.log(updatedList);
       return {...state, list: updatedList};
+
+    case "PATCH_PP":
+      const plannerToUpdate = state.pps[state.currentPlanner].map(pp => {
+        if(pp.id === action.payload.id){
+          return action.payload;
+        }
+        return pp;
+      })
+
+      return {...state, pps: {...state.pps, [state.currentPlanner]: plannerToUpdate}};
 
     case "CREATED_OPERATION":
       const opPlanner = state.pps[state.currentPlanner]

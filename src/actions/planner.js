@@ -62,9 +62,19 @@ export function createPlanner(){
 
 export function addToWeeklyPlanner(procedureID, plannerID){
   return function(dispatch){
-    dispatch({type: "ADD_PROCEDURE_TO_PLANNER", payload: procedureID})
-    api().planner.addToPlanner(procedureID, plannerID)
-      .then(json => console.log(json))
+    api().pp.post(procedureID, plannerID)
+      .then(json => {
+        const payload = {
+          allottedTime: json.allotted_time,
+          id: json.id,
+          procedureID: json.procedure_id,
+          pieceID: json.piece_id,
+          projectID: json.project_id,
+          operations: []
+        }
+        dispatch({type: "ADD_PP_TO_PLANNER", payload})
+      })
+
   }
 }
 
@@ -74,10 +84,10 @@ export function selectPlanner(planner){ //plannerID
   }
 }
 
-export function removeFromWeeklyPlanner(procedureID, plannerID){
+export function removeFromWeeklyPlanner(ppID){
   return function(dispatch){
-    dispatch({type: "REMOVE_PROCEDURE_FROM_PLANNER", payload: procedureID})
-    api().planner.removeFromPlanner(procedureID, plannerID)
+    dispatch({type: "REMOVE_PP_FROM_PLANNER", payload: ppID})
+    api().pp.destroy(ppID)
       .then(json => console.log(json))
   }
 }
@@ -87,5 +97,12 @@ export function patchPlanner(planner){
     dispatch({type: "PATCH_PLANNER", payload: planner})
     api().planner.patch(planner)
       .then(json => console.log(json))
+  }
+}
+
+export function patchPP(pp){
+  return function(dispatch){
+    dispatch({type: "PATCH_PP", payload: pp})
+    api().pp.patch(pp)
   }
 }

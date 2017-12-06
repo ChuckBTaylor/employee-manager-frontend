@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-class OperationCell extends Component{
+class AllottedCell extends Component{
 
   state = {
-    data: this.props.operation ? `${this.props.operation.hours}` : ""
+    data: `${this.props.pp.allottedTime}`
   }
 
   handleDataChange = ev => {
@@ -52,14 +52,13 @@ class OperationCell extends Component{
   }
 }
 
-OperationCell.defaultProps = {
-  employee: {},
+AllottedCell.defaultProps = {
+  pp: {},
   cPos: 0,
   aPP: -1,
-  ppID: -1,
   isSelected: false,
-  onTDC: ev => console.log(ev, "onTDC from OperationCell"),
-  type: "OPERATION"
+  onTDC: ev => console.log(ev, "onTDC from AllottedCell"),
+  type: "ALLOTTED"
 }
 
-export default OperationCell;
+export default AllottedCell;
