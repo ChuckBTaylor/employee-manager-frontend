@@ -8,7 +8,7 @@ const ColumnHeaders = props => {
   </th>))
   return (
   <tr>
-    {props.hasEmptyTopLeft ? <th colSpan={props.rowHeadersLength - 2}> Key </th> : null}
+    {props.hasEmptyTopLeft ? <th colSpan={props.ssDataLength - 2}> Key </th> : null}
     {columns}
   </tr>
   )
@@ -22,7 +22,7 @@ ColumnHeaders.defaultProps = {
   }, {}],
   autoFormat: true,
   hasEmptyTopLeft: false,
-  rowHeadersLength: 0
+  ssDataLength: 0
 }
 
 export default ColumnHeaders

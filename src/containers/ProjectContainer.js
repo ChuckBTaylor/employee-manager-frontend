@@ -5,8 +5,9 @@ import ProjectList from '../components/projectStuff/ProjectList';
 import ProjectShow from '../components/projectStuff/ProjectShow';
 import ProjectModal from '../components/projectStuff/ProjectModal';
 import ProjectForm from '../components/projectStuff/ProjectForm';
-import { fetchPieces, selectPiece } from '../actions/piece'
-import { fetchProjects, selectProject, destroyProject } from '../actions/project';
+import ProjectTimeChart from '../components/chartStuff/ProjectTimeChart';
+import { fetchPieces, selectPiece } from '../actions/piece';
+import { fetchProjects, selectProject, destroyProject, fetchProjectData, clearProjectData } from '../actions/project';
 import { fetchClients } from '../actions/client';
 import { Route } from 'react-router';
 
@@ -50,7 +51,7 @@ class ProjectContainer extends Component{
   }
 
   hasSelectedProject = () => {
-    return !!(Object.keys(this.props.selectedProject).length > 0)
+    return Object.keys(this.props.selectedProject).length > 0
   }
 
   render(){
@@ -65,7 +66,20 @@ class ProjectContainer extends Component{
 
           <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
 
-          {this.hasSelectedProject() > 0 ? (<Route path='/projects' render={() => <ProjectShow project={this.props.selectedProject} pieces={this.props.projectPieces} client={this.props.selectedClient} onEditClick={this.onEditClick} onDeleteClick={this.onDeleteClick} onSelectPiece={this.onSelectPiece} onNewPieceClick={this.onNewPieceClick} />} />) : null}
+          {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
+            <ProjectShow
+              project={this.props.selectedProject}
+              pieces={this.props.projectPieces}
+              client={this.props.selectedClient}
+              onEditClick={this.onEditClick}
+              onDeleteClick={this.onDeleteClick}
+              onSelectPiece={this.onSelectPiece}
+              onNewPieceClick={this.onNewPieceClick}
+            />
+          )} />) : null}
+          {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
+            <ProjectTimeChart chartData={[this.props.chartData]} safe={this.props.chartData.totalEst >= this.props.chartData.totalWorked} />
+          )} />) : null}
         </div>
         <br />
         <label htmlFor="client-project-filter">Filter Projects By Client: </label>
@@ -85,6 +99,29 @@ class ProjectContainer extends Component{
         />
       </div>
     )
+  }
+
+  componentDidMount = () => {
+    if(this.hasSelectedProject() && !this.props.didFetchChartData){
+      this.props.fetchProjectData(this.props.selectedProject.id)
+    }
+  }
+
+  componentWillReceiveProps = nextProps => {
+    console.log('projectContainer Receiving Props', nextProps);
+    if(nextProps.selectedProject.id && this.somethingChanged(nextProps)){
+      this.props.fetchProjectData(nextProps.selectedProject.id)
+    }
+  }
+
+  somethingChanged = nextProps => {
+    if(nextProps.selectedProject.id !== this.props.selectedProject.id) return true
+    if(nextProps.projectPieces.length !== this.props.projectPieces.length) return true
+    return false
+  }
+
+  componentWillUnmount = () => {
+    this.props.clearProjectData()
   }
 
   // componentDidMount = () => {
@@ -113,12 +150,14 @@ const mapStateToProps = state => {
     selectedProject: state.projects.selectedProject,
     selectedClient: state.clients.selectedClient,
     didFetchClients: state.clients.didFetch,
-    didFetchProjects: state.projects.didFetch
+    didFetchProjects: state.projects.didFetch,
+    chartData: state.charts.projectData,
+    didFetchChartData: state.charts.didFetchProject
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchClients, fetchProjects, selectProject, destroyProject, fetchPieces, selectPiece }, dispatch)
+  return bindActionCreators({ fetchClients, fetchProjects, selectProject, destroyProject, fetchPieces, selectPiece, fetchProjectData, clearProjectData }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectContainer);

@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import UserContainer from './containers/UserContainer';
 import { Route } from 'react-router';
 import { Switch } from 'react-router-dom';
 import AppContainer from './containers/AppContainer';
 import { authorize } from './HOCs/authorize';
-import { connect } from 'react-redux'
 
 const App = props => {
 

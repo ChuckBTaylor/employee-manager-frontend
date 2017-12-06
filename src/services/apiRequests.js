@@ -196,6 +196,11 @@ export default function() {
           .then(res => res.json())
       },
 
+      show: projectID => {
+        return fetch(`${API_ROOT}/companies/${companyID()}/projects/${projectID}`)
+          .then(res => res.json())
+      },
+
       patch: project => {
         const body = (({name, id}) => ({name, id}))(project)
         const json = JSON.stringify({...body})
@@ -282,7 +287,7 @@ export default function() {
 
       post: operation => {
         const body = (({hours}) => ({hours}))(operation)
-        const json = JSON.stringify({...body, planner_id: operation.plannerID, employee_id: operation.employeeID, procedure_id: operation.procedureID})
+        const json = JSON.stringify({...body, planner_id: operation.plannerID, employee_id: operation.employeeID, planners_procedure_id: operation.ppID})
         return fetch(`${API_ROOT}/companies/${companyID()}/operations`, {
           ...railsPost,
           body: json
@@ -302,7 +307,7 @@ export default function() {
     },
 
     planner: {
-      fetchProjects: monday => {
+      fetchPPs: monday => {
         return fetch(`${API_ROOT}/companies/${companyID()}/planners/${monday}`)
           .then(res => res.json())
       },
@@ -329,20 +334,20 @@ export default function() {
           .then(res => res.json())
       },
 
-      addToPlanner: (project_id, id) => { //projectID, plannerID
-        const body = {planner: {project_id, id}}
+      addToPlanner: (procedure_id, id) => { //projectID, plannerID
+        const body = {planner: {procedure_id, id}}
         const json = JSON.stringify(body)
-        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/add_project`, {
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/add_procedure`, {
           ...railsPost,
           body: json
         })
           .then(res => res.json())
       },
 
-      removeFromPlanner: (project_id, id) => { //projectID, plannerID
-        const body = {planner: {project_id, id}}
+      removeFromPlanner: (procedure_id, id) => { //procedureID, plannerID
+        const body = {planner: {procedure_id, id}}
         const json = JSON.stringify(body)
-        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/remove_project`, {
+        return fetch(`${API_ROOT}/companies/${companyID()}/planners/${id}/remove_procedure`, {
           ...railsDestroy,
           body: json
         })

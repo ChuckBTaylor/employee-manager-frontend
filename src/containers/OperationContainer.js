@@ -6,11 +6,13 @@ import ConfirmModal from '../components/operationStuff/ConfirmModal';
 import { bindActionCreators } from 'redux';
 import { createOperation, patchOperation, fetchPlannerOperations } from '../actions/operation';
 import SelectComponent from '../components/SelectComponent';
-import { formatProjectForSpreadsheet, findByID } from '../helpers/generalHelpers';
-import { selectPlanner, createPlanner, fetchPlannerProjects, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner } from '../actions/planner';
+import { formatForSpreadsheet, findByID, calculateTimeWorked } from '../helpers/generalHelpers';
+import { selectPlanner, createPlanner, fetchPPs, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner } from '../actions/planner';
 import NumberInputComponent from '../components/NumberInputComponent';
 import { Grid } from 'semantic-ui-react';
-import MyPieChart from '../components/chartStuff/MyPieChart';
+import PlannerTimeWorked from '../components/chartStuff/PlannerTimeWorked';
+import TimeSpent from '../components/chartStuff/TimeSpent';
+
 
 class OperationContainer extends Component{
 
@@ -33,7 +35,7 @@ class OperationContainer extends Component{
     if(findByID(this.props.planners, value).didFetchWeek){
       this.props.selectPlanner(value)
     } else {
-      this.props.fetchPlannerProjects(value)
+      this.props.fetchPPs(value)
       this.props.fetchPlannerOperations(value)
     }
   }
@@ -53,8 +55,8 @@ class OperationContainer extends Component{
   }
 
   onTableDataChange = data => {
-    if(data.existed){
-      this.props.patchOperation({...data, hours: data.data})
+    if(data.operation){
+      this.props.patchOperation({...data.operation, hours: data.data})
     } else {
       this.props.createOperation({...data, hours: data.data, plannerID: this.props.currentPlanner})
     }
@@ -91,33 +93,42 @@ class OperationContainer extends Component{
   }
 
   render(){
-    //This works with the select options.  Gives the correct project after a client is selected
-    const filteredProjectOptions = this.state.filteredClient === "" ? [] : this.props.projects.filter(project => project.clientID === this.state.filteredClient)
+
+    // This works with the select options.  Gives the correct project after a client is selected
+    // const filteredProjectOptions = this.state.filteredClient === "" ? [] : this.props.projects.filter(project => project.clientID === this.state.filteredClient)
     // /\ /\ /\ /\ /\ /\ //
     // \/ \/ \/ \/ \/ \/ //
-    //Formats for the spreadsheet
-
-    const formattedProjects = this.props.currentPlanner === -1 ? [] : this.props.plannerProjects[this.props.currentPlanner].map(projectID => {
-      const pieceIDs = this.props.pieces.filter(piece => piece.projectID === projectID).map(piece => piece.id)
-      const procedures = this.props.procedures.filter(procedure => pieceIDs.includes(procedure.pieceID))
-      return formatProjectForSpreadsheet(findByID(this.props.projects, projectID), procedures)
+    const currentPPs = this.props.pps[this.props.currentPlanner] ? this.props.pps[this.props.currentPlanner] : []
+    const formattedPPs = currentPPs.map(pp => {
+      const procedure = findByID(this.props.procedures, pp.procedureID)
+      return {
+        ...pp,
+        procedure_info: {
+          complete: procedure.complete,
+          process: procedure.name.split(' - ')[1],
+          est: procedure.estimatedTime
+        }
+      }
     })
+    const formattedForSpreadsheet = formattedPPs.length > 1 ? formatForSpreadsheet(formattedPPs, this.props.pieces, this.props.projects) : null
+    //formattedForSpreadsheet = {pps: [{}], pieces: [{}], projects: [{}]}
+    //   /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\    //
+    //   \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/    //
     const currentPlanner = this.props.currentPlanner === -1 ? null : findByID(this.props.planners, this.props.currentPlanner)
     const allottedTime = currentPlanner ? currentPlanner.allottedTime : 0
-    const totalTime = this.totalTimeWorkedThisWeek()
-    const dataForPie = [{time: (totalTime <= allottedTime ? (allottedTime - totalTime) : 0), name: "Allotted Time Remaining"}, {time: (totalTime <= allottedTime ? totalTime : allottedTime), name: "Time Worked"}]
-    const xtDataForPie = allottedTime - totalTime < 0 ? [{time: totalTime - allottedTime, name: "Time Over"}, {time: (allottedTime * 2) - totalTime, name:""}] : null
+    const totalTimeWorked = this.totalTimeWorkedThisWeek()
+    const dataForTimeWorked = calculateTimeWorked(allottedTime, totalTimeWorked) //First Pie Graph
 
     return(
       <div>
       <h1>Weekly Planner</h1>
       <h3>Choose Week</h3>
-      <SelectComponent
+      {/*}<SelectComponent
         options={this.props.planners}
         value={this.props.currentPlanner}
         onSelectChange={this.onPlannerChange}
         hasDefaultValue={false}
-      />
+      />*/}
           <h3>
             Allotted Time for the week: {currentPlanner ?
             <NumberInputComponent
@@ -127,57 +138,37 @@ class OperationContainer extends Component{
             />
           : null}
           <br />
-          Time worked this week: {totalTime ? totalTime : 0}
+          Time worked this week: {totalTimeWorked ? totalTimeWorked : 0}
           </h3>
-        <Grid celled='internally'>
+        <Grid>
           <Grid.Row>
-            {this.props.plannerProjects.length < 1 ? null :
+            {formattedPPs.length < 1 ? null :
               <WorkPlannerSpreadsheet
-                rowHeaders={formattedProjects}
-                columnHeaders={this.props.employees}
+                ssData={formattedForSpreadsheet}
+                employees={this.props.employees}
                 onTableDataChange={this.onTableDataChange}
-                onTableRowChange={this.onTableRowChange}
                 autoFormatColumnHeaders={false}
                 onXClick={this.onXClick}
-                cellContents={this.props.operations}
               />
             }
-            <ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
+            {/*}<ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
             onConfirm={this.onConfirm}
             onCancel={this.onCancel}
             modalOpen={this.state.modalOpen}
             onModalClose={this.onModalClose}
-            />
+            />*/}
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column width={5}>
-              <SelectComponent
-                options={this.props.clients}
-                defaultValue=""
-                value={this.state.filteredClient}
-                defaultText="Add a Client"
-                onSelectChange={this.onClientFilterChange}
-              />
-              {this.state.filteredClient === "" ? null :
-                <SelectComponent
-                  options={filteredProjectOptions}
-                  defaultValue=""
-                  value={this.state.filteredProject}
-                  defaultText="Select a Project"
-                  onSelectChange={this.onProjectFilterChange}
-                />
-              }
-              {this.state.filteredProject === "" ? null :
-                <button onClick={this.handleAddClick}>Add Project</button>
-              }
-            </Grid.Column>
             <Grid.Column width={5} >
               <button onClick={this.handleNewPlannerClick}>Create New Week</button>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             <Grid.Column width={5}>
-              <MyPieChart data={dataForPie} xtData={xtDataForPie}/>
+              <PlannerTimeWorked data={dataForTimeWorked[0]} xtData={dataForTimeWorked.length > 1 ? dataForTimeWorked[1] : null}/>
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <TimeSpent />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -198,16 +189,15 @@ const mapStateToProps = state => {
     currentPlanner: state.planners.currentPlanner,
     pieces: state.pieces.list,
     procedures: state.procedures.list,
-    operations: state.operations.list[state.planners.currentPlanner],
     employees: state.employees.list,
-    plannerProjects: state.planners.projectIDs, //{plannerID: [projectID, projectID], plannerID: [...]}
+    pps: state.planners.pps, //{plannerID: [projectID, projectID], plannerID: [...]}
     planners: state.planners.list
 
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPlannerProjects, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations, patchPlanner }, dispatch)
+  return bindActionCreators({ createOperation, patchOperation, addToWeeklyPlanner, selectPlanner, fetchPPs, removeFromWeeklyPlanner, createPlanner, fetchPlannerOperations, patchPlanner }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OperationContainer);

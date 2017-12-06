@@ -66,10 +66,13 @@ export default function procedureReducer(state = {
 
       switch(action.type){
         case "SELECT_PROJECT":
-        return {...state, projectProcedures};
+          return {...state, projectProcedures};
 
         case "SELECT_PROCEDURE":
-        return {...state, selectedProcedure: action.payload, projectProcedures};
+          return {...state, selectedProcedure: action.payload, projectProcedures};
+
+        case "SELECT_PIECE":
+          return {...state, }
 
         default:
           return state;

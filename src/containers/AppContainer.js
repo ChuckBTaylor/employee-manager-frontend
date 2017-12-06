@@ -8,7 +8,7 @@ import { fetchProjects } from '../actions/project';
 import { fetchPieces } from '../actions/piece';
 import { fetchProcedures } from '../actions/procedure';
 import { fetchEmployees, logOutEmployee } from '../actions/employee';
-import { fetchPlanners, fetchPlannerProjects } from '../actions/planner';
+import { fetchPlanners, fetchPPs } from '../actions/planner';
 import ScheduleContainer from '../containers/ScheduleContainer';
 import EmployeeContainer from '../containers/EmployeeContainer';
 import ServiceContainer from '../containers/ServiceContainer';
@@ -17,8 +17,6 @@ import ProjectContainer from '../containers/ProjectContainer';
 import PieceContainer from '../containers/PieceContainer';
 import ProcedureContainer from '../containers/ProcedureContainer';
 import OperationContainer from '../containers/OperationContainer';
-import UserContainer from '../containers/UserContainer';
-import Generic404 from '../components/Generic404';
 import LogOutComponent from '../components/LogOutComponent';
 import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
@@ -153,21 +151,24 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces()])
-      .then(() => this.props.fetchProcedures())
-        .then(() => this.props.fetchPlanners())
-    this.props.fetchEmployees()
+    if (!this.props.didFetch) {
+      Promise.all([this.props.fetchServices(), this.props.fetchClients(), this.props.fetchProjects(), this.props.fetchPieces()])
+        .then(() => this.props.fetchProcedures())
+          .then(() => this.props.fetchPlanners())
+      this.props.fetchEmployees()
+    }
   }
 
-  componentWillUnmount = () => {
-    console.log('unmounting');
-  }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures, fetchEmployees, fetchPlannerProjects, fetchPlanners, logOutEmployee }, dispatch)
+  return bindActionCreators({ fetchServices, fetchClients, fetchProjects, fetchPieces, fetchProcedures, fetchEmployees, fetchPPs, fetchPlanners, logOutEmployee }, dispatch)
 }
 
-// const mapStateToProps = () => {}
+const mapStateToProps = state => {
+  return {
+    didFetch: state.planners.didFetch
+  }
+}
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

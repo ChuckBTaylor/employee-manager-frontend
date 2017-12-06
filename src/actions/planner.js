@@ -1,14 +1,29 @@
 import api from '../services/apiRequests';
-import { formatForPlanner } from '../helpers/momentHelper';
+import { findByID } from '../helpers/generalHelpers'
 import { fetchPlannerOperations } from './operation';
 
 
-export function fetchPlannerProjects(week){ //week == plannerID
+export function fetchPPs(week){ //week == plannerID
   return function(dispatch){
     dispatch({type: "FETCHING_WEEK"})
-    api().planner.fetchProjects(week)
-      .then(json => { //{planner_id: -1, project_ids: [-1,-2]}
-        const payload = {plannerID: json.planner_id, projectIDs: json.project_ids}
+    api().planner.fetchPPs(week)
+      .then(json => {
+        const formattedOperations = json.operations.map(operation => ({
+          employeeID: operation.employee_id,
+          id: operation.id,
+          hours: operation.hours,
+          name: operation.name,
+          ppID: operation.planners_procedure_id
+        }))
+        const formattedPPs = json.pps.map(pp => ({
+          allottedTime: pp.allotted_time,
+          id: pp.id,
+          procedureID: pp.procedure_id,
+          pieceID: pp.piece_id,
+          projectID: pp.project_id,
+          operations: formattedOperations.filter(operation => operation.ppID === pp.id)
+        }))
+        const payload = {plannerID: json.planner_id, pps: formattedPPs}
         return dispatch({type: "FETCHED_WEEK", payload})
       })
   }
@@ -25,14 +40,11 @@ export function fetchPlanners(){
       .then(json => {
         const payload = json.map(planner => {
           const name = formatMondayFriday(planner)
-          const formatted  = {name, allottedTime: planner.allotted_time, didFetchWeek: false, id: planner.id}
+          const formatted  = {name, allottedTime: planner.allotted_time, didFetchPPs: false, id: planner.id}
           return formatted;
         })
         dispatch({type: "FETCHED_PLANNERS", payload})
-        if(payload.length > 0){
-          fetchPlannerProjects(payload[payload.length - 1].id)(dispatch) //Fetches current week planner
-          fetchPlannerOperations(payload[payload.length - 1].id)(dispatch, getState) //Fetches Operations for week
-        }
+        fetchPPs(payload[payload.length - 1].id)(dispatch)
       })
   }
 }
@@ -42,17 +54,16 @@ export function createPlanner(){
     dispatch({type: "CREATING_PLANNER"})
     api().planner.post()
       .then(json => {
-        console.log(json);
         const payload = {name: formatMondayFriday(json), didFetchWeek: true, id: json.id, allottedTime: json.allotted_time}
         dispatch({type: "CREATED_PLANNER", payload})
       })
   }
 }
 
-export function addToWeeklyPlanner(projectID, plannerID){
+export function addToWeeklyPlanner(procedureID, plannerID){
   return function(dispatch){
-    dispatch({type: "ADD_PROJECT_TO_PLANNER", payload: projectID})
-    api().planner.addToPlanner(projectID, plannerID)
+    dispatch({type: "ADD_PROCEDURE_TO_PLANNER", payload: procedureID})
+    api().planner.addToPlanner(procedureID, plannerID)
       .then(json => console.log(json))
   }
 }
@@ -63,10 +74,10 @@ export function selectPlanner(planner){ //plannerID
   }
 }
 
-export function removeFromWeeklyPlanner(projectID, plannerID){
+export function removeFromWeeklyPlanner(procedureID, plannerID){
   return function(dispatch){
-    dispatch({type: "REMOVE_PROJECT_FROM_PLANNER", payload: projectID})
-    api().planner.removeFromPlanner(projectID, plannerID)
+    dispatch({type: "REMOVE_PROCEDURE_FROM_PLANNER", payload: procedureID})
+    api().planner.removeFromPlanner(procedureID, plannerID)
       .then(json => console.log(json))
   }
 }

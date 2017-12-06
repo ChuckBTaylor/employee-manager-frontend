@@ -1,8 +1,8 @@
 export default function plannerReducer(state = {
 list: [],
-projectIDs: {},
 currentPlanner: -1,
-fetchingPlanners: false,
+fetchingPPs: false,
+pps: {},
 didFetch: false,
 fetchingWeek: false,
 creatingPlanner: false
@@ -12,21 +12,21 @@ creatingPlanner: false
       return {...state, fetchingWeek: true};
 
     case "FETCHED_WEEK":
-      if(state.didFetch){return state}
       const alteredPlanners = state.list.map(planner => {
         if(planner.id === action.payload.plannerID){
-          return {...planner, didFetchWeek: true};
+          return {...planner, didFetchPPs: true};
         }
         return planner;
-      })
-      const updatedProjectIDs = {...state.projectIDs}
-      updatedProjectIDs[action.payload.plannerID] = action.payload.projectIDs
-      return {...state, list: alteredPlanners, projectIDs: updatedProjectIDs, fetchingWeek: false, currentPlanner: action.payload.plannerID};
+      })//Sets Planner in list to didFetchPPs
+      const updatedPPIDs = {...state.pps}
+      updatedPPIDs[action.payload.plannerID] = action.payload.pps
+      return {...state, list: alteredPlanners, pps: updatedPPIDs, fetchingWeek: false, currentPlanner: action.payload.plannerID};
 
     case "FETCHING_PLANNERS":
-      return {...state, fetchingPlanners: true}
+      return state.didFetch ? state : {...state, fetchingPlanners: true}
 
     case "FETCHED_PLANNERS":
+      if(state.didFetch){return state}
       return {...state, list: action.payload};
 
     case "CREATING_PLANNER":
@@ -41,12 +41,12 @@ creatingPlanner: false
     case "SELECT_PLANNER":
       return {...state, currentPlanner: action.payload};
 
-    case "ADD_PROJECT_TO_PLANNER":
+    case "ADD_PROCEDURE_TO_PLANNER":
       const plannerIDsObj = {...state.projectIDs}
       plannerIDsObj[state.currentPlanner] = [...plannerIDsObj[state.currentPlanner], action.payload]
       return {...state, projectIDs: plannerIDsObj};
 
-    case "REMOVE_PROJECT_FROM_PLANNER":
+    case "REMOVE_PROCEDURE_FROM_PLANNER":
       const plannerIDsObject = {...state.projectIDs}
         const sanitizedIDs = [...plannerIDsObject[state.currentPlanner]].filter(projectID => projectID !== action.payload)
       plannerIDsObject[state.currentPlanner] = sanitizedIDs //Receives new array of projectIDs
@@ -62,6 +62,39 @@ creatingPlanner: false
       })
       console.log(updatedList);
       return {...state, list: updatedList};
+
+    case "CREATED_OPERATION":
+      const opPlanner = state.pps[state.currentPlanner]
+      const newOpPP = opPlanner.find(pp => pp.id === action.payload.ppID)
+      newOpPP.operations = [...newOpPP.operations, action.payload]
+      const fixedOpPlanner = opPlanner.map(pp => {
+        if(pp.id === action.payload.ppID){
+          return newOpPP;
+        }
+        return pp;
+      })
+
+      return {...state, pps: {...state.pps, [state.currentPlanner]: fixedOpPlanner}};
+
+    case "PATCH_OPERATION":
+      const planner = state.pps[state.currentPlanner]
+      const pp = planner.find(pp => pp.id === action.payload.ppID)
+
+      const fixedOP = pp.operations.map(op => {
+        if(op.id === action.payload.id){
+          return action.payload;
+        }
+        return op;
+      })
+      const fixedPP = {...pp, operations: fixedOP}
+      const fixedPlanner = planner.map(pp => {
+        if(pp.id === action.payload.ppID){
+          return fixedPP
+        }
+        return pp;
+      })
+
+      return ({...state, pps: {...state.pps, [state.currentPlanner] : fixedPlanner}});
 
     case "LOG_OUT":
       return {...state, list: [], currentPlanner: -1, didFetch: false, projectIDs: {}};

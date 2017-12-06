@@ -48,3 +48,17 @@ export function selectProject(project){
     dispatch({type: "SELECT_PROJECT", payload: {...project, projectID: project.id}}) //the extra ID is for the other reducers
   }
 }
+
+export function fetchProjectData(projectID){
+  return function(dispatch){
+    dispatch({type: "FETCHING_PROJECT_DATA"})
+    api().project.show(projectID)
+      .then(json => {
+        dispatch({type: "FETCHED_PROJECT_DATA", payload: {totalEst: json.total_est, totalWorked: json.total_worked}})
+      })
+  }
+}
+
+export function clearProjectData(){
+  return {type: "RESET_PROJECT_DATA"};
+}

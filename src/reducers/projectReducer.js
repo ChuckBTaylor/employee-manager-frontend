@@ -63,7 +63,7 @@ export default function projectReducer(state = {
 
         default:
           return state;
-      };
+      }
 
     case "LOG_OUT":
       return {...state, list: [], clientProjects: [], selectedProjects: {}, didFetch: false};

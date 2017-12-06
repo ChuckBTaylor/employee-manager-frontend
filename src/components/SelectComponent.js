@@ -1,6 +1,5 @@
 import React from 'react';
 import cuid from 'cuid';
-import { findByID } from '../helpers/generalHelpers';
 
 const SelectComponent = props => {
 

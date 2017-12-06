@@ -1,11 +1,10 @@
 import React from 'react';
 import cuid from 'cuid';
-import RowData from '../spreadsheetStuff/RowData';
 import TableFloat from '../spreadsheetStuff/TableDataTypes/TableFloat';
 
 const InfoRow = props => {
   const filteredLabels = props.labels.filter(label => label !== 'id')
-  const rowHeaders = filteredLabels.map((label, colnum) => (
+  const ssData = filteredLabels.map((label, colnum) => (
     <th key={cuid()}>
       {typeof(props.procedure[label]) === 'boolean' ?
       (<i
@@ -41,7 +40,7 @@ const InfoRow = props => {
   const sumCell = (<th>{sum}</th>)
   return (
   <tr>
-    {rowHeaders}
+    {ssData}
     {inputRows}
     {sumCell}
   </tr>
