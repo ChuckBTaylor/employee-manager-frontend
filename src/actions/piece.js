@@ -1,5 +1,6 @@
 import api from '../services/apiRequests';
 import { findByID } from '../helpers/generalHelpers';
+import { fetchProjectData } from './project';
 
 
 
@@ -50,6 +51,7 @@ export function createPiece(piece){
           const formatted = createProcedureFromPieces(procedure, json.piece, service)
           dispatch({type: "CREATE_PROCEDURE", payload: formatted})
         })
+        fetchProjectData(json.piece.project_id)
       })
   }
 }

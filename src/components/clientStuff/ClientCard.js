@@ -16,12 +16,14 @@ class ClientCard extends Component {
   }
 
   handleAddProjectClick = () => {
-    this.props.onCreateProject({...this.state, clientID: this.props.client.id})
-    this.setState({name: ""})
+    if(this.state.name !== ""){
+      this.props.onCreateProject({...this.state, clientID: this.props.client.id})
+      this.setState({name: ""})
+    }
   }
 
   isEnter = ev => {
-    if(ev.which === 13 && this.state.name !== ""){
+    if(ev.which === 13){
       this.handleAddProjectClick()
     }
   }

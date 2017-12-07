@@ -8,7 +8,7 @@ import ProjectForm from '../components/projectStuff/ProjectForm';
 import ProjectTimeChart from '../components/chartStuff/ProjectTimeChart';
 import ProcedureSpread from './ProcedureSpread';
 import { fetchPieces, selectPiece } from '../actions/piece';
-import { fetchProjects, selectProject, destroyProject, fetchProjectData, clearProjectData } from '../actions/project';
+import { fetchProjects, selectProject, destroyProject, fetchProjectData, clearProjectData, createProject } from '../actions/project';
 import { fetchClients } from '../actions/client';
 import { Route } from 'react-router';
 
@@ -16,23 +16,16 @@ class ProjectContainer extends Component{
 
   state = {
     modalOpen: false,
-    filteredClient: -1
+    filteredClient: this.props.selectedClient.id,
+    newProjectName: ""
   }
 
   onSelectPiece = piece => {
     this.props.selectPiece(piece)
   }
 
-  onNewPieceClick = () => {
-    this.props.history.push('/pieces/new')
-  }
-
   handleFilterChange = ev => {
     this.setState({filteredClient: +ev.target.value})
-  }
-
-  handleNewProjectClick = () => {
-    this.props.history.push(`${this.props.match.path}/new`)
   }
 
   onEditClick = () => {
@@ -51,6 +44,23 @@ class ProjectContainer extends Component{
     this.props.selectProject(project)
   }
 
+  handleAddProjectClick = () => {
+    if(this.state.newProjectName !== ""){
+      this.props.createProject({name: this.state.newProjectName, clientID: this.state.filteredClient})
+      this.setState({newProjectName: ""})
+    }
+  }
+
+  isEnter = ev => {
+    if(ev.which === 13 && this.state.name !== ""){
+      this.handleAddProjectClick()
+    }
+  }
+
+  handleProjectNameChange = ev => {
+    this.setState({newProjectName: ev.target.value})
+  }
+
   hasSelectedProject = () => {
     return Object.keys(this.props.selectedProject).length > 0
   }
@@ -60,6 +70,7 @@ class ProjectContainer extends Component{
 
     const filteredProjects = (this.state.filteredClient === -1) ? (this.props.projects) : (this.props.projects.filter(project => project.clientID === this.state.filteredClient))
 
+    console.log(this.state);
     return(
       <div>
         <div className='ui grid centered'>
@@ -68,27 +79,31 @@ class ProjectContainer extends Component{
         )} />) : <div className='six wide column'></div>}
           <Route path='/projects/new' render={props => (<ProjectForm {...props} clients={this.props.clients}  selectedClient={this.props.selectedClient }/>) } />
 
-          {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
-            <ProjectShow
-              project={this.props.selectedProject}
-              pieces={this.props.projectPieces}
-              client={this.props.selectedClient}
-              onEditClick={this.onEditClick}
-              onDeleteClick={this.onDeleteClick}
-              onSelectPiece={this.onSelectPiece}
-              onNewPieceClick={this.onNewPieceClick}
-            />
-          )} />) : <div className='six wide column'></div>}
+          {this.hasSelectedProject() ? (<Route path='/projects' render={() => {
+            const pieces = this.props.pieces.filter(piece => piece.projectID === this.props.selectedProject.id)
+            return (
+              <ProjectShow
+                project={this.props.selectedProject}
+                pieces={pieces}
+                procedures={this.props.procedures}
+                client={this.props.selectedClient}
+                onEditClick={this.onEditClick}
+                onDeleteClick={this.onDeleteClick}
+                onSelectPiece={this.onSelectPiece}
+                onNewPieceClick={this.onNewPieceClick}
+              />
+            )}}
+          />) : <div className='six wide column'></div>}
           <div className='four wide column'>
             <label htmlFor="client-project-filter">Filter Projects By Client: </label>
             <select id='client-project-filter' onChange={this.handleFilterChange} value={this.state.filteredClient} >
-              <option value={-1} >All</option>
               {clientOptions}
             </select>
             <br />
             <ProjectList onSelectProject={this.onSelectProject} projects={filteredProjects} />
+            <input type='text' size='15' placeholder='New Project' value={this.state.newProjectName} onChange={this.handleProjectNameChange} onKeyDown={this.isEnter}/>
+            <i onClick={this.handleAddProjectClick} className='plus square outline icon'/>
 
-            <Route exact path='/projects' render={() => (<button onClick={this.handleNewProjectClick} >New Project</button>) } />
             <br />
           </div>
           {!this.hasSelectedProject() ? null :
@@ -118,6 +133,9 @@ class ProjectContainer extends Component{
   }
 
   componentWillReceiveProps = nextProps => {
+    if(!this.state.filteredClient && nextProps.clients[0]){
+      this.setState({filteredClient: nextProps.clients[0].id})
+    }
     if(nextProps.selectedProject.id && this.somethingChanged(nextProps)){
       this.props.fetchProjectData(nextProps.selectedProject.id)
     }
@@ -125,7 +143,7 @@ class ProjectContainer extends Component{
 
   somethingChanged = nextProps => {
     if(nextProps.selectedProject.id !== this.props.selectedProject.id) return true
-    if(nextProps.projectPieces.length !== this.props.projectPieces.length) return true
+    if(nextProps.pieces.length !== this.props.pieces.length) return true
     return false
   }
 
@@ -155,19 +173,26 @@ const mapStateToProps = state => {
   return {
     projects: state.projects.list,
     clients: state.clients.list,
+    pieces: state.pieces.list,
+    procedures: state.procedures.list,
     projectPieces: state.pieces.projectPieces,
     selectedProject: state.projects.selectedProject,
     selectedClient: state.clients.selectedClient,
     didFetchClients: state.clients.didFetch,
     didFetchProjects: state.projects.didFetch,
     chartData: state.charts.projectData,
-    didFetchChartData: state.charts.didFetchProject,
-    pps: state.planners.pps
+    didFetchChartData: state.charts.didFetchProject
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ fetchClients, fetchProjects, selectProject, destroyProject, fetchPieces, selectPiece, fetchProjectData, clearProjectData }, dispatch)
+  return bindActionCreators({ fetchClients, fetchProjects, selectProject, destroyProject, fetchPieces, selectPiece, fetchProjectData, clearProjectData, createProject }, dispatch)
+}
+
+ProjectContainer.defaultProps = {
+  selectedClient: {
+    id: 1
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectContainer);

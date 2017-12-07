@@ -43,7 +43,7 @@ export default function() {
 
       patch: employee => {
         const body = (({name, id}) => ({name, id}))(employee)
-        const json = JSON.stringify({...body, is_admin: employee.isAdmin, schedule_color: employee.scheduleColor})
+        const json = JSON.stringify({employee: {...body, is_admin: employee.isAdmin, schedule_color: employee.scheduleColor}})
         return fetch(`${API_ROOT}/companies/${companyID()}/employees/${employee.id}`, {
           ...railsPatch,
           body: json
@@ -52,7 +52,7 @@ export default function() {
       },
 
       destroy: employee => {
-        const json = JSON.stringify({id: employee.id})
+        const json = JSON.stringify({employee: {id: employee.id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/employees/${employee.id}`, {
           ...railsDestroy,
           body: json
@@ -79,7 +79,7 @@ export default function() {
 
       post: newSchedule => {
         const body = (({description}) => ({description}))(newSchedule)
-        const json = JSON.stringify({...body, scheduled_start: newSchedule.start, scheduled_end: newSchedule.end})
+        const json = JSON.stringify({schedule: {...body, scheduled_start: newSchedule.start, scheduled_end: newSchedule.end}})
         return fetch(`${API_ROOT}/companies/${companyID()}/employees/${newSchedule.employeeID}/schedules`, {
           ...railsPost,
           body: json
@@ -89,7 +89,7 @@ export default function() {
 
       patch: schedule => {
         const body = (({description, id}) => ({description, id}))(schedule)
-        const json = JSON.stringify({...body, scheduled_start: schedule.start, scheduled_end: schedule.end})
+        const json = JSON.stringify({schedule: {...body, scheduled_start: schedule.start, scheduled_end: schedule.end}})
         return fetch(`${API_ROOT}/companies/${companyID()}/employees/${schedule.employeeID}/schedules/${schedule.id}`, {
           ...railsPatch,
           body: json
@@ -98,7 +98,7 @@ export default function() {
       },
 
       destroy: schedule => {
-        const json = JSON.stringify({id: schedule.id})
+        const json = JSON.stringify({schedule: {id: schedule.id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/employees/${schedule.employeeID}/schedules/${schedule.id}`, {
           ...railsDestroy,
           body: json
@@ -115,7 +115,7 @@ export default function() {
 
       post: newService => {
         const body = (({name}) => ({name}))(newService)
-        const json = JSON.stringify({...body})
+        const json = JSON.stringify({service: {...body}})
         return fetch(`${API_ROOT}/companies/${companyID()}/services`, {
           ...railsPost,
           body: json
@@ -125,7 +125,7 @@ export default function() {
 
       patch: service => {
         const body = (({name, id}) => ({name, id}))(service)
-        const json = JSON.stringify({...body})
+        const json = JSON.stringify({service: {...body}})
         return fetch(`${API_ROOT}/companies/${companyID()}/services/${service.id}`, {
           ...railsPatch,
           body: json
@@ -134,7 +134,7 @@ export default function() {
       },
 
       destroy: service => {
-        const json = JSON.stringify({id: service.id})
+        const json = JSON.stringify({service: {id: service.id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/services/${service.id}`, {
           ...railsDestroy,
           body: json
@@ -151,7 +151,7 @@ export default function() {
 
       post: newClient => {
         const body = (({name}) => ({name}))(newClient)
-        const json = JSON.stringify({...body})
+        const json = JSON.stringify({client: {...body}})
         return fetch(`${API_ROOT}/companies/${companyID()}/clients`, {
           ...railsPost,
           body: json
@@ -161,7 +161,7 @@ export default function() {
 
       patch: client => {
         const body = (({name, id}) => ({name, id}))(client)
-        const json = JSON.stringify({...body})
+        const json = JSON.stringify({client: {...body}})
         return fetch(`${API_ROOT}/companies/${companyID()}/clients/${client.id}`, {
           ...railsPatch,
           body: json
@@ -170,7 +170,7 @@ export default function() {
       },
 
       destroy: client => {
-        const json = JSON.stringify({id: client.id})
+        const json = JSON.stringify({client: {id: client.id}})
         console.log("Deleting Client", client);
         return fetch(`${API_ROOT}/companies/${companyID()}/clients/${client.id}`, {
           ...railsDestroy,
@@ -188,7 +188,7 @@ export default function() {
 
       post: newProject => {
         const body = (({name, complete}) => ({name, complete}))(newProject)
-        const json = JSON.stringify({...body, client_id: newProject.clientID})
+        const json = JSON.stringify({project: {...body, client_id: newProject.clientID}})
         return fetch(`${API_ROOT}/companies/${companyID()}/projects`, {
           ...railsPost,
           body: json
@@ -203,7 +203,7 @@ export default function() {
 
       patch: project => {
         const body = (({name, id}) => ({name, id}))(project)
-        const json = JSON.stringify({...body})
+        const json = JSON.stringify({project: {...body}})
         return fetch(`${API_ROOT}/companies/${companyID()}/projects/${project.id}`, {
           ...railsPatch,
           body: json
@@ -212,7 +212,7 @@ export default function() {
       },
 
       destroy: project => {
-        const json = JSON.stringify({id: project.id})
+        const json = JSON.stringify({project: {id: project.id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/projects/${project.id}`, {
           ...railsDestroy,
           body: json
@@ -229,7 +229,7 @@ export default function() {
 
       post: newPiece => {
         const body = (({name, complete}) => ({name, complete}))(newPiece)
-        const json = JSON.stringify({...body, project_id: newPiece.projectID, service_ids: newPiece.serviceIDs})
+        const json = JSON.stringify({piece: {...body, project_id: newPiece.projectID, service_ids: newPiece.serviceIDs}})
         return fetch(`${API_ROOT}/companies/${companyID()}/pieces`, {
           ...railsPost,
           body: json
@@ -239,7 +239,7 @@ export default function() {
 
       patch: piece => {
         const body = (({name, id}) => ({name, id}))(piece)
-        const json = JSON.stringify({...body, service_ids: piece.serviceIDs})
+        const json = JSON.stringify({piece: {...body, service_ids: piece.serviceIDs}})
         return fetch(`${API_ROOT}/companies/${companyID()}/pieces/${piece.id}`, {
           ...railsPatch,
           body: json
@@ -248,7 +248,7 @@ export default function() {
       },
 
       destroy: piece => {
-        const json = JSON.stringify({id: piece.id})
+        const json = JSON.stringify({piece: {id: piece.id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/pieces/${piece.id}`, {
           ...railsDestroy,
           body: json
@@ -265,7 +265,7 @@ export default function() {
 
       patch: procedure => {
         const body = (({id, complete}) => ({id, complete}))(procedure)
-        const json = JSON.stringify({...body, service_id: procedure.serviceID, piece_id: procedure.pieceID, estimated_time: procedure.estimatedTime})
+        const json = JSON.stringify({procedure: {...body, service_id: procedure.serviceID, piece_id: procedure.pieceID, estimated_time: procedure.estimatedTime}})
         return fetch(`${API_ROOT}/companies/${companyID()}/procedures/${procedure.id}`, {
           ...railsPatch,
           body: json
@@ -287,17 +287,23 @@ export default function() {
 
       post: operation => {
         const body = (({hours}) => ({hours}))(operation)
-        const json = JSON.stringify({...body, planner_id: operation.plannerID, employee_id: operation.employeeID, planners_procedure_id: operation.ppID})
+        console.log(body);
+        const json = JSON.stringify({operation: {...body, planner_id: operation.plannerID, employee_id: operation.employeeID, planners_procedure_id: operation.ppID}})
         return fetch(`${API_ROOT}/companies/${companyID()}/operations`, {
           ...railsPost,
           body: json
         })
-          .then(res => res.json())
+          .then(res =>{
+            if(!res.ok){
+              throw Error(res.statusText);
+            }
+            return res.json();
+          })
       },
 
       patch: operation => {
         const body = (({hours, id}) => ({hours, id}))(operation)
-        const json = JSON.stringify({...body})
+        const json = JSON.stringify({operation: {...body}})
         return fetch(`${API_ROOT}/companies/${companyID()}/operations/${operation.id}`, {
           ...railsPatch,
           body: json
@@ -337,7 +343,7 @@ export default function() {
 
     pp: {
       post: (procedure_id, planner_id) => { //projectID, plannerID
-        const json = JSON.stringify({procedure_id, planner_id})
+        const json = JSON.stringify({planners_procedure: {procedure_id, planner_id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures`, {
           ...railsPost,
           body: json
@@ -346,7 +352,7 @@ export default function() {
       },
 
       patch: pp => {
-        const json = JSON.stringify({allotted_time: pp.allottedTime, planner_id: pp.plannerID, procedure_id: pp.procedureID, id: pp.id})
+        const json = JSON.stringify({planners_procedure: {allotted_time: pp.allottedTime, planner_id: pp.plannerID, procedure_id: pp.procedureID, id: pp.id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures/${pp.id}`, {
           ...railsPatch,
           body: json
@@ -355,7 +361,7 @@ export default function() {
       },
 
       destroy: id => { //procedureID, plannerID
-        const json = JSON.stringify({id})
+        const json = JSON.stringify({planners_procedure: {id}})
         return fetch(`${API_ROOT}/companies/${companyID()}/planners_procedures/${id}`, {
           ...railsDestroy,
           body: json

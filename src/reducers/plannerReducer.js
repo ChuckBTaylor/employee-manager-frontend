@@ -5,7 +5,8 @@ fetchingPPs: false,
 pps: {},
 didFetch: false,
 fetchingWeek: false,
-creatingPlanner: false
+creatingPlanner: false,
+creatingOperation: false
 }, action){ //state.projectsIDs = {plannerID: [projectID, projectID], plannerID: [projectID, projectID]}
   switch(action.type){
     case "FETCHING_WEEK":
@@ -69,6 +70,9 @@ creatingPlanner: false
 
       return {...state, pps: {...state.pps, [state.currentPlanner]: plannerToUpdate}};
 
+    case "CREATING_OPERATION":
+      return {...state, creatingOperation: true};
+
     case "CREATED_OPERATION":
       const opPlanner = state.pps[state.currentPlanner]
       const newOpPP = opPlanner.find(pp => pp.id === action.payload.ppID)
@@ -80,7 +84,11 @@ creatingPlanner: false
         return pp;
       })
 
-      return {...state, pps: {...state.pps, [state.currentPlanner]: fixedOpPlanner}};
+      return {...state, pps: {...state.pps, [state.currentPlanner]: fixedOpPlanner}, creatingOperation: false};
+      
+    case "FAILED_OPERATION_CREATE":
+      alert("Type slower!")
+      return {...state, creatingOperation: false};
 
     case "PATCH_OPERATION":
       const planner = state.pps[state.currentPlanner]

@@ -54,6 +54,7 @@ export function createOperation(newOperation){
         }
         dispatch({type: "CREATED_OPERATION", payload })
       })
+      .catch(error => dispatch({type: "FAILED_OPERATION_CREATE"}))
   }
 }
 

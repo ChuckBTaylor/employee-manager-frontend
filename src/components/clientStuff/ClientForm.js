@@ -14,17 +14,19 @@ class ClientForm extends Component{
   }
 
   handleClick = () => {
-    if(this.props.isModal){
-      this.props.patchClient({...this.props.client, name: this.state.name})
-      this.props.onModalClose()
-    } else {
-      this.props.createClient(this.state)
-      this.setState({name: ""})
+    if(this.state.name !== ""){
+      if(this.props.isModal){
+        this.props.patchClient({...this.props.client, name: this.state.name})
+        this.props.onModalClose()
+      } else {
+        this.props.createClient(this.state)
+        this.setState({name: ""})
+      }
     }
   }
 
   isEnter = ev => {
-    if(ev.which === 13 && this.state.name !== ""){
+    if(ev.which === 13){
       this.handleClick()
     }
   }
@@ -45,6 +47,7 @@ class ClientForm extends Component{
         <label htmlFor="">Name: </label>
 
         <input type='text'
+        placeholder='New Client'
         onKeyDown={this.isEnter}
         onChange={this.handleNameChange}
         value={this.state.name}

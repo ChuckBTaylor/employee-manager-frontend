@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createProject, patchProject } from '../../actions/project';
+import { createProject, patchProject, destroyProject } from '../../actions/project';
 
 class ProjectForm extends Component{
 
   state = {
     name: this.props.project.name || "",
     clientID: this.props.project.clientID || this.props.selectedClient.id || '',
-    complete: this.props.project.complete
+    complete: this.props.project.complete,
+    deleteClicked: false
   }
 
   handleNameChange = ev => {
@@ -31,10 +32,20 @@ class ProjectForm extends Component{
     }
   }
 
+  handleDelete = () => {
+    if(this.state.deleteClicked){
+      this.props.destroyProject(this.props.project)
+      this.props.onModalClose()
+    } else {
+      this.setState({deleteClicked: true})
+      setTimeout(() => this.setState({deleteClicked: false}), 750)
+    }
+  }
+
   render(){
     const clientOptions = this.props.clients.map((client, idx) => (<option key={idx} value={client.id} >{client.name}</option>))
     return(
-      <div className="sixteen wide column">
+      <div>
         <form onSubmit={this.handleSubmit}>
           <label htmlFor="select-client">Select a client</label>
           <select required id='select-client' value={this.state.clientID} onChange={this.handleClientChange} >
@@ -47,6 +58,15 @@ class ProjectForm extends Component{
           <br />
           <input type='submit' />
         </form>
+
+        <br /><br /><br />
+         {!this.props.isModal ? null :
+           <div className='delete piece'>
+            <p onClick={this.handleDelete}>
+              Delete<i className='trash icon' />
+            </p>
+           </div>
+         }
       </div>
     )
   }
@@ -65,7 +85,7 @@ ProjectForm.defaultProps = {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ createProject, patchProject }, dispatch)
+  return bindActionCreators({ createProject, patchProject, destroyProject }, dispatch)
 }
 
 export default connect(null, mapDispatchToProps)(ProjectForm);

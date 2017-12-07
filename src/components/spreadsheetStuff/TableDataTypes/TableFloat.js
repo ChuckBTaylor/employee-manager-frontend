@@ -23,6 +23,7 @@ class TableFloat extends Component{
   }
 
   render(){
+    const inputValue = +this.state.data === 0 ? "" : this.state.data
     return(
       <td>
         <input
@@ -39,7 +40,7 @@ class TableFloat extends Component{
           ev.target.selectionStart = ev.target.selectionEnd = this.props.cPos
         }}
          type="text"
-         value={this.state.data}
+         value={inputValue}
          onChange={this.handleDataChange} />
       </td>
     )
