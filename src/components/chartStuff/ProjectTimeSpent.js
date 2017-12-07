@@ -3,7 +3,7 @@ import { PieChart, Pie, Legend, Cell } from 'recharts';
 import cuid from 'cuid';
 import { randomColorArray } from '../../helpers/generalHelpers';
 
-const TimeSpent = props => {
+const ProjectTimeSpent = props => {
   const COLORS = randomColorArray(props.data.length)
   const pie = (
     <Pie
@@ -21,15 +21,19 @@ const TimeSpent = props => {
   )
 
   return (
-    <PieChart width={200} height={200}>
-      <Legend />
-      {pie}
-    </PieChart>
+    <div>
+      <h2>{props.project.name}</h2>
+      <PieChart width={250} height={250}>
+        <Legend />
+        {pie}
+      </PieChart>
+    </div>
   )
 }
 
-TimeSpent.defaultProps = {
-  data: [{}, {}]
+ProjectTimeSpent.defaultProps = {
+  data: [{}, {}],
+  project: {}
 }
 
-export default TimeSpent
+export default ProjectTimeSpent

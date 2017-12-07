@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import cuid from 'cuid';
 import PropTypes from 'prop-types';
-import {findByID } from '../helpers/generalHelpers';
-import ColumnHeaders from '../components/spreadsheetStuff/ColumnHeaders';
+// import {findByID } from '../helpers/generalHelpers';
 import PlannerRowList from '../components/plannerStuff/PlannerRowList';
 
 class WorkPlannerSpreadsheet extends Component{
@@ -43,11 +42,9 @@ class WorkPlannerSpreadsheet extends Component{
 
     // console.log("WorkPlannerSpreadsheet ssData", this.props.ssData);
     return(
-      <div>
-        <table>
-          {rowList}
-        </table>
-      </div>
+      <table>
+        {rowList}
+      </table>
     )
   }
 }

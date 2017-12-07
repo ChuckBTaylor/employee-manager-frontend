@@ -7,6 +7,7 @@ export function fetchProcedures(){
     dispatch({type: "FETCHING_PROCEDURES"})
     return api().procedure.fetch()
       .then(json => {
+        console.log(json, 'procedures');
         const formatted = json.map(procedure => {
           const service = findByID(getState().services.list, procedure.service_id)
           const piece = findByID(getState().pieces.list, procedure.piece_id)
@@ -18,7 +19,8 @@ export function fetchProcedures(){
             pieceID: procedure.piece_id,
             serviceID: procedure.service_id,
             projectID: piece ? piece.projectID : -1,
-            estimatedTime: procedure.estimated_time
+            estimatedTime: procedure.estimated_time,
+            totalWorked: procedure.total_worked
           }
         })
         dispatch({type: "FETCHED_PROCEDURES", payload: formatted})

@@ -26,7 +26,7 @@ const PlannerRowList = props => {
           cPos={props.cPos}
           aEmp={props.aEmp}
           aPP={props.aPP}
-          onTDC={props.onTDC}
+          onTDC={onTDC}
           onXClick={props.onXClick}
           labels={labels}
           key={cuid()}
@@ -35,7 +35,7 @@ const PlannerRowList = props => {
     })
   })
 
-  const projectInfo = {name: props.project.name, id: props.project.id}
+  // const projectInfo = {name: props.project.name, id: props.project.id}
   return (
     <tbody>
       <tr>

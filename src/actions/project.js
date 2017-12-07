@@ -6,13 +6,15 @@ export function fetchProjects(){
     dispatch({type: "FETCHING_PROJECTS"})
     return api().project.fetch()
       .then(json => {
+        console.log(json, 'projects');
         const formatted = json.map(project => {
           return {
             name: project.name,
             id: project.id,
             subtype: project.subtype,
             clientID: project.client_id,
-            complete: project.complete
+            complete: project.complete,
+            totalWorked: project.total_worked
           }
         })
         dispatch({type: "FETCHED_PROJECTS", payload: formatted})
@@ -54,7 +56,26 @@ export function fetchProjectData(projectID){
     dispatch({type: "FETCHING_PROJECT_DATA"})
     api().project.show(projectID)
       .then(json => {
-        dispatch({type: "FETCHED_PROJECT_DATA", payload: {totalEst: json.total_est, totalWorked: json.total_worked}})
+        console.log(json);
+        const pieces = json.procedure_sheet.pieces.map(piece => (
+          {
+            id: piece.id,
+            name: piece.name,
+            projectID: piece.project_id,
+            totalWorked: piece.total_worked
+          }
+        ))
+        const procedures = json.procedure_sheet.procedures.map(proc => (
+          {
+            id: proc.id,
+            pieceID: proc.piece_id,
+            totalWorked: proc.total_worked,
+            bidTime: proc.estimated_time,
+            serviceName: proc.service_name
+          }
+        ))
+        const procedureSheet = {pieces, procedures}
+        dispatch({type: "FETCHED_PROJECT_DATA", payload: {totalEst: json.total_est, totalWorked: json.total_worked, procedureSheet}})
       })
   }
 }

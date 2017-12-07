@@ -6,6 +6,7 @@ import ProjectShow from '../components/projectStuff/ProjectShow';
 import ProjectModal from '../components/projectStuff/ProjectModal';
 import ProjectForm from '../components/projectStuff/ProjectForm';
 import ProjectTimeChart from '../components/chartStuff/ProjectTimeChart';
+import ProcedureSpread from './ProcedureSpread';
 import { fetchPieces, selectPiece } from '../actions/piece';
 import { fetchProjects, selectProject, destroyProject, fetchProjectData, clearProjectData } from '../actions/project';
 import { fetchClients } from '../actions/client';
@@ -61,10 +62,10 @@ class ProjectContainer extends Component{
 
     return(
       <div>
-        <div className='ui grid'>
+        <div className='ui grid centered'>
         {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
           <ProjectTimeChart chartData={[this.props.chartData]} safe={this.props.chartData.totalEst >= this.props.chartData.totalWorked} />
-        )} />) : <div className='four wide column'></div>}
+        )} />) : <div className='six wide column'></div>}
           <Route path='/projects/new' render={props => (<ProjectForm {...props} clients={this.props.clients}  selectedClient={this.props.selectedClient }/>) } />
 
           {this.hasSelectedProject() ? (<Route path='/projects' render={() => (
@@ -90,6 +91,12 @@ class ProjectContainer extends Component{
             <Route exact path='/projects' render={() => (<button onClick={this.handleNewProjectClick} >New Project</button>) } />
             <br />
           </div>
+          {!this.hasSelectedProject() ? null :
+            <div className='four wide column'>
+              <ProcedureSpread data={this.props.chartData.procedureSheet} />
+            </div>
+           }
+
         </div>
         <br />
 
@@ -111,7 +118,6 @@ class ProjectContainer extends Component{
   }
 
   componentWillReceiveProps = nextProps => {
-    console.log('projectContainer Receiving Props', nextProps);
     if(nextProps.selectedProject.id && this.somethingChanged(nextProps)){
       this.props.fetchProjectData(nextProps.selectedProject.id)
     }
@@ -155,7 +161,8 @@ const mapStateToProps = state => {
     didFetchClients: state.clients.didFetch,
     didFetchProjects: state.projects.didFetch,
     chartData: state.charts.projectData,
-    didFetchChartData: state.charts.didFetchProject
+    didFetchChartData: state.charts.didFetchProject,
+    pps: state.planners.pps
   }
 }
 

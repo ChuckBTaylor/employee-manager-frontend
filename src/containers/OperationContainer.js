@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
-// import Spreadsheet from './Spreadsheet';
+import cuid from 'cuid'
 import WorkPlannerSpreadsheet from './WorkPlannerSpreadsheet';
 import { connect } from 'react-redux';
-import ConfirmModal from '../components/operationStuff/ConfirmModal';
+// import ConfirmModal from '../components/operationStuff/ConfirmModal';
 import { bindActionCreators } from 'redux';
 import { createOperation, patchOperation, fetchPlannerOperations } from '../actions/operation';
 import SelectComponent from '../components/SelectComponent';
-import { formatForSpreadsheet, findByID, calculateTimeWorked, allPPArray } from '../helpers/generalHelpers';
+import { formatForSpreadsheet, findByID, calculateTimeWorked, totalKeyTimeWorkedforID, totalBidTimeForProject, totalBidTimeForPiece, getOpsFromPPs } from '../helpers/generalHelpers';
+// import { allPPArray } from '../helpers/generalHelpers';
 import { selectPlanner, createPlanner, fetchPPs, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner, patchPP } from '../actions/planner';
 import NumberInputComponent from '../components/NumberInputComponent';
 import { Grid } from 'semantic-ui-react';
 import PlannerTimeWorked from '../components/chartStuff/PlannerTimeWorked';
 import TimeSpent from '../components/chartStuff/TimeSpent';
+import ProjectTimeSpent from '../components/chartStuff/ProjectTimeSpent';
+import { formatProjectDataForChart } from '../helpers/chartHelpers';
 
 
 class OperationContainer extends Component{
@@ -130,10 +133,7 @@ class OperationContainer extends Component{
     // \/ \/ \/ \/ \/ \/ //
     const formattedPPs = this.props.activePPs.map(pp => {
       const procedure = findByID(this.props.procedures, pp.procedureID)
-      if(!procedure){
-        const t = this
-        debugger
-      }
+
       return {
         ...pp,
         procedure_info: {
@@ -172,7 +172,23 @@ class OperationContainer extends Component{
       this.props.pieces.filter(piece => piece.projectID === this.state.selectedProject)
     const filteredProcedureOptions = this.state.selectedPiece === "" ? [] :
       this.props.procedures.filter(procedure => procedure.pieceID === this.state.selectedPiece)
-      console.log(this.props.pps);
+
+    const projectCharts = !formattedForSpreadsheet ? null : formattedForSpreadsheet.projects.map(project => {
+      const projectTimeWorked = totalKeyTimeWorkedforID(project.id, 'projectID', this.props.pps)
+      console.log(projectTimeWorked, 'total worked');
+      const projectTime = totalBidTimeForProject(project.id, this.props.procedures)
+      console.log(projectTime, 'total Bid');
+      const projectTimeThisWeek = getOpsFromPPs(this.props.activePPs.filter(pp => pp.projectID === project.id)).reduce((agg, op) => agg + op.hours, 0)
+      console.log(projectTimeThisWeek, 'this week');
+      const dataForChart = formatProjectDataForChart(projectTime, projectTimeWorked, projectTimeThisWeek)
+      console.log(dataForChart);
+      return (
+        <Grid.Column key={cuid()} width={3} >
+          <ProjectTimeSpent data={dataForChart} project={project}/>
+        </Grid.Column>
+      )
+    })
+
     return(
       <div>
         <h1>Weekly Planner</h1>
@@ -197,21 +213,23 @@ class OperationContainer extends Component{
           </h3>
         <Grid>
           <Grid.Row>
-            {formattedPPs.length < 1 ? null :
-              <WorkPlannerSpreadsheet
-                ssData={formattedForSpreadsheet}
-                employees={this.props.employees}
-                onTableDataChange={this.onTableDataChange}
-                autoFormatColumnHeaders={false}
-                onXClick={this.onXClick}
-              />
-            }
-            {/*<ConfirmModal extraMessage="Doing this will remove all records of the work done by the employees this week"
-            onConfirm={this.onConfirm}
-            onCancel={this.onCancel}
-            modalOpen={this.state.modalOpen}
-            onModalClose={this.onModalClose}
-            />*/}
+            <Grid.Column width={8}>
+              {formattedPPs.length < 1 ? null :
+                <WorkPlannerSpreadsheet
+                  ssData={formattedForSpreadsheet}
+                  employees={this.props.employees}
+                  onTableDataChange={this.onTableDataChange}
+                  autoFormatColumnHeaders={false}
+                  onXClick={this.onXClick}
+                />
+              }
+            </Grid.Column>
+            <Grid.Column width={4}>
+              <PlannerTimeWorked data={dataForTimeWorked[0]} xtData={dataForTimeWorked.length > 1 ? dataForTimeWorked[1] : null}/>
+            </Grid.Column>
+            <Grid.Column width={4}>
+              <TimeSpent data={dataForTimeSpentPiece}/>
+            </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             <Grid.Column width={2}>
@@ -257,15 +275,7 @@ class OperationContainer extends Component{
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column width={4}>
-              <PlannerTimeWorked data={dataForTimeWorked[0]} xtData={dataForTimeWorked.length > 1 ? dataForTimeWorked[1] : null}/>
-            </Grid.Column>
-            <Grid.Column width={4}>
-              <TimeSpent data={dataForTimeSpentPiece}/>
-            </Grid.Column>
-            <Grid.Column width={4}>
-              <TimeSpent data={dataForTimeSpentProject}/>
-            </Grid.Column>
+            {projectCharts}
           </Grid.Row>
         </Grid>
       </div>

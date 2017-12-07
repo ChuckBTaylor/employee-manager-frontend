@@ -10,13 +10,14 @@ export function objectArrayToObject(arr, key){
    return obj;
  }
 
-export function formatForSpreadsheet(pps, pieces, projects){
+export function formatForSpreadsheet(pps = [], pieces = [], projects = []){
   const pieceIDs = [...new Set(pps.map(pp => pp.pieceID))]
   const filteredPieces = pieceIDs.map(id => findByID(pieces, id))
   const projectIDs = [...new Set(filteredPieces.map(piece => piece.projectID))]
   const filteredProjects = projectIDs.map(id => findByID(projects, id))
   return {pps, pieces: filteredPieces, projects: filteredProjects}
 }
+
 
 export function calculateTimeWorked(allottedTime, timeWorkedThisWeek){
   const arr = [[{
@@ -48,6 +49,37 @@ export function allPPArray(statePPs){
   })
   return arr
 }
+
+export function getOpsFromPPs(pps){
+  let arr = []
+  pps.forEach(pp => {
+    pp.operations.forEach(op => {
+      arr.push(op)
+    })
+  })
+  return arr
+}
+
+export function totalKeyTimeWorkedforID(id, key, statePPs){
+  const pps = allPPArray(statePPs)
+  return getOpsFromPPs(pps.filter(pp => pp[key] === id)).reduce((agg, op) => agg + op.hours, 0)
+}
+
+export function totalBidTimeForProject(projectID, stateProcedures){
+  const procedures = stateProcedures.filter(procedure => procedure.projectID === projectID)
+  return procedures.reduce((agg, procedure) => agg + procedure.estimatedTime, 0)
+}
+
+export function totalBidTimeForPiece(pieceID, stateProcedures){
+  const procedures = stateProcedures.filter(procedure => procedure.pieceID === pieceID)
+  return procedures.reduce((agg, procedure) => agg + procedure.estimatedTime, 0)
+}
+
+export function totalPieceTimeWorked(piece, statePPs){
+
+}
+
+
 
 export function randomColorArray(length){
   const arr = []

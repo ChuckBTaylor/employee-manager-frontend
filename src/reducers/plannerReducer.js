@@ -41,7 +41,7 @@ creatingPlanner: false
       return {...state, currentPlanner: action.payload};
 
     case "ADD_PP_TO_PLANNER":
-      const oldPla = state.pps[state.currentPlanner]
+      // const oldPla = state.pps[state.currentPlanner]
       //Fix this to check for already existing ops in case of quick user input
       const pla = [...state.pps[state.currentPlanner], action.payload]
       return {...state, pps: {...state.pps, [state.currentPlanner]: pla}};

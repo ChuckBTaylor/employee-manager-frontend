@@ -4,7 +4,9 @@ export function fetchClients(){
   return function(dispatch){
     dispatch({type: "FETCHING_CLIENTS"})
     return api().client.fetch()
-      .then(json => dispatch({type: "FETCHED_CLIENTS", payload: json}))
+      .then(json => {
+        dispatch({type: "FETCHED_CLIENTS", payload: json})
+      })
   }
 }
 

@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ClientList from '../components/clientStuff/ClientList';
-import ClientShow from '../components/clientStuff/ClientShow';
+// import ClientList from '../components/clientStuff/ClientList';
+// import ClientShow from '../components/clientStuff/ClientShow';
 import ClientModal from '../components/clientStuff/ClientModal';
 import ClientForm from '../components/clientStuff/ClientForm';
 import ClientCard from '../components/clientStuff/ClientCard';
 import { fetchClients, selectClient, destroyClient } from '../actions/client';
 import { fetchProjects, selectProject, createProject } from '../actions/project';
-import { Route } from 'react-router';
+// import { Route } from 'react-router';
 import { findByID } from '../helpers/generalHelpers';
-import { Grid } from 'semantic-ui-react';
+// import { Grid } from 'semantic-ui-react';
 import cuid from 'cuid';
 
 class ClientContainer extends Component{

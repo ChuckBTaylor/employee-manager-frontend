@@ -8,12 +8,14 @@ export function fetchPieces(){
     dispatch({type: "FETCHING_PIECES"})
     return api().piece.fetch()
       .then(json => {
+        console.log(json, 'pieces');
         const formatted = json.map(piece => {
           return {
             name: piece.name,
             id: piece.id,
             projectID: piece.project_id,
-            complete: piece.complete
+            complete: piece.complete,
+            totalWorked: piece.total_worked
           }
         })
         dispatch({type: "FETCHED_PIECES", payload: formatted})
