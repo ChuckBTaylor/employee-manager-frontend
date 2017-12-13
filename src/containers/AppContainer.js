@@ -22,6 +22,7 @@ import { Route } from 'react-router';
 import { Sidebar, Segment, Button, Menu, Icon } from 'semantic-ui-react';
 import { Switch } from 'react-router-dom';
 import { authorize } from '../HOCs/authorize'
+import 'semantic-ui-css/semantic.min.css';
 
 class App extends Component {
 
