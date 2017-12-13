@@ -3,8 +3,8 @@ const apiVersion = 'v1';
 
 const hostname = window && window.location && window.location.hostname;
 
-if(hostname === 'realsite.com') {
-  backendHost = 'https://api.realsite.com';
+if(hostname === 'chuckbtaylor.github.io') {
+  backendHost = 'https://nameless-journey-45031.herokuapp.com';
 } else if(hostname === 'staging.realsite.com') {
   backendHost = 'https://staging.api.realsite.com';
 } else if(/^qa/.test(hostname)) {
