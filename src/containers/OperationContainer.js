@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createOperation, patchOperation, fetchPlannerOperations } from '../actions/operation';
 import SelectComponent from '../components/SelectComponent';
-import { formatForSpreadsheet, findByID, calculateTimeWorked, totalKeyTimeWorkedforID, totalBidTimeForProject, totalBidTimeForPiece, getOpsFromPPs } from '../helpers/generalHelpers';
+import { formatForSpreadsheet, findByID, calculateTimeWorked, totalKeyTimeWorkedforID, totalBidTimeForProject, getOpsFromPPs } from '../helpers/generalHelpers';
 // import { allPPArray } from '../helpers/generalHelpers';
 import { selectPlanner, createPlanner, fetchPPs, addToWeeklyPlanner, removeFromWeeklyPlanner, patchPlanner, patchPP } from '../actions/planner';
 import NumberInputComponent from '../components/NumberInputComponent';
@@ -157,13 +157,6 @@ class OperationContainer extends Component{
       return {
         time: this.calculateTimeFromPPs(pps),
         name: piece.name
-      }
-    }) : undefined
-    const dataForTimeSpentProject = formattedForSpreadsheet ? formattedForSpreadsheet.projects.map(project => {
-      const pps = formattedForSpreadsheet.pps.filter(pp => pp.projectID === project.id)
-      return {
-        time: this.calculateTimeFromPPs(pps),
-        name: project.name
       }
     }) : undefined
     // /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  //
