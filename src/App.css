@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: black;
 }
 
 .App-logo {
@@ -16,6 +17,7 @@
 
 .main-div {
   height: 100px;
+  background-color: black;
 }
 
 .App-title {
@@ -29,4 +31,96 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+div.parallax {
+  height: 1500px;
+  width: 100%;
+  position: relative;
+  background-image: url("http://www.carpentrybyrob.com/img/carpentry%20by%20rob.jpg");
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+div.login-header {
+  width: 100%;
+  height: 15%;
+  position:fixed;
+  color: white;
+  background-color: black;
+  font-size: 48px;
+  font-weight: bold;
+  z-index: 99;
+  padding-top: 3%;
+  padding-left: 5%;
+}
+
+input.login[type=text] {
+    width: 25%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 24px;
+    position: absolute;
+    margin-top: 30%;
+}
+input.login[type=password] {
+    width: 25%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 24px;
+    position: absolute;
+    margin-top: 35%;
+}
+
+input.login[type=submit] {
+  width: 10%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 24px;
+  position: absolute;
+  margin-top: 40%;
+}
+
+div.demo-holder {
+  margin-top: 37%;
+  margin-left: 50%;
+  position: absolute;
+}
+
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.button1 {
+    background-color: white;
+    color: black;
+}
+
+.button1:hover {
+    background-color: black;
+    color: white;
 }

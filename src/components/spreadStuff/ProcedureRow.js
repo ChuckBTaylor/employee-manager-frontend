@@ -2,9 +2,6 @@ import React from 'react';
 
 const ProcedureRow = props => {
 
-  console.log(props);
-
-
   return (
   <tr>
     <td>/\</td>

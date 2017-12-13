@@ -70,7 +70,6 @@ class ProjectContainer extends Component{
 
     const filteredProjects = (this.state.filteredClient === -1) ? (this.props.projects) : (this.props.projects.filter(project => project.clientID === this.state.filteredClient))
 
-    console.log(this.state);
     return(
       <div>
         <div className='ui grid centered'>

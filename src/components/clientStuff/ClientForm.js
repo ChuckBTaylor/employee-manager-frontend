@@ -6,7 +6,8 @@ import { createClient, patchClient } from '../../actions/client';
 class ClientForm extends Component{
 
   state = {
-    name: this.props.client ? this.props.client.name : ""
+    name: this.props.client ? this.props.client.name : "",
+    deleteClicked: false
   }
 
   handleNameChange = ev => {
@@ -32,8 +33,13 @@ class ClientForm extends Component{
   }
 
   handleDelete = ev => {
-    this.props.onDestroyClient(this.props.client)
-    this.props.onModalClose()
+    if(this.state.deleteClicked){
+      this.props.onDestroyClient(this.props.client)
+      this.props.onModalClose()
+    } else {
+      this.setState({deleteClicked: true})
+      setTimeout(() => this.setState({deleteClicked: false}), 750)
+    }
   }
 
   focusTextInput = () => {

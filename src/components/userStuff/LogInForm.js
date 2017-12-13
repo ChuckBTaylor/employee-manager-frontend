@@ -21,17 +21,27 @@ class LogInForm extends Component{
     this.setState({password: ev.target.value})
   }
 
+  handleDemoClick = ev => {
+    this.props.onLogIn({name: "Natalie", password: "dogs"})
+  }
+
   render(){
     return(
       <div>
+      <div className="login-header"> IWork </div>
+      <div className="parallax">
         {this.props.logInFailed ? (<p>{this.props.errorMessage}</p>) : null}
         <form onSubmit={this.handleSubmit}>
           <label htmlFor="">Username: </label>
-          <input type='text' value={this.state.name} onChange={this.handleNameChange} /><br />
+          <input className='login' type='text' value={this.state.name} onChange={this.handleNameChange} /><br />
           <label htmlFor="">Password: </label>
-          <input type='password' value={this.state.password} onChange={this.handlePasswordChange} />
-          <input type='submit' value='submit' />
+          <input type='password' className='login' value={this.state.password} onChange={this.handlePasswordChange} />
+          <input type='submit' className='login' value='Log In' />
         </form>
+        <div className="demo-holder">
+        <button className="button button1"onClick={this.handleDemoClick} > Demo Button </button>
+        </div>
+        </div>
       </div>
     )
   }
