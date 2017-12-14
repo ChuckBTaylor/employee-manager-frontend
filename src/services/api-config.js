@@ -6,8 +6,8 @@ const hostname = window && window.location && window.location.hostname;
 if(hostname === 'chuckbtaylor.github.io') {
   backendHost = 'https://nameless-journey-45031.herokuapp.com';
   console.log('setting backend host name to:', backendHost)
-} else if(hostname === 'staging.realsite.com') {
-  backendHost = 'https://staging.api.realsite.com';
+} else if(!!hostname.match('herokuapp')) {
+  backendHost = 'https://nameless-journey-45031.herokuapp.com';
 } else if(/^qa/.test(hostname)) {
   backendHost = `https://api.${hostname}`;
 } else {
